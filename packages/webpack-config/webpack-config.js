@@ -12,7 +12,6 @@ function htmlWebpackPlugin(options) {
 
 function createWebpackConfig(options = {}) {
     return (_, args) => {
-
         // Pass for babel config
         if (args.hot) {
             process.env.NODE_ENV = "development";
