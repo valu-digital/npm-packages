@@ -12,15 +12,18 @@ function htmlWebpackPlugin(options) {
 
 function createWebpackConfig(options = {}) {
     return (_, args) => {
-        // Pass for babel config
+        // For some reason --mode option does not set NODE_ENV for .babelrc.js
         if (args.hot) {
+            // alway development with --hot
             process.env.NODE_ENV = "development";
         } else {
+            // Otherwise it's just development or production
             process.env.NODE_ENV = args.mode;
         }
 
         return {
             entry: {
+                // XXX: might need to support .js too
                 main: "./src/index.tsx",
             },
 
@@ -30,11 +33,14 @@ function createWebpackConfig(options = {}) {
             },
 
             devServer: {
+                // With dev server server files from the dist directory
                 contentBase: process.cwd() + "/dist",
             },
 
             resolve: {
-                extensions: [".ts", ".tsx", ".mjs", ".jsx", ".js", ".json"],
+                // The default extensions are quite lame.
+                // the .mjs enables tree shaking for some npm modules
+                extensions: [".tsx", ".ts", ".mjs", ".jsx", ".js", ".json"],
             },
 
             module: {
