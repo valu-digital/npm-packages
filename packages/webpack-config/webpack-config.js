@@ -10,7 +10,7 @@ function htmlWebpackPlugin(options) {
     return new HtmlWebpackPlugin(options);
 }
 
-function createWebpackConfig(options = {}) {
+function createWebpackConfig(options = {}, customize) {
     return (_, args) => {
         // For some reason --mode option does not set NODE_ENV for .babelrc.js
         if (args.hot) {
@@ -21,7 +21,7 @@ function createWebpackConfig(options = {}) {
             process.env.NODE_ENV = args.mode;
         }
 
-        return {
+        const config = {
             entry: {
                 // XXX: might need to support .js too
                 main: "./src/index.tsx",
@@ -58,6 +58,12 @@ function createWebpackConfig(options = {}) {
                 htmlWebpackPlugin(options.htmlPlugin),
             ].filter(Boolean),
         };
+
+        if (typeof customize === "function") {
+            return customize(config, _, args);
+        }
+
+        return config;
     };
 }
 
