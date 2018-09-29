@@ -27,7 +27,7 @@ function createWebpackConfig(options = {}, customize) {
             },
 
             output: {
-                filename: "[name].[hash].js",
+                filename: "[name].js",
                 path: process.cwd() + "/dist",
             },
 
