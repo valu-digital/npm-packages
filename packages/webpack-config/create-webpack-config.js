@@ -23,8 +23,7 @@ function createWebpackConfig(options = {}, customize) {
 
         const config = {
             entry: {
-                // XXX: might need to support .js too
-                main: "./src/index.js",
+                main: "./src/index",
             },
 
             output: {
