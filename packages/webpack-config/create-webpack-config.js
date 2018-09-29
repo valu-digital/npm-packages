@@ -7,7 +7,26 @@ function bundleAnalyzerPlugin(activate) {
 function htmlWebpackPlugin(options) {
     if (!options) return;
     const HtmlWebpackPlugin = require("html-webpack-plugin");
-    return new HtmlWebpackPlugin({inject: false, ...options});
+    return new HtmlWebpackPlugin({
+        inject: false,
+
+        templateParameters: (_, assets) => {
+            return {
+                htmlWebpackPlugin: {files: assets},
+
+                renderHashedPath(entry) {
+                    // prettier-ignore
+                    return `${assets.chunks[entry].entry}?v=${assets.chunks[entry].hash}`;
+                },
+
+                renderScriptTag(entry) {
+                    // prettier-ignore
+                    return `<script src="${this.renderHashedPath(entry)}"></script>`;
+                },
+            };
+        },
+        ...options,
+    });
 }
 
 function createWebpackConfig(options = {}, customize) {
