@@ -84,7 +84,9 @@ function createWebpackConfig(options = {}, customize) {
                 new webpack.DefinePlugin({
                     WEBPACK_GIT_DATE: JSON.stringify(gitDate),
                     WEBPACK_GIT_REV: JSON.stringify(gitRev),
-                    WEBPACK_BUILD_DATE: new Date().toISOString(),
+                    WEBPACK_BUILD_DATE: JSON.stringify(
+                        new Date().toISOString()
+                    ),
                 }),
             ].filter(Boolean),
         };
