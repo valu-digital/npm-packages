@@ -7,7 +7,7 @@ function bundleAnalyzerPlugin(activate) {
 function htmlWebpackPlugin(options) {
     if (!options) return;
     const HtmlWebpackPlugin = require("html-webpack-plugin");
-    return new HtmlWebpackPlugin(options);
+    return new HtmlWebpackPlugin({inject: false, ...options});
 }
 
 function createWebpackConfig(options = {}, customize) {
