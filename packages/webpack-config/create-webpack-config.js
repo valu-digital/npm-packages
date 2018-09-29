@@ -1,3 +1,10 @@
+const webpack = require("webpack");
+const {execSync} = require("child_process");
+const gitRev = execSync("git rev-parse HEAD").toString();
+const gitDate = new Date(
+    execSync("git log -1 --format=%cd").toString()
+).toISOString();
+
 function bundleAnalyzerPlugin(activate) {
     if (!activate) return;
     const {BundleAnalyzerPlugin} = require("webpack-bundle-analyzer");
@@ -74,6 +81,11 @@ function createWebpackConfig(options = {}, customize) {
             plugins: [
                 bundleAnalyzerPlugin(options.bundleAnalyzerPlugin),
                 htmlWebpackPlugin(options.htmlPlugin),
+                new webpack.DefinePlugin({
+                    WEBPACK_GIT_DATE: JSON.stringify(gitDate),
+                    WEBPACK_GIT_REV: JSON.stringify(gitRev),
+                    WEBPACK_BUILD_DATE: new Date().toISOString(),
+                }),
             ].filter(Boolean),
         };
 
