@@ -4,7 +4,7 @@
     "description": "Webpack config",
     "main": "create-webpack-config.js",
     "scripts": {
-        "eslint": "eslint **/*.js",
+        "eslint": "eslint .",
         "jest": "jest",
         "test": "npm run eslint && npm run jest"
     },
