@@ -23,7 +23,9 @@
     "@babel/core": "^7.1.2",
     "eslint": "^5.6.1",
     "eslint-config-prettier": "^3.1.0",
-    "prettier": "^1.14.3"
+    "jest": "^23.6.0",
+    "prettier": "^1.14.3",
+    "sh-thunk": "^0.2.5"
   },
   "dependencies": {
     "babel-loader": "^8.0.4",

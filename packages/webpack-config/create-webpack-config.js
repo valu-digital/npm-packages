@@ -21,14 +21,14 @@ function htmlWebpackPlugin(options) {
             return {
                 htmlWebpackPlugin: {files: assets},
 
-                renderHashedPath(entry) {
+                renderHashedEntry(entry) {
                     // prettier-ignore
                     return `${assets.chunks[entry].entry}?v=${assets.chunks[entry].hash}`;
                 },
 
                 renderScriptTag(entry) {
                     // prettier-ignore
-                    return `<script src="${this.renderHashedPath(entry)}"></script>`;
+                    return `<script src="${this.renderHashedEntry(entry)}"></script>`;
                 },
             };
         },
