@@ -2,5 +2,5 @@
 
 exports[`can render template 1`] = `
 "<?php
-define( 'JS', main.js?v=25a1c29825ee0e2eab97 );"
+define( 'JS', 'main.js?v=25a1c29825ee0e2eab97' );"
 `;
