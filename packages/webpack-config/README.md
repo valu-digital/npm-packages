@@ -1,5 +1,8 @@
 # Epeli's Webpack configuration
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/epeli/webpack-config.svg)](https://greenkeeper.io/)
+
+
 Too bored to copy paste these configs around
 and not able to migrate to Parcel yet so here's my config...
 
