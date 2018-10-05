@@ -58,26 +58,30 @@ function bundleAnalyzerPlugin(activate) {
 function htmlWebpackPlugin(options) {
     if (!options) return;
     const HtmlWebpackPlugin = require("html-webpack-plugin");
-    return new HtmlWebpackPlugin({
-        inject: false,
+    return new HtmlWebpackPlugin(
+        Object.assign(
+            {
+                inject: false,
 
-        templateParameters: (_, assets) => {
-            return {
-                htmlWebpackPlugin: {files: assets},
+                templateParameters: (_, assets) => {
+                    return {
+                        htmlWebpackPlugin: {files: assets},
 
-                renderHashedEntry(entry) {
-                    // prettier-ignore
-                    return `${assets.chunks[entry].entry}?v=${assets.chunks[entry].hash}`;
+                        renderHashedEntry(entry) {
+                            // prettier-ignore
+                            return `${assets.chunks[entry].entry}?v=${assets.chunks[entry].hash}`;
+                        },
+
+                        renderScriptTag(entry) {
+                            // prettier-ignore
+                            return `<script src="${this.renderHashedEntry(entry)}"></script>`;
+                        },
+                    };
                 },
-
-                renderScriptTag(entry) {
-                    // prettier-ignore
-                    return `<script src="${this.renderHashedEntry(entry)}"></script>`;
-                },
-            };
-        },
-        ...options,
-    });
+            },
+            options
+        )
+    );
 }
 
 function createWebpackConfig(options = {}, customize) {
