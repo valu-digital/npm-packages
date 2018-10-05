@@ -7,5 +7,7 @@
         "node": true,
         "jest": true
     },
-    "rules": {}
+    "rules": {
+        "no-undef": "error"
+    }
 }
