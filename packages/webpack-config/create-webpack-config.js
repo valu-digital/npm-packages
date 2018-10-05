@@ -111,4 +111,5 @@ function createWebpackConfig(options = {}, customize) {
     };
 }
 
+createWebpackConfig.createWebpackConfig = createWebpackConfig;
 module.exports = createWebpackConfig;
