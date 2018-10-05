@@ -1,3 +1,4 @@
+// @ts-check
 const webpack = require("webpack");
 const {execSync} = require("child_process");
 const gitRev = execSync("git rev-parse HEAD").toString();
