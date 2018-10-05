@@ -19,12 +19,11 @@ interface WebpackConfig {
     [key: string]: any;
 }
 
+export function createWebpackConfig(options?: Options): WebpackConfig;
+export default createWebpackConfig;
+
 declare global {
     const WEBPACK_GIT_DATE: string;
     const WEBPACK_GIT_REV: string;
     const WEBPACK_BUILD_DATE: string;
 }
-
-export function createWebpackConfig(options: Options): WebpackConfig;
-
-export default createWebpackConfig;
