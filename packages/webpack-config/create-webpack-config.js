@@ -6,7 +6,7 @@ const gitDate = new Date(
     execSync("git log -1 --format=%cd").toString()
 ).toISOString();
 
-function getConfig(options) {
+function getConfig() {
     return {
         entry: {
             main: "./src/index",
@@ -39,8 +39,6 @@ function getConfig(options) {
         },
 
         plugins: [
-            bundleAnalyzerPlugin(options.bundleAnalyzerPlugin),
-            htmlWebpackPlugin(options.htmlPlugin),
             new webpack.DefinePlugin({
                 WEBPACK_GIT_DATE: JSON.stringify(gitDate),
                 WEBPACK_GIT_REV: JSON.stringify(gitRev),
@@ -50,8 +48,7 @@ function getConfig(options) {
     };
 }
 
-function bundleAnalyzerPlugin(activate) {
-    if (!activate) return;
+function bundleAnalyzerPlugin() {
     const {BundleAnalyzerPlugin} = require("webpack-bundle-analyzer");
     return new BundleAnalyzerPlugin();
 }
@@ -96,9 +93,10 @@ function createWebpackConfig(options = {}, customize) {
             process.env.NODE_ENV = args.mode;
         }
 
-        const config = getConfig(options);
+        const config = getConfig();
 
         const devServerPort = args.port || options.devServerPort || 8080;
+
         config.devServer.port = devServerPort;
 
         if (options.hotCors) {
@@ -106,6 +104,14 @@ function createWebpackConfig(options = {}, customize) {
             config.devServer.headers = {
                 "Access-Control-Allow-Origin": "*",
             };
+        }
+
+        if (options.bundleAnalyzerPlugin) {
+            config.plugins.push(bundleAnalyzerPlugin());
+        }
+
+        if (options.htmlPlugin) {
+            config.plugins.push(htmlWebpackPlugin(options.htmlPlugin));
         }
 
         if (typeof customize === "function") {
