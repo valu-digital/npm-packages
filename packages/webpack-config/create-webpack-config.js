@@ -76,6 +76,10 @@ function htmlWebpackPlugin(options) {
                     return {
                         htmlWebpackPlugin: {files: assets},
 
+                        renderHash(entry) {
+                            return assets.chunks[entry].hash;
+                        },
+
                         renderHashedEntry(entry) {
                             assertEntry(entry);
                             // prettier-ignore
