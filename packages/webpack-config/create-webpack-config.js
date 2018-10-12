@@ -76,16 +76,26 @@ function htmlWebpackPlugin(options) {
                     return {
                         htmlWebpackPlugin: {files: assets},
 
+                        /**
+                         * @param {string} entry
+                         * @returns {string}
+                         */
                         renderHash(entry) {
                             return assets.chunks[entry].hash;
                         },
 
+                        /**
+                         * @param {string} entry
+                         */
                         renderHashedEntry(entry) {
                             assertEntry(entry);
                             // prettier-ignore
                             return `${assets.chunks[entry].entry}?v=${assets.chunks[entry].hash}`;
                         },
 
+                        /**
+                         * @param {string} entry
+                         */
                         renderScriptTag(entry) {
                             assertEntry(entry);
                             // prettier-ignore
