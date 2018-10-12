@@ -62,15 +62,28 @@ function htmlWebpackPlugin(options) {
                 inject: false,
 
                 templateParameters: (_, assets) => {
+                    /**
+                     * @param {string} entry
+                     */
+                    const assertEntry = entry => {
+                        const chunk = assets.chunks[entry];
+                        if (!chunk) {
+                            // prettier-ignore
+                            throw new Error(`Unknown entry '${entry}'. Available entries ${Object.keys(assets.chunks).join(", ")}`);
+                        }
+                    };
+
                     return {
                         htmlWebpackPlugin: {files: assets},
 
                         renderHashedEntry(entry) {
+                            assertEntry(entry);
                             // prettier-ignore
                             return `${assets.chunks[entry].entry}?v=${assets.chunks[entry].hash}`;
                         },
 
                         renderScriptTag(entry) {
+                            assertEntry(entry);
                             // prettier-ignore
                             return `<script src="${this.renderHashedEntry(entry)}"></script>`;
                         },
