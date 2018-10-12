@@ -81,6 +81,7 @@ function htmlWebpackPlugin(options) {
                          * @returns {string}
                          */
                         renderHash(entry) {
+                            assertEntry(entry);
                             return assets.chunks[entry].hash;
                         },
 
