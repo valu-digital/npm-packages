@@ -19,7 +19,7 @@ interface WebpackConfig {
     [key: string]: any;
 }
 
-export function createWebpackConfig(options?: Options): WebpackConfig;
+export function createWebpackConfig(options?: Options, customize: (options: Options) => any): WebpackConfig;
 export default createWebpackConfig;
 
 declare global {
