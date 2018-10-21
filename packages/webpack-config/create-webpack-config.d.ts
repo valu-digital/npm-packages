@@ -6,6 +6,7 @@ interface Options {
     devServerPort?: number;
     htmlPlugin?: HtmlPluginOptions;
     hotCors?: boolean;
+    template?: string;
     bundleAnalyzerPlugin?: boolean;
     customize?: (config: WebpackConfig) => any;
 }

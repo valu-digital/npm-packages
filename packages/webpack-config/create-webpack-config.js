@@ -138,8 +138,19 @@ function createWebpackConfig(options = {}, customize) {
             config.plugins.push(bundleAnalyzerPlugin());
         }
 
-        if (options.htmlPlugin) {
-            config.plugins.push(htmlWebpackPlugin(options.htmlPlugin));
+        if (options.template) {
+            config.plugins.push(
+                htmlWebpackPlugin({template: options.template})
+            );
+        } else if (options.htmlPlugin) {
+            config.plugins.push(
+                htmlWebpackPlugin(
+                    Object.assign(
+                        {template: options.template},
+                        options.htmlPlugin
+                    )
+                )
+            );
         }
 
         if (typeof customize === "function") {
