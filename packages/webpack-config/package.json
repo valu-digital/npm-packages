@@ -16,6 +16,10 @@
   "keywords": [
     "webpack"
   ],
+  "files": [
+    "create-webpack-config.js",
+    "create-webpack-config.d.ts"
+  ],
   "author": "Esa-Matti Suuronen",
   "license": "ISC",
   "bugs": {
