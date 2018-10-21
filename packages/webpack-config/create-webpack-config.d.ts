@@ -7,6 +7,7 @@ interface Options {
     htmlPlugin?: HtmlPluginOptions;
     hotCors?: boolean;
     template?: string;
+    historyApiFallback?: boolean;
     bundleAnalyzerPlugin?: boolean;
     customize?: (config: WebpackConfig) => any;
 }

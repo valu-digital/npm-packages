@@ -134,6 +134,10 @@ function createWebpackConfig(options = {}, customize) {
             };
         }
 
+        if (options.historyApiFallback) {
+            config.devServer.historyApiFallback = options.historyApiFallback;
+        }
+
         if (options.bundleAnalyzerPlugin) {
             config.plugins.push(bundleAnalyzerPlugin());
         }
