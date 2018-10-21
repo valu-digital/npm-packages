@@ -6,6 +6,7 @@ interface Options {
     devServerPort?: number;
     htmlPlugin?: HtmlPluginOptions;
     hotCors?: boolean;
+    bundleAnalyzerPlugin?: boolean;
     customize?: (config: WebpackConfig) => any;
 }
 
@@ -19,7 +20,10 @@ interface WebpackConfig {
     [key: string]: any;
 }
 
-export function createWebpackConfig(options?: Options, customize: (options: Options) => any): WebpackConfig;
+export function createWebpackConfig(
+    options?: Options,
+    customize: (options: Options) => any
+): WebpackConfig;
 export default createWebpackConfig;
 
 declare global {
