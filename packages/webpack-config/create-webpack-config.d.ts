@@ -3,12 +3,39 @@ interface HtmlPluginOptions {
 }
 
 interface Options {
+    /**
+     * Port to listen with the dev server
+     */
     devServerPort?: number;
+
+    /**
+     * https://github.com/jantimon/html-webpack-plugin#options
+     */
     htmlPlugin?: HtmlPluginOptions;
-    hotCors?: boolean;
+
+    /**
+     * Shorcut for the htmlPlugin template option
+     */
     template?: string;
+
+    /**
+     * Enable hot module replacement over CORS domains
+     */
+    hotCors?: boolean;
+
+    /**
+     * https://webpack.js.org/configuration/dev-server/#devserver-historyapifallback
+     */
     historyApiFallback?: boolean;
+
+    /**
+     * https://github.com/webpack-contrib/webpack-bundle-analyzer
+     */
     bundleAnalyzerPlugin?: boolean;
+
+    /**
+     * Manual cusomization of the generated config
+     */
     customize?: (config: WebpackConfig) => any;
 }
 
