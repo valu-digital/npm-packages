@@ -34,6 +34,11 @@ interface Options {
     bundleAnalyzerPlugin?: boolean;
 
     /**
+     * https://webpack.js.org/plugins/split-chunks-plugin/#split-chunks-example-1
+     */
+    extractCommons?: boolean;
+
+    /**
      * Manual cusomization of the generated config
      */
     customize?: (config: WebpackConfig) => any;
