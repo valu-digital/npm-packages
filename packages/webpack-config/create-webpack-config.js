@@ -42,7 +42,7 @@ function getDefaultConfig() {
         module: {
             rules: [
                 {
-                    test: /\.(ts|tsx|js|jsx)$/,
+                    test: /\.(ts|tsx|js|jsx|mjs)$/,
                     use: {
                         loader: "babel-loader",
                     },
