@@ -65,13 +65,13 @@ function htmlWebpackPlugin(options) {
 
                 templateParameters: (_, assets) => {
                     /**
-                     * @param {string} entry
+                     * @param {string} chunkName
                      */
-                    const assertEntry = entry => {
-                        const chunk = assets.chunks[entry];
+                    const assertChunk = chunkName => {
+                        const chunk = assets.chunks[chunkName];
                         if (!chunk) {
                             // prettier-ignore
-                            throw new Error(`Unknown entry '${entry}'. Available entries ${Object.keys(assets.chunks).join(", ")}`);
+                            throw new Error(`Unknown entry '${chunkName}'. Available entries ${Object.keys(assets.chunks).join(", ")}`);
                         }
                     };
 
@@ -79,30 +79,30 @@ function htmlWebpackPlugin(options) {
                         htmlWebpackPlugin: {files: assets},
 
                         /**
-                         * @param {string} entry
+                         * @param {string} chunkName
                          * @returns {string}
                          */
-                        renderHash(entry) {
-                            assertEntry(entry);
-                            return assets.chunks[entry].hash;
+                        renderHash(chunkName) {
+                            assertChunk(chunkName);
+                            return assets.chunks[chunkName].hash;
                         },
 
                         /**
-                         * @param {string} entry
+                         * @param {string} chunkName
                          */
-                        renderHashedEntry(entry) {
-                            assertEntry(entry);
+                        renderHashedChunk(chunkName) {
+                            assertChunk(chunkName);
                             // prettier-ignore
-                            return `${assets.chunks[entry].entry}?v=${assets.chunks[entry].hash}`;
+                            return `${assets.chunks[chunkName].entry}?v=${assets.chunks[chunkName].hash}`;
                         },
 
                         /**
-                         * @param {string} entry
+                         * @param {string} chunkName
                          */
-                        renderScriptTag(entry) {
-                            assertEntry(entry);
+                        renderScriptTag(chunkName) {
+                            assertChunk(chunkName);
                             // prettier-ignore
-                            return `<script src="${this.renderHashedEntry(entry)}"></script>`;
+                            return `<script src="${this.renderHashedChunk(chunkName)}"></script>`;
                         },
                     };
                 },
