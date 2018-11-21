@@ -216,7 +216,7 @@ function createWebpackConfig(options = {}, customize) {
         }
 
         if (typeof customize === "function") {
-            return customize(config, _, args);
+            return customize(config, _, args) || config;
         }
 
         return config;
