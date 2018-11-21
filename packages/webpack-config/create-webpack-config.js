@@ -12,6 +12,8 @@ function getConfig() {
             main: "./src/index",
         },
 
+        optimization: {},
+
         output: {
             filename: "[name].js",
             path: process.cwd() + "/dist",
@@ -110,6 +112,23 @@ function htmlWebpackPlugin(options) {
     );
 }
 
+/**
+ * https://webpack.js.org/plugins/split-chunks-plugin/#split-chunks-example-1
+ */
+function extractCommons() {
+    return {
+        splitChunks: {
+            cacheGroups: {
+                commons: {
+                    name: "commons",
+                    chunks: "initial",
+                    minChunks: 2,
+                },
+            },
+        },
+    };
+}
+
 function createWebpackConfig(options = {}, customize) {
     return (_, args) => {
         // For some reason --mode option does not set NODE_ENV for .babelrc.js
@@ -121,7 +140,15 @@ function createWebpackConfig(options = {}, customize) {
             process.env.NODE_ENV = args.mode;
         }
 
-        const config = getConfig();
+        const config = getDefaultConfig();
+
+        if (options.entry) {
+            config.entry = options.entry;
+        }
+
+        if (options.extractCommons && options.entry) {
+            config.optimization = extractCommons();
+        }
 
         const devServerPort = args.port || options.devServerPort || 8080;
 
