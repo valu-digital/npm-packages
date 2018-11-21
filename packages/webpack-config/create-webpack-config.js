@@ -20,7 +20,7 @@ function getDefaultConfig() {
         },
 
         devServer: {
-            // With dev server server files from the dist directory
+            // With dev server serve files from the dist directory
             contentBase: process.cwd() + "/dist",
         },
 
@@ -133,7 +133,7 @@ function createWebpackConfig(options = {}, customize) {
     return (_, args) => {
         // For some reason --mode option does not set NODE_ENV for .babelrc.js
         if (args.hot) {
-            // alway development with --hot
+            // always development with --hot
             process.env.NODE_ENV = "development";
         } else {
             // Otherwise it's just development or production
