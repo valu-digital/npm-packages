@@ -6,7 +6,7 @@ const gitDate = new Date(
     execSync("git log -1 --format=%cd").toString()
 ).toISOString();
 
-function getConfig() {
+function getDefaultConfig() {
     return {
         entry: {
             main: "./src/index",
