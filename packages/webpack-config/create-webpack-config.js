@@ -196,7 +196,7 @@ function createWebpackConfig(options = {}, customize) {
             config.devServer.historyApiFallback = options.historyApiFallback;
         }
 
-        if (options.bundleAnalyzerPlugin) {
+        if (options.bundleAnalyzerPlugin || process.env.ANALYZE) {
             config.plugins.push(bundleAnalyzerPlugin());
         }
 
