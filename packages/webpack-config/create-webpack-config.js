@@ -1,10 +1,19 @@
 // @ts-check
 const webpack = require("webpack");
+const fs = require("fs");
 const {execSync} = require("child_process");
 const gitRev = execSync("git rev-parse HEAD").toString();
 const gitDate = new Date(
     execSync("git log -1 --format=%cd").toString()
 ).toISOString();
+
+/**
+ * @param {string} dir
+ */
+function hasBabelrc(dir) {
+    const rcFiles = ["babel.config.js", ".babelrc", ".babelrc.js"];
+    return fs.readdirSync(dir).some(file => rcFiles.includes(file));
+}
 
 function getDefaultConfig() {
     return {
@@ -32,7 +41,12 @@ function getDefaultConfig() {
 
         module: {
             rules: [
-                {test: /\.(ts|tsx|js|jsx)$/, loader: "babel-loader"},
+                {
+                    test: /\.(ts|tsx|js|jsx)$/,
+                    use: {
+                        loader: "babel-loader",
+                    },
+                },
                 {
                     test: /\.css$/,
                     use: ["style-loader", "css-loader"],
@@ -47,6 +61,17 @@ function getDefaultConfig() {
                 WEBPACK_BUILD_DATE: JSON.stringify(new Date().toISOString()),
             }),
         ].filter(Boolean),
+    };
+}
+
+function createBabelConfig() {
+    return {
+        presets: [
+            "@babel/preset-typescript",
+            "@babel/preset-react",
+            "@babel/preset-env",
+        ],
+        plugins: ["@babel/plugin-proposal-class-properties"],
     };
 }
 
@@ -146,6 +171,12 @@ function createWebpackConfig(options = {}, customize) {
             config.entry = options.entry;
         }
 
+        if (!hasBabelrc(process.cwd())) {
+            /** @type any */ // ts-check hack...
+            const use = config.module.rules[0].use;
+            use.options = createBabelConfig();
+        }
+
         if (options.extractCommons && options.entry) {
             config.optimization = extractCommons();
         }
@@ -192,5 +223,7 @@ function createWebpackConfig(options = {}, customize) {
     };
 }
 
-createWebpackConfig.createWebpackConfig = createWebpackConfig;
-module.exports = createWebpackConfig;
+module.exports = {
+    createWebpackConfig,
+    createBabelConfig,
+};
