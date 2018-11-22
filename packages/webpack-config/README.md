@@ -29,7 +29,8 @@ By default it reads an entry point from `./src/index`. The index file can be
 written to `./dist/main.js`.
 
 The default Babel configuration has `react`, `typescript` and `env` presets.
-It also adds the class properties proposal.
+It also adds the class properties proposal and Emotion plugin with source
+maps.
 
 Enables `.mjs` based tree shaking for some npm modules (ex. react-icons).
 

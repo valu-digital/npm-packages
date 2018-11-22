@@ -65,7 +65,28 @@ function getDefaultConfig() {
     };
 }
 
-function createBabelConfig() {
+/**
+ * Get Emotion babel plugin config
+ *
+ * @param {boolean} production
+ * @return {any}
+ */
+function getEmotionPlugin(production) {
+    if (production) {
+        return "emotion";
+    }
+
+    return [
+        "emotion",
+        {
+            sourceMap: true,
+            autoLabel: true,
+            labelFormat: "[filename]--[local]",
+        },
+    ];
+}
+
+function getBabelConfig() {
     return {
         presets: [
             "@babel/preset-typescript",
@@ -173,10 +194,16 @@ function createWebpackConfig(options = {}, customize) {
         }
 
         if (!hasBabelrc(process.cwd())) {
-            const babelConfig = createBabelConfig();
+            const babelConfig = getBabelConfig();
 
             if (args.hot) {
                 babelConfig.plugins.push("react-hot-loader/babel");
+            }
+
+            if (options.emotion !== false) {
+                babelConfig.plugins.push(
+                    getEmotionPlugin(args.mode === "production")
+                );
             }
 
             // ts-check hack...
@@ -232,5 +259,5 @@ function createWebpackConfig(options = {}, customize) {
 
 module.exports = {
     createWebpackConfig,
-    createBabelConfig,
+    getBabelConfig,
 };
