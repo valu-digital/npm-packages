@@ -29,8 +29,9 @@ By default it reads an entry point from `./src/index`. The index file can be
 written to `./dist/main.js`.
 
 The default Babel configuration has `react`, `typescript` and `env` presets.
-It also adds the class properties proposal and Emotion plugin with source
-maps.
+
+It also adds the class properties and dynamic import proposal plugins and
+Emotion plugin with source maps.
 
 Enables `.mjs` based tree shaking for some npm modules (ex. react-icons).
 
@@ -85,6 +86,10 @@ Inside the template following functions are available:
 
 The `chunkName` can be the entry name (ex. `main`) or the extracted bundle
 name `commons`.
+
+## `emotion: boolean`
+
+Set to false to disable the Emotion plugin.
 
 # CSS
 
