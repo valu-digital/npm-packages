@@ -3,7 +3,7 @@
 [![Greenkeeper badge](https://badges.greenkeeper.io/epeli/webpack-config.svg)](https://greenkeeper.io/)
 
 I love the idea of React Create App but I've never been able to use it due to
-lack of it customization possibilities but I've never had too much trouble
+lack of its customization possibilities but I've never had too much trouble
 configuring Webpack neighter. It's just a lots of stuff to remember and I'm
 lazy.
 
