@@ -61,7 +61,7 @@ It will be written to `./dist/commons.js`.
 If you are using React Hot Loader this options makes it work cross domains by
 adding the required CORS headers. Ex. you can run your webserver from a
 virtual server / container / remote server / whatever and serve hot
-javascript bundles from you localhost.
+javascript bundles from localhost.
 
 ## `historyApiFallback: boolean | mixed`
 
