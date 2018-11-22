@@ -172,9 +172,15 @@ function createWebpackConfig(options = {}, customize) {
         }
 
         if (!hasBabelrc(process.cwd())) {
-            /** @type any */ // ts-check hack...
-            const use = config.module.rules[0].use;
-            use.options = createBabelConfig();
+            const babelConfig = createBabelConfig();
+
+            if (args.hot) {
+                babelConfig.plugins.push("react-hot-loader/babel");
+            }
+
+            // ts-check hack...
+            /** @type any */ const use = config.module.rules[0].use;
+            use.options = babelConfig;
         }
 
         if (options.extractCommons && options.entry) {
