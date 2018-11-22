@@ -1,4 +1,4 @@
-const createWebpackConfig = require("../../../create-webpack-config");
+const {createWebpackConfig} = require("../../../create-webpack-config");
 module.exports = createWebpackConfig({
     htmlPlugin: {
         template: "src/index.php.ejs",
