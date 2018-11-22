@@ -36,6 +36,7 @@ function getDefaultConfig() {
         resolve: {
             // The default extensions are quite lame.
             // the .mjs enables tree shaking for some npm modules
+            // https://github.com/react-icons/react-icons/issues/154#issuecomment-411036960
             extensions: [".tsx", ".ts", ".mjs", ".jsx", ".js", ".json"],
         },
 

@@ -31,6 +31,8 @@ written to `./dist/main.js`.
 The default Babel configuration has `react`, `typescript` and `env` presets.
 It also adds the class properties proposal.
 
+Enables `.mjs` based tree shaking for some npm modules (ex. react-icons).
+
 In development when using `--hot` with the `webpack-dev-server` React Hot
 Loader Babel plugin is activated automatically.
 
