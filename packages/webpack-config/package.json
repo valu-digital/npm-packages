@@ -1,54 +1,54 @@
 {
-    "name": "@epeli/webpack-config",
-    "version": "0.1.11",
-    "description": "Webpack config",
-    "main": "create-webpack-config.js",
-    "types": "create-webpack-config.d.ts",
-    "scripts": {
-        "eslint": "eslint .",
-        "jest": "jest",
-        "test": "npm run eslint && npm run jest"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/epeli/webpack-config.git"
-    },
-    "keywords": [
-        "webpack"
-    ],
-    "files": [
-        "create-webpack-config.js",
-        "create-webpack-config.d.ts"
-    ],
-    "author": "Esa-Matti Suuronen",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/epeli/webpack-config/issues"
-    },
-    "homepage": "https://github.com/epeli/webpack-config",
-    "devDependencies": {
-        "eslint": "^5.9.0",
-        "eslint-config-prettier": "^3.3.0",
-        "jest": "^23.6.0",
-        "prettier": "^1.15.2",
-        "sh-thunk": "^0.2.6"
-    },
-    "dependencies": {
-        "@babel/core": "^7.1.6",
-        "@babel/plugin-proposal-class-properties": "^7.1.0",
-        "@babel/plugin-syntax-dynamic-import": "^7.0.0",
-        "@babel/preset-env": "^7.1.6",
-        "@babel/preset-react": "^7.0.0",
-        "@babel/preset-typescript": "^7.1.0",
-        "babel-loader": "^8.0.4",
-        "babel-plugin-emotion": "^9.2.11",
-        "css-loader": "^1.0.1",
-        "html-webpack-plugin": "^3.2.0",
-        "react-hot-loader": "^4.3.12",
-        "style-loader": "^0.23.1",
-        "webpack": "^4.26.0",
-        "webpack-bundle-analyzer": "^3.0.3",
-        "webpack-cli": "^3.1.2",
-        "webpack-dev-server": "^3.1.10"
-    }
+  "name": "@epeli/webpack-config",
+  "version": "0.2.0",
+  "description": "Webpack config",
+  "main": "create-webpack-config.js",
+  "types": "create-webpack-config.d.ts",
+  "scripts": {
+    "eslint": "eslint .",
+    "jest": "jest",
+    "test": "npm run eslint && npm run jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/epeli/webpack-config.git"
+  },
+  "keywords": [
+    "webpack"
+  ],
+  "files": [
+    "create-webpack-config.js",
+    "create-webpack-config.d.ts"
+  ],
+  "author": "Esa-Matti Suuronen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/epeli/webpack-config/issues"
+  },
+  "homepage": "https://github.com/epeli/webpack-config",
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-prettier": "^3.3.0",
+    "jest": "^23.6.0",
+    "prettier": "^1.15.2",
+    "sh-thunk": "^0.2.6"
+  },
+  "dependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/preset-env": "^7.1.6",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.1.0",
+    "babel-loader": "^8.0.4",
+    "babel-plugin-emotion": "^9.2.11",
+    "css-loader": "^1.0.1",
+    "html-webpack-plugin": "^3.2.0",
+    "react-hot-loader": "^4.3.12",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.26.0",
+    "webpack-bundle-analyzer": "^3.0.3",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
+  }
 }
