@@ -230,6 +230,7 @@ function createWebpackConfig(options = {}, customize) {
         }
 
         if (options.sass) {
+            cssLoader.test = /\.(css|scss)$/;
             cssLoader.use.push(
                 options.sassOptions
                     ? "sass-loader"
