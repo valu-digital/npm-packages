@@ -217,15 +217,24 @@ function createWebpackConfig(options = {}, customize) {
             config.optimization = extractCommons();
         }
 
+        // ts-check hack...
+        /** @type any */ const cssLoader = config.module.rules[1];
+
         if (options.extractCss && isProduction) {
             const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-            // ts-check hack...
-            /** @type any */ const cssLoader = config.module.rules[1];
             cssLoader.use = [
                 {loader: MiniCssExtractPlugin.loader},
                 "css-loader",
             ];
             config.plugins.push(new MiniCssExtractPlugin());
+        }
+
+        if (options.sass) {
+            cssLoader.use.push(
+                options.sassOptions
+                    ? "sass-loader"
+                    : {loader: "sass-loader", options: options.sassOptions}
+            );
         }
 
         const devServerPort = args.port || options.devServerPort || 8080;

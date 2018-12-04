@@ -39,6 +39,18 @@ interface Options {
     extractCommons?: boolean;
 
     /**
+     * Extract css bundle
+     */
+    extractCss?: boolean;
+
+    /**
+     * Enable sass loader
+     */
+    sass?: boolean;
+
+    sassOptions?: any;
+
+    /**
      * Manual cusomization of the generated config
      */
     customize?: (config: WebpackConfig) => any;
