@@ -181,6 +181,7 @@ function extractCommons() {
 
 function createWebpackConfig(options = {}, customize) {
     return (_, args) => {
+        const isProduction = args.mode === "production";
         // For some reason --mode option does not set NODE_ENV for .babelrc.js
         if (args.hot) {
             // always development with --hot
@@ -204,18 +205,27 @@ function createWebpackConfig(options = {}, customize) {
             }
 
             if (options.emotion !== false) {
-                babelConfig.plugins.push(
-                    getEmotionPlugin(args.mode === "production")
-                );
+                babelConfig.plugins.push(getEmotionPlugin(isProduction));
             }
 
             // ts-check hack...
-            /** @type any */ const use = config.module.rules[0].use;
-            use.options = babelConfig;
+            /** @type any */ const babelLoader = config.module.rules[0];
+            babelLoader.use.options = babelConfig;
         }
 
         if (options.extractCommons && options.entry) {
             config.optimization = extractCommons();
+        }
+
+        if (options.extractCss && isProduction) {
+            const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+            // ts-check hack...
+            /** @type any */ const cssLoader = config.module.rules[1];
+            cssLoader.use = [
+                {loader: MiniCssExtractPlugin.loader},
+                "css-loader",
+            ];
+            config.plugins.push(new MiniCssExtractPlugin());
         }
 
         const devServerPort = args.port || options.devServerPort || 8080;
