@@ -214,7 +214,7 @@ function createWebpackConfig(options = {}, customize) {
         }
 
         if (options.extractCommons && options.entry) {
-            config.optimization = extractCommons();
+            Object.assign(config.optimization, extractCommons());
         }
 
         // ts-check hack...
@@ -227,6 +227,15 @@ function createWebpackConfig(options = {}, customize) {
                 "css-loader",
             ];
             config.plugins.push(new MiniCssExtractPlugin());
+
+            // What the shit. When the optimize-css plugin is added we must
+            // manually configure the js minifier too
+            const TerserPlugin = require("terser-webpack-plugin");
+            const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+            config.optimization.minimizer = [
+                new TerserPlugin({}),
+                new OptimizeCSSAssetsPlugin({}),
+            ];
         }
 
         if (options.sass) {
