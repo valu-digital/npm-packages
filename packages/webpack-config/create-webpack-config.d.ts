@@ -30,6 +30,11 @@ interface Options {
     devServerHost?: string;
 
     /**
+     *  https://webpack.js.org/configuration/output/#output-publicpath
+     */
+    publicPath?: string;
+
+    /**
      * https://webpack.js.org/configuration/dev-server/#devserver-historyapifallback
      */
     historyApiFallback?: boolean;

@@ -294,12 +294,16 @@ function createWebpackConfig(options = {}, customize) {
 
         config.devServer.port = devServerPort;
 
-        if (options.cors) {
+        const publicPath = options.publicPath || "/";
+
+        if (!isProduction && options.cors) {
             const host = options.devServerHost || "localhost";
-            config.output.publicPath = `http://${host}:${devServerPort}/`;
+            config.output.publicPath = `http://${host}:${devServerPort}${publicPath}`;
             config.devServer.headers = {
                 "Access-Control-Allow-Origin": "*",
             };
+        } else {
+            config.output.publicPath = publicPath;
         }
 
         if (options.historyApiFallback) {
