@@ -19,9 +19,15 @@ interface Options {
     template?: string;
 
     /**
-     * Enable hot module replacement over CORS domains
+     * Allow hot module replacement over and dynamic imports over CORS domains
+     * during development
      */
-    hotCors?: boolean;
+    cors?: boolean;
+
+    /**
+     * Custom dev server host for CORS usage. Defaults to localhost
+     */
+    devServerHost?: string;
 
     /**
      * https://webpack.js.org/configuration/dev-server/#devserver-historyapifallback

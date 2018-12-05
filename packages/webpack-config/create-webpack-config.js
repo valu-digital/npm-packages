@@ -23,6 +23,8 @@ function getDefaultConfig() {
 
         optimization: {},
 
+        devtool: "source-map",
+
         output: {
             filename: "[name].js",
             path: process.cwd() + "/dist",
@@ -41,18 +43,7 @@ function getDefaultConfig() {
         },
 
         module: {
-            rules: [
-                {
-                    test: /\.(ts|tsx|js|jsx|mjs)$/,
-                    use: {
-                        loader: "babel-loader",
-                    },
-                },
-                {
-                    test: /\.css$/,
-                    use: ["style-loader", "css-loader"],
-                },
-            ],
+            rules: [],
         },
 
         plugins: [
@@ -61,6 +52,50 @@ function getDefaultConfig() {
                 WEBPACK_GIT_REV: JSON.stringify(gitRev),
                 WEBPACK_BUILD_DATE: JSON.stringify(new Date().toISOString()),
             }),
+        ].filter(Boolean),
+    };
+}
+
+function getBabelLoaderConfig() {
+    return {
+        test: /\.(ts|tsx|js|jsx|mjs)$/,
+        use: {
+            loader: "babel-loader",
+        },
+    };
+}
+
+/**
+ * @param {{extractCss?: boolean, sass?: boolean}} options
+ */
+function getCssLoaderConfig(options = {}) {
+    /** @type any */
+    let styleLoader = "style-loader";
+
+    if (options.extractCss) {
+        const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+        styleLoader = {loader: MiniCssExtractPlugin.loader};
+    }
+
+    return {
+        test: /\.(css|scss)$/,
+        use: [
+            styleLoader,
+
+            {
+                loader: "css-loader",
+                options: {
+                    sourceMap: true,
+                    url: !options.extractCss,
+                },
+            },
+
+            options.sass
+                ? {
+                      loader: "sass-loader",
+                      options: {sourceMap: true},
+                  }
+                : null,
         ].filter(Boolean),
     };
 }
@@ -196,6 +231,8 @@ function createWebpackConfig(options = {}, customize) {
         if (options.entry) {
             config.entry = options.entry;
         }
+        const babelLoader = getBabelLoaderConfig();
+        config.module.rules.push(babelLoader);
 
         if (!hasBabelrc(process.cwd())) {
             const babelConfig = getBabelConfig();
@@ -208,8 +245,6 @@ function createWebpackConfig(options = {}, customize) {
                 babelConfig.plugins.push(getEmotionPlugin(isProduction));
             }
 
-            // ts-check hack...
-            /** @type any */ const babelLoader = config.module.rules[0];
             babelLoader.use.options = babelConfig;
         }
 
@@ -217,42 +252,51 @@ function createWebpackConfig(options = {}, customize) {
             Object.assign(config.optimization, extractCommons());
         }
 
-        // ts-check hack...
-        /** @type any */ const cssLoader = config.module.rules[1];
-
         if (options.extractCss && isProduction) {
+            const cssLoader = getCssLoaderConfig({
+                extractCss: true,
+                sass: options.sass,
+            });
+
+            config.module.rules.push(cssLoader);
+
             const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-            cssLoader.use = [
-                {loader: MiniCssExtractPlugin.loader},
-                "css-loader",
-            ];
             config.plugins.push(new MiniCssExtractPlugin());
 
-            // What the shit. When the optimize-css plugin is added we must
-            // manually configure the js minifier too
             const TerserPlugin = require("terser-webpack-plugin");
             const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
             config.optimization.minimizer = [
-                new TerserPlugin({}),
-                new OptimizeCSSAssetsPlugin({}),
+                new TerserPlugin({sourceMap: true}),
+
+                // What the shit. When the optimize-css plugin is added we must
+                // manually configure the js minifier too
+                new OptimizeCSSAssetsPlugin({
+                    cssProcessorOptions: {
+                        map: {inline: true, annotations: true},
+                    },
+                }),
             ];
+        } else {
+            const cssLoader = getCssLoaderConfig({
+                sass: options.sass,
+            });
+            config.module.rules.push(cssLoader);
         }
 
-        if (options.sass) {
-            cssLoader.test = /\.(css|scss)$/;
-            cssLoader.use.push(
-                options.sassOptions
-                    ? "sass-loader"
-                    : {loader: "sass-loader", options: options.sassOptions}
-            );
+        if (!isProduction) {
+            config.module.rules.push({
+                test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+                loader: "url-loader",
+            });
         }
 
         const devServerPort = args.port || options.devServerPort || 8080;
 
         config.devServer.port = devServerPort;
 
-        if (options.hotCors) {
-            config.output.publicPath = `http://localhost:${devServerPort}/`;
+        if (options.cors) {
+            const host = options.devServerHost || "localhost";
+            config.output.publicPath = `http://${host}:${devServerPort}/`;
             config.devServer.headers = {
                 "Access-Control-Allow-Origin": "*",
             };
