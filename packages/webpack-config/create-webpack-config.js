@@ -299,7 +299,7 @@ function createWebpackConfig(options = {}, customize) {
 
         config.devServer.port = devServerPort;
 
-        const publicPath = options.publicPath || "/";
+        const publicPath = options.publicPath || "";
 
         if (!isProduction && options.cors) {
             const host = options.devServerHost || "localhost";
