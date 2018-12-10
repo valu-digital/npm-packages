@@ -13,7 +13,7 @@ test("can render template", () => {
 
     const files = fs.readdirSync(__dirname + "/fixtures/template/dist");
 
-    expect(files).toEqual(["main.js", "out.php"]);
+    expect(files).toEqual(["main.js", "main.js.map", "out.php"]);
 
     const out = fs
         .readFileSync(__dirname + "/fixtures/template/dist/out.php")
