@@ -67,6 +67,11 @@ interface Options {
     sassOptions?: any;
 
     /**
+     * Enable emotion babel plugin
+     */
+    emotion?: boolean;
+
+    /**
      * Manual cusomization of the generated config
      */
     customize?: (config: WebpackConfig) => any;

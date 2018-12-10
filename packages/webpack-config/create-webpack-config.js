@@ -246,7 +246,7 @@ function createWebpackConfig(options = {}, customize) {
                 babelConfig.plugins.push("react-hot-loader/babel");
             }
 
-            if (options.emotion !== false) {
+            if (options.emotion) {
                 babelConfig.plugins.push(getEmotionPlugin(isProduction));
             }
 
