@@ -30,6 +30,11 @@ interface Options {
     devServerHost?: string;
 
     /**
+     *
+     */
+    outputPath?: string;
+
+    /**
      *  https://webpack.js.org/configuration/output/#output-publicpath
      */
     publicPath?: string;

@@ -228,6 +228,11 @@ function createWebpackConfig(options = {}, customize) {
 
         const config = getDefaultConfig();
 
+        if (options.outputPath) {
+            config.output.path = options.outputPath;
+            config.devServer.contentBase = options.outputPath;
+        }
+
         if (options.entry) {
             config.entry = options.entry;
         }
