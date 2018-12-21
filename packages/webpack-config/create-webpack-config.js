@@ -7,6 +7,31 @@ const gitDate = new Date(
     execSync("git log -1 --format=%cd").toString()
 ).toISOString();
 
+const EXTENSIONS = [".tsx", ".ts", ".mjs", ".jsx", ".js"];
+
+/**
+ * @param {string} filename
+ */
+function removeExtension(filename) {
+    return filename.replace(/\.[^/.]+$/, "");
+}
+
+/**
+ * Generate Webpack entries from the given directory
+ *
+ * @param {string} dir
+ */
+function autoloadEntries(dir) {
+    const entryFiles = fs
+        .readdirSync(dir)
+        .filter(fileName => EXTENSIONS.some(ext => fileName.endsWith(ext)));
+
+    return entryFiles.reduce((entry, file) => {
+        entry[removeExtension(file)] = file;
+        return entry;
+    }, {});
+}
+
 /**
  * @param {string} dir
  */
@@ -39,7 +64,7 @@ function getDefaultConfig() {
             // The default extensions are quite lame.
             // the .mjs enables tree shaking for some npm modules
             // https://github.com/react-icons/react-icons/issues/154#issuecomment-411036960
-            extensions: [".tsx", ".ts", ".mjs", ".jsx", ".js", ".json"],
+            extensions: EXTENSIONS.concat(".json"),
         },
 
         module: {
@@ -345,4 +370,5 @@ function createWebpackConfig(options = {}, customize) {
 module.exports = {
     createWebpackConfig,
     getBabelConfig,
+    autoloadEntries,
 };

@@ -1,3 +1,8 @@
+/**
+ * Generate Webpack entries from the given directory
+ */
+export function autoloadEntries(dir: string): {[key: string]: string};
+
 interface HtmlPluginOptions {
     template: string;
 }
