@@ -1,6 +1,7 @@
 // @ts-check
 const webpack = require("webpack");
 const fs = require("fs");
+const {join} = require("path");
 const {execSync} = require("child_process");
 const gitRev = execSync("git rev-parse HEAD").toString();
 const gitDate = new Date(
@@ -27,7 +28,7 @@ function autoloadEntries(dir) {
         .filter(fileName => EXTENSIONS.some(ext => fileName.endsWith(ext)));
 
     return entryFiles.reduce((entry, file) => {
-        entry[removeExtension(file)] = file;
+        entry[removeExtension(file)] = join(dir, file);
         return entry;
     }, {});
 }
