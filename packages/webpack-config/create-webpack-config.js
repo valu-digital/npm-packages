@@ -49,7 +49,7 @@ function getDefaultConfig() {
 
         optimization: {},
 
-        devtool: "source-map",
+        devtool: "cheap-module-eval-source-map",
 
         output: {
             filename: "[name].js",
@@ -254,6 +254,14 @@ function createWebpackConfig(options = {}, customize) {
 
         const config = getDefaultConfig();
 
+        if (isProduction) {
+            config.devtool = "source-map";
+        }
+
+        if (process.env.DEVTOOL) {
+            config.devtool = process.env.DEVTOOL;
+        }
+
         if (options.outputPath) {
             config.output.path = options.outputPath;
             config.devServer.contentBase = options.outputPath;
@@ -262,6 +270,7 @@ function createWebpackConfig(options = {}, customize) {
         if (options.entry) {
             config.entry = options.entry;
         }
+
         const babelLoader = getBabelLoaderConfig();
         config.module.rules.push(babelLoader);
 
