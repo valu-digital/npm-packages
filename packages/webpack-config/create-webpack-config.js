@@ -59,6 +59,9 @@ function getDefaultConfig() {
         devServer: {
             // With dev server serve files from the dist directory
             contentBase: process.cwd() + "/dist",
+
+            // Workaround for https://github.com/webpack/webpack-dev-server/issues/1604
+            disableHostCheck: true,
         },
 
         resolve: {
