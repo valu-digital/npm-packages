@@ -98,7 +98,7 @@ interface WebpackConfig {
 }
 
 export function createWebpackConfig(
-    options?: Options,
+    options: Options,
     customize: (options: Options) => any
 ): WebpackConfig;
 export default createWebpackConfig;
