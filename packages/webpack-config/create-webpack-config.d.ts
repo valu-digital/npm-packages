@@ -77,6 +77,11 @@ interface Options {
     emotion?: boolean;
 
     /**
+     * Manual customization of babel config without opt-in to a babelrc file
+     */
+    customizeBabel?: (config: {plugings: any[]; presets: any[]}) => any;
+
+    /**
      * Manual cusomization of the generated config
      */
     customize?: (config: WebpackConfig) => any;
