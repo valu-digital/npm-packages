@@ -291,10 +291,7 @@ function createWebpackConfig(options = {}, customize) {
                 babelConfig.plugins.push(getEmotionPlugin(isProduction));
             }
 
-            babelLoader.use.options =
-                typeof options.customizeBabel === "function"
-                    ? options.customizeBabel(babelConfig)
-                    : babelConfig;
+            babelLoader.use.options = babelConfig;
         }
 
         if (options.extractCommons && options.entry) {
