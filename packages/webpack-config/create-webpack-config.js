@@ -88,6 +88,9 @@ function getDefaultConfig() {
 function getBabelLoaderConfig() {
     return {
         test: /\.(ts|tsx|js|jsx|mjs)$/,
+        resolve: {
+            extensions: EXTENSIONS,
+        },
         use: {
             loader: "babel-loader",
         },
