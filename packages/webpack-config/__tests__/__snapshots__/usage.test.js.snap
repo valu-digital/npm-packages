@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`can render template 1`] = `
-"<?php define( 'JS', 'main.js?v=d1e4a356094c82e5dc98' );
+"<?php define( 'JS', 'main.js?v=7db4df91a94c9d888ce7' );
 "
 `;
