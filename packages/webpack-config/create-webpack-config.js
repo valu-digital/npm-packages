@@ -153,12 +153,24 @@ function getEmotionPlugin(production) {
     ];
 }
 
-function getBabelConfig() {
+/**
+ *
+ * @param {{envConfig?: any} | undefined} options
+ */
+function getBabelConfig(options) {
     return {
         presets: [
             "@babel/preset-typescript",
             "@babel/preset-react",
-            "@babel/preset-env",
+            [
+                "@babel/preset-env",
+                Object.assign(
+                    {
+                        useBuiltIns: "entry",
+                    },
+                    options && options.envConfig
+                ),
+            ],
         ],
         plugins: [
             "@babel/plugin-proposal-class-properties",
@@ -281,7 +293,9 @@ function createWebpackConfig(options = {}, customize) {
         config.module.rules.push(babelLoader);
 
         if (!hasBabelrc(process.cwd())) {
-            const babelConfig = getBabelConfig();
+            const babelConfig = getBabelConfig({
+                envConfig: options.babelEnv,
+            });
 
             if (args.hot) {
                 babelConfig.plugins.push("react-hot-loader/babel");

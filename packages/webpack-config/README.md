@@ -50,6 +50,10 @@ this tool and update my project deps of this.
 
 This option is passed directly to the Wepback entry option.
 
+## `babelEnv: mixed`
+
+This option is passed directly to `@babel/preset-env` options
+
 ## `extractCommons: boolean`
 
 If you have added multiple entry points using the `entry` option
