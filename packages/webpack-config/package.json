@@ -1,6 +1,6 @@
 {
   "name": "@epeli/webpack-config",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Webpack config",
   "main": "create-webpack-config.js",
   "types": "create-webpack-config.d.ts",
