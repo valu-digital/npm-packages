@@ -74,7 +74,7 @@ interface Options {
     /**
      * Enable custom babel plugins
      */
-    babelPlugins?: string[];
+    babelPlugins?: (string | [string, any] | Function)[];
 
     /**
      * Manual customization of babel config without opt-in to a babelrc file

@@ -289,7 +289,11 @@ function createWebpackConfig(options = {}, customize) {
 
             if (options.babelPlugins) {
                 options.babelPlugins.forEach(plugin => {
-                    babelConfig.plugins.push(plugin);
+                    if (typeof plugin === "function") {
+                        babelConfig.plugins.push(plugin(args));
+                    } else {
+                        babelConfig.plugins.push(plugin);
+                    }
                 });
             }
 

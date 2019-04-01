@@ -75,9 +75,35 @@ Enable history fallback if you want to use React Router with the HTML 5
 History API. This is passed directly to
 [devServer.historyApiFallback](https://webpack.js.org/configuration/dev-server/#devserver-historyapifallback)
 
-## `babelPlugins: string[]`
+## `babelPlugins: (string | [string, any] | Function)[]`
 
-List of custom babel plugins to enable
+List of custom babel plugins to enable.
+
+You can also pass a function which is called with `{mode: "production" | "development"}` which allows different configurations for production and
+development.
+
+Ex.
+
+```js
+module.exports = createWebpackConfig({
+    babelPlugins: [
+        args => {
+            if (args.mode === "production") {
+                return "emotion";
+            }
+
+            return [
+                "emotion",
+                {
+                    sourceMap: true,
+                    autoLabel: true,
+                    labelFormat: "[filename]--[local]",
+                },
+            ];
+        },
+    ],
+});
+```
 
 ## `template: string`
 
