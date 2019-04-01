@@ -152,6 +152,7 @@ function getBabelConfig(options) {
             ],
         ],
         plugins: [
+            "macros",
             "@babel/plugin-proposal-class-properties",
             "@babel/plugin-syntax-dynamic-import",
         ],
