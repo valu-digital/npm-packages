@@ -72,9 +72,9 @@ interface Options {
     sassOptions?: any;
 
     /**
-     * Enable emotion babel plugin
+     * Enable custom babel plugins
      */
-    emotion?: boolean;
+    babelPlugins?: string[];
 
     /**
      * Manual customization of babel config without opt-in to a babelrc file

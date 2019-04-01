@@ -75,6 +75,10 @@ Enable history fallback if you want to use React Router with the HTML 5
 History API. This is passed directly to
 [devServer.historyApiFallback](https://webpack.js.org/configuration/dev-server/#devserver-historyapifallback)
 
+## `babelPlugins: string[]`
+
+List of custom babel plugins to enable
+
 ## `template: string`
 
 This is the most custom part of this lib. It takes a path to a template file
@@ -90,10 +94,6 @@ Inside the template following functions are available:
 
 The `chunkName` can be the entry name (ex. `main`) or the extracted bundle
 name `commons`.
-
-## `emotion: boolean`
-
-Set to false to disable the Emotion plugin.
 
 # CSS
 

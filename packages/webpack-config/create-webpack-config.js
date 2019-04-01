@@ -133,27 +133,6 @@ function getCssLoaderConfig(options = {}) {
 }
 
 /**
- * Get Emotion babel plugin config
- *
- * @param {boolean} production
- * @return {any}
- */
-function getEmotionPlugin(production) {
-    if (production) {
-        return "emotion";
-    }
-
-    return [
-        "emotion",
-        {
-            sourceMap: true,
-            autoLabel: true,
-            labelFormat: "[filename]--[local]",
-        },
-    ];
-}
-
-/**
  *
  * @param {{envConfig?: any} | undefined} options
  */
@@ -302,7 +281,15 @@ function createWebpackConfig(options = {}, customize) {
             }
 
             if (options.emotion) {
-                babelConfig.plugins.push(getEmotionPlugin(isProduction));
+                throw new Error(
+                    "Emotion option is gone. Use babelPlugins option to enable it manually"
+                );
+            }
+
+            if (options.babelPlugins) {
+                options.babelPlugins.forEach(plugin => {
+                    babelConfig.plugins.push(plugin);
+                });
             }
 
             babelLoader.use.options = babelConfig;
