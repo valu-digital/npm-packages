@@ -94,6 +94,7 @@ function getBabelLoaderConfig() {
         use: {
             loader: "babel-loader",
         },
+        exclude: /node_modules/,
     };
 }
 
