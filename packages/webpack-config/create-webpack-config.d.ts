@@ -77,6 +77,11 @@ interface Options {
     babelPlugins?: (string | [string, any] | Function)[];
 
     /**
+     * Array of node_module to compile with Babel
+     */
+    compileNodeModules?: string[];
+
+    /**
      * Manual customization of babel config without opt-in to a babelrc file
      */
     customizeBabel?: (config: {plugings: any[]; presets: any[]}) => any;

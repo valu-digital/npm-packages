@@ -85,7 +85,11 @@ function getDefaultConfig() {
     };
 }
 
-function getBabelLoaderConfig() {
+function getBabelLoaderConfig(options = {}) {
+    const pathMatchers = (options.compileNodeModules || []).map(include => {
+        return `/node_modules/${include}/`;
+    });
+
     return {
         test: /\.(ts|tsx|js|jsx|mjs)$/,
         resolve: {
@@ -94,7 +98,17 @@ function getBabelLoaderConfig() {
         use: {
             loader: "babel-loader",
         },
-        exclude: /node_modules/,
+        exclude(modulePath) {
+            const nodeModuleToCompile = pathMatchers.some(includeModule =>
+                modulePath.includes(includeModule)
+            );
+
+            if (nodeModuleToCompile) {
+                return false;
+            }
+
+            return /node_modules/.test(modulePath);
+        },
     };
 }
 
@@ -270,7 +284,10 @@ function createWebpackConfig(options = {}, customize) {
             config.entry = options.entry;
         }
 
-        const babelLoader = getBabelLoaderConfig();
+        const babelLoader = getBabelLoaderConfig({
+            compileNodeModules: options.compileNodeModules,
+        });
+
         config.module.rules.push(babelLoader);
 
         if (!hasBabelrc(process.cwd())) {
