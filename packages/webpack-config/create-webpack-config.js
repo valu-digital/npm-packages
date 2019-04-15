@@ -7,6 +7,7 @@ const gitRev = execSync("git rev-parse HEAD").toString();
 const gitDate = new Date(
     execSync("git log -1 --format=%cd").toString()
 ).toISOString();
+const WebpackAssetsManifest = require("webpack-assets-manifest");
 
 const EXTENSIONS = [".tsx", ".ts", ".mjs", ".jsx", ".js"];
 
@@ -402,6 +403,12 @@ function createWebpackConfig(options = {}, customize) {
                 )
             );
         }
+
+        config.plugins.push(
+            new WebpackAssetsManifest({
+                writeToDisk: true,
+            })
+        );
 
         if (typeof customize === "function") {
             return customize(config, _, args) || config;
