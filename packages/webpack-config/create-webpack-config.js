@@ -177,7 +177,10 @@ function getBabelConfig(options) {
 
 function bundleAnalyzerPlugin() {
     const {BundleAnalyzerPlugin} = require("webpack-bundle-analyzer");
-    return new BundleAnalyzerPlugin();
+    return new BundleAnalyzerPlugin({
+        analyzerMode: "static",
+        reportFilename: "bundle-report.html",
+    });
 }
 
 function htmlWebpackPlugin(options) {
