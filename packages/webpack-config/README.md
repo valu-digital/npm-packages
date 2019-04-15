@@ -62,6 +62,10 @@ bundle which includes all the common code between the entry points.
 
 It will be written to `./dist/commons.js`.
 
+## `hashFilenames: boolean`
+
+Add a hash to the generated bundle filenames.
+
 ## `hotCors: boolean`
 
 If you are using React Hot Loader this options makes it work cross domains by

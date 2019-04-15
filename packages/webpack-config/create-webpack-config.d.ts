@@ -30,6 +30,11 @@ interface Options {
     cors?: boolean;
 
     /**
+     * Add hash to the generated files
+     */
+    hashFilenames?: boolean;
+
+    /**
      * Custom dev server host for CORS usage. Defaults to localhost
      */
     devServerHost?: string;

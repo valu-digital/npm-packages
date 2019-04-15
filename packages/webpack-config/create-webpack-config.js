@@ -267,6 +267,10 @@ function createWebpackConfig(options = {}, customize) {
 
         const config = getDefaultConfig();
 
+        if (options.hashFilenames) {
+            config.output.filename = "[name]-[chunkhash].js";
+        }
+
         if (isProduction) {
             config.devtool = "source-map";
         }
