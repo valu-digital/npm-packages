@@ -21,8 +21,7 @@ written to `./dist/main.js`.
 
 The default Babel configuration has `react`, `typescript` and `env` presets.
 
-It also adds the class properties and dynamic import proposal plugins and
-Emotion plugin with source maps.
+It also adds the class properties and dynamic import proposal plugins.
 
 Enables `.mjs` based tree shaking for some npm modules (ex. react-icons).
 
