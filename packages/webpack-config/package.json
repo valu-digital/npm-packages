@@ -1,6 +1,6 @@
 {
     "name": "@valu/webpack-config",
-    "version": "0.10.1",
+    "version": "0.10.2",
     "description": "Webpack config",
     "main": "create-webpack-config.js",
     "types": "create-webpack-config.d.ts",
