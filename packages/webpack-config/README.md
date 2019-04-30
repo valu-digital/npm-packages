@@ -1,24 +1,15 @@
-# Epeli's Webpack configuration
+# Valu Webpack Config Generator
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/epeli/webpack-config.svg)](https://greenkeeper.io/)
-
-I love the idea of React Create App but I've never been able to use it due to
-lack of its customization possibilities but I've never had too much trouble
-configuring Webpack neighter. It's just a lots of stuff to remember and I'm
-lazy.
-
-So instead of writing some personal notes I've created this tiny tool which
-generates Webpack (and Babel) configuration. It's my "personal React Create
-App" if you will.
+Webpack config generation with build-in Babel, CSS and template support.
 
 # Usage
 
-    npm install @epeli/webpack-config
+    npm install @valu/webpack-config
 
 and in `webpack.config.js`
 
 ```js
-const {createWebpackConfig} = require("@epeli/webpack-config");
+const {createWebpackConfig} = require("@valu/webpack-config");
 module.exports = createWebpackConfig();
 ```
 
@@ -40,11 +31,7 @@ Loader Babel plugin is activated automatically.
 
 # Options
 
-You can configure the configuration. Yeah known! But I think it's actually a
-good thing because now this tool that I know well abstracts mostly Webpack
-from my projects. Which means that if Webpack changes its configuration
-syntax or adds a feature I want to enable in my projects I can just adjust
-this tool and update my project deps of this.
+You can configure the configuration. Yeah known!
 
 ## `entry: mixed`
 

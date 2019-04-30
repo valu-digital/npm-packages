@@ -1,5 +1,5 @@
 {
-    "name": "@epeli/webpack-config",
+    "name": "@valu/webpack-config",
     "version": "0.10.1",
     "description": "Webpack config",
     "main": "create-webpack-config.js",
