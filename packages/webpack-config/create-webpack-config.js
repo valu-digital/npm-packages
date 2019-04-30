@@ -162,6 +162,7 @@ function getBabelConfig(options) {
                 Object.assign(
                     {
                         useBuiltIns: "entry",
+                        corejs: 3,
                     },
                     options && options.envConfig
                 ),
