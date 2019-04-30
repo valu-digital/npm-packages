@@ -60,6 +60,11 @@ adding the required CORS headers. Ex. you can run your webserver from a
 virtual server / container / remote server / whatever and serve hot
 javascript bundles from localhost.
 
+## `compileNodeModules: string[]`
+
+List node_modules to compile with Babel. By default files in `node_module` is
+assumed to be in ES5.
+
 ## `historyApiFallback: boolean | mixed`
 
 Enable history fallback if you want to use React Router with the HTML 5
