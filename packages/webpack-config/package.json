@@ -11,7 +11,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/epeli/webpack-config.git"
+        "url": "git+https://github.com/valu/webpack-config.git"
     },
     "keywords": [
         "webpack"
@@ -23,9 +23,9 @@
     "author": "Esa-Matti Suuronen",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/epeli/webpack-config/issues"
+        "url": "https://github.com/valu/webpack-config/issues"
     },
-    "homepage": "https://github.com/epeli/webpack-config",
+    "homepage": "https://github.com/valu/webpack-config",
     "devDependencies": {
         "eslint": "^5.16.0",
         "eslint-config-prettier": "^4.1.0",
