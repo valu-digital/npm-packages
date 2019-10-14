@@ -11,7 +11,9 @@
         "start": "tsdx watch",
         "build": "tsdx build",
         "test": "tsdx test",
-        "lint": "tsdx lint"
+        "lint": "tsdx lint",
+        "examples-copy-html": "mkdir -p examples-dist && cp cypress/fixtures/examples/*.html examples-dist/",
+        "examples-dev": "npm run examples-copy-html && webpack-dev-server --mode development"
     },
     "peerDependencies": {},
     "husky": {
@@ -24,14 +26,18 @@
         "trailingComma": "all"
     },
     "devDependencies": {
+        "@testing-library/cypress": "^5.0.2",
         "@types/jest": "^24.0.18",
         "@types/tabbable": "^3.1.0",
+        "cypress": "^3.4.1",
+        "cypress-plugin-tab": "^1.0.3",
         "husky": "^3.0.9",
         "tsdx": "^0.9.3",
         "tslib": "^1.10.0",
         "typescript": "^3.6.4"
     },
     "dependencies": {
+        "@valu/webpack-config": "^0.10.2",
         "tabbable": "^4.0.0"
     }
 }

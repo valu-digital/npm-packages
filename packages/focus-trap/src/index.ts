@@ -1,6 +1,10 @@
 import tabbable from "tabbable";
 
-export function createTrap(elements: HTMLElement[]) {
+export function createTrap(elements: HTMLElement[] | NodeList) {
+    if (!Array.isArray(elements)) {
+        elements = Array.from(elements) as HTMLElement[];
+    }
+
     const containers = elements.map(el => {
         return {
             el,
