@@ -1,0 +1,37 @@
+{
+    "name": "@valu/focus-trap",
+    "version": "0.1.0",
+    "main": "dist/index.js",
+    "module": "dist/focus-trap.esm.js",
+    "typings": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "start": "tsdx watch",
+        "build": "tsdx build",
+        "test": "tsdx test",
+        "lint": "tsdx lint"
+    },
+    "peerDependencies": {},
+    "husky": {
+        "hooks": {
+            "pre-commit": "tsdx lint"
+        }
+    },
+    "prettier": {
+        "tabWidth": 4,
+        "trailingComma": "all"
+    },
+    "devDependencies": {
+        "@types/jest": "^24.0.18",
+        "@types/tabbable": "^3.1.0",
+        "husky": "^3.0.9",
+        "tsdx": "^0.9.3",
+        "tslib": "^1.10.0",
+        "typescript": "^3.6.4"
+    },
+    "dependencies": {
+        "tabbable": "^4.0.0"
+    }
+}
