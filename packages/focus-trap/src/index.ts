@@ -5,6 +5,26 @@ export function createTrap(elements: HTMLElement[] | NodeList) {
         elements = Array.from(elements) as HTMLElement[];
     }
 
+    const state = {
+        currentContainerIndex: null as number | null,
+        shifKeyDown: false,
+    };
+
+    function shiftKeyDownMonitor(e: any) {
+        if (e.keyCode === 16) {
+            state.shifKeyDown = true;
+        }
+    }
+
+    function shiftKeyUpMonitor(e: any) {
+        if (e.keyCode === 16) {
+            state.shifKeyDown = false;
+        }
+    }
+
+    document.addEventListener("keydown", shiftKeyDownMonitor, false);
+    document.addEventListener("keyup", shiftKeyUpMonitor, false);
+
     const containers = elements.map(el => {
         return {
             el,
@@ -13,8 +33,6 @@ export function createTrap(elements: HTMLElement[] | NodeList) {
         };
     });
 
-    let currentContainerIndex: number | null = null;
-
     function updateCurrent(e: any) {
         setTimeout(() => {
             if (e.target === document.activeElement) {
@@ -22,7 +40,7 @@ export function createTrap(elements: HTMLElement[] | NodeList) {
                     container.el.contains(e.target),
                 );
                 if (nextIndex !== -1) {
-                    currentContainerIndex = nextIndex;
+                    state.currentContainerIndex = nextIndex;
                 }
             }
         }, 1);
@@ -43,8 +61,8 @@ export function createTrap(elements: HTMLElement[] | NodeList) {
 
         let nextIndex = 1;
 
-        if (currentContainerIndex !== null) {
-            nextIndex = (currentContainerIndex + 1) % containers.length;
+        if (state.currentContainerIndex !== null) {
+            nextIndex = (state.currentContainerIndex + 1) % containers.length;
         }
 
         const nextContainer = containers[nextIndex];
