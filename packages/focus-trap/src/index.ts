@@ -2,6 +2,22 @@ import tabbable from "tabbable";
 
 interface FocusTrapOptions {
     elements: HTMLElement[] | NodeList;
+    /**
+     * Executed before trap enables
+     */
+    onBeforeEnable?(trap: FocusTrap): void;
+    /**
+     * Executed after the trap has been enabled
+     */
+    onBeforeDisable?(trap: FocusTrap): void;
+    /**
+     * Execute before the trap gets disabled
+     */
+    onAfterEnable?(trap: FocusTrap): void;
+    /**
+     * Executed after the trap has been disabled
+     */
+    onAfterDisable?(trap: FocusTrap): void;
 }
 
 export class FocusTrap {
@@ -25,13 +41,17 @@ export class FocusTrap {
         tabbables: HTMLElement[];
     }[];
 
-    state = {
+    private state = {
+        active: false,
         currentContainerIndex: null as number | null,
         shifKeyDown: false,
         usingMouse: false,
     };
 
+    private options: FocusTrapOptions;
+
     constructor(options: FocusTrapOptions) {
+        this.options = options;
         let elements;
 
         if (!Array.isArray(options.elements)) {
@@ -48,10 +68,18 @@ export class FocusTrap {
         });
     }
 
+    isActive() {
+        return this.state.active;
+    }
+
     /**
      * Enable trap
      */
     enable() {
+        if (this.options.onBeforeEnable) {
+            this.options.onBeforeEnable(this);
+        }
+
         if (FocusTrap.current) {
             FocusTrap.current.disable();
             this.parent = FocusTrap.current;
@@ -66,10 +94,16 @@ export class FocusTrap {
         document.addEventListener("mousedown", this.handlers.mouseDown, false);
         document.addEventListener("mouseup", this.handlers.mouseUp, false);
 
+        this.state.active = true;
+
         if (this.lastFocusedElement) {
             this.lastFocusedElement.focus();
         } else {
             this.focusFirst();
+        }
+
+        if (this.options.onAfterEnable) {
+            this.options.onAfterEnable(this);
         }
     }
 
@@ -81,10 +115,22 @@ export class FocusTrap {
             console.warn("Not currently active focus-trap, cannot disable");
             return;
         }
+
+        if (this.options.onBeforeDisable) {
+            this.options.onBeforeDisable(this);
+        }
+
         document.removeEventListener("keydown", this.handlers.keyDown, false);
         document.removeEventListener("keyup", this.handlers.keyUp, false);
         document.removeEventListener("focusin", this.handlers.focusIn, false);
+
+        this.state.active = false;
         FocusTrap.current = undefined;
+
+        if (this.options.onAfterDisable) {
+            this.options.onAfterDisable(this);
+        }
+
         if (this.parent) {
             this.parent.enable();
             this.parent = undefined;
