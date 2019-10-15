@@ -1,3 +1,7 @@
-import { createTrap } from "../../../src";
+import { FocusTrap } from "../../../src";
 
-const trap = createTrap(document.querySelectorAll(".container1,.container2"));
+const trap = new FocusTrap({
+    elements: document.querySelectorAll(".container1,.container2"),
+});
+
+trap.enable();

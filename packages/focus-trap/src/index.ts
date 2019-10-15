@@ -1,54 +1,85 @@
 import tabbable from "tabbable";
 
-export function createTrap(elements: HTMLElement[] | NodeList) {
-    if (!Array.isArray(elements)) {
-        elements = Array.from(elements) as HTMLElement[];
-    }
+interface FocusTrapOptions {
+    elements: HTMLElement[] | NodeList;
+}
 
-    const state = {
+export class FocusTrap {
+    containers: {
+        el: HTMLElement;
+        hasFocus: boolean;
+        tabbables: HTMLElement[];
+    }[];
+
+    state = {
         currentContainerIndex: null as number | null,
         shifKeyDown: false,
     };
 
-    function shiftKeyDownMonitor(e: any) {
-        if (e.keyCode === 16) {
-            state.shifKeyDown = true;
+    constructor(options: FocusTrapOptions) {
+        let elements;
+
+        if (!Array.isArray(options.elements)) {
+            elements = Array.from(options.elements) as HTMLElement[];
+        } else {
+            elements = options.elements;
         }
+
+        this.containers = elements.map(el => {
+            return {
+                el,
+                hasFocus: false,
+                tabbables: tabbable(el),
+            };
+        });
     }
 
-    function shiftKeyUpMonitor(e: any) {
-        if (e.keyCode === 16) {
-            state.shifKeyDown = false;
-        }
+    enable() {
+        document.addEventListener("keydown", this.handleKeyDown, false);
+        document.addEventListener("keyup", this.handleKeyUp, false);
+        document.addEventListener("focusin", this.handleFocusIn, false);
     }
 
-    document.addEventListener("keydown", shiftKeyDownMonitor, false);
-    document.addEventListener("keyup", shiftKeyUpMonitor, false);
+    disable() {
+        document.removeEventListener("keydown", this.handleKeyDown, false);
+        document.removeEventListener("keyup", this.handleKeyUp, false);
+        document.removeEventListener("focusin", this.handleFocusIn, false);
+    }
 
-    const containers = elements.map(el => {
-        return {
-            el,
-            hasFocus: false,
-            tabbables: tabbable(el),
-        };
-    });
-
-    function updateCurrent(e: any) {
+    updateContainerIndex(nextElement: Node) {
         setTimeout(() => {
-            if (e.target === document.activeElement) {
-                let nextIndex = containers.findIndex(container =>
-                    container.el.contains(e.target),
+            if (nextElement === document.activeElement) {
+                let nextIndex = this.containers.findIndex(container =>
+                    container.el.contains(nextElement),
                 );
                 if (nextIndex !== -1) {
-                    state.currentContainerIndex = nextIndex;
+                    this.state.currentContainerIndex = nextIndex;
                 }
             }
         }, 1);
     }
 
-    document.addEventListener("focusin", (e: any) => {
-        updateCurrent(e);
-        for (const container of containers) {
+    handleKeyDown = (e: any) => {
+        // shift key
+        if (e.keyCode === 16) {
+            this.state.shifKeyDown = true;
+        }
+    };
+
+    handleKeyUp = (e: any) => {
+        // shift key
+        if (e.keyCode === 16) {
+            this.state.shifKeyDown = true;
+        }
+    };
+
+    handleFocusIn = (e: Event) => {
+        if (!(e.target instanceof Node)) {
+            return;
+        }
+
+        this.updateContainerIndex(e.target);
+        for (const container of this.containers) {
             if (
                 container.el.contains(e.target) ||
                 e.target instanceof Document
@@ -61,13 +92,14 @@ export function createTrap(elements: HTMLElement[] | NodeList) {
 
         let nextIndex = 1;
 
-        if (state.currentContainerIndex !== null) {
-            nextIndex = (state.currentContainerIndex + 1) % containers.length;
+        if (this.state.currentContainerIndex !== null) {
+            nextIndex =
+                (this.state.currentContainerIndex + 1) % this.containers.length;
         }
 
-        const nextContainer = containers[nextIndex];
+        const nextContainer = this.containers[nextIndex];
 
         console.log("Sending to next trap", nextContainer.el);
         nextContainer.tabbables[0].focus();
-    });
+    };
 }
