@@ -1,7 +1,11 @@
 import tabbable from "tabbable";
 
 interface FocusTrapOptions {
+    _name?: string;
     elements: HTMLElement[] | NodeList;
+
+    outsideClickDisables?: boolean;
+
     /**
      * Executed before trap enables
      */
@@ -38,7 +42,7 @@ export class FocusTrap {
 
     containers: {
         el: HTMLElement;
-        tabbables: HTMLElement[];
+        tabbables: (HTMLElement | undefined)[];
     }[];
 
     private state = {
@@ -179,8 +183,18 @@ export class FocusTrap {
     }
 
     handlers = {
-        mouseDown: () => {
-            this.state.usingMouse = true;
+        mouseDown: (e: Event) => {
+            if (!(e.target instanceof HTMLElement)) {
+                return;
+            }
+
+            if (!this.isInContainers(e.target)) {
+                this.state.usingMouse = true;
+
+                if (this.options.outsideClickDisables) {
+                    this.disable();
+                }
+            }
         },
         mouseUp: () => {
             this.state.usingMouse = false;
