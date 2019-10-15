@@ -5,8 +5,19 @@ interface FocusTrapOptions {
 }
 
 export class FocusTrap {
+    /**
+     * The currently active FocusTrap instance
+     */
     static current?: FocusTrap;
+
+    /**
+     * Reference to the previously enabled focus trap when nesting traps
+     */
     parent?: FocusTrap;
+
+    /**
+     * Element this focus trap had focus on most recently
+     */
     lastFocusedElement?: HTMLElement;
 
     containers: {
@@ -39,6 +50,9 @@ export class FocusTrap {
         });
     }
 
+    /**
+     * Enable trap
+     */
     enable() {
         if (FocusTrap.current) {
             FocusTrap.current.disable();
@@ -61,6 +75,9 @@ export class FocusTrap {
         }
     }
 
+    /**
+     * Disable trap
+     */
     disable() {
         if (FocusTrap.current !== this) {
             console.warn("Not currently active focus-trap, cannot disable");
@@ -76,11 +93,17 @@ export class FocusTrap {
         }
     }
 
+    /**
+     * Focus first tabbable element from the first container
+     */
     focusFirst() {
         const el = this.containers[0].tabbables[0];
         el.focus();
     }
 
+    /**
+     * Update currently active trap container index
+     */
     updateContainerIndex(nextElement: Node) {
         setTimeout(() => {
             if (nextElement === document.activeElement) {
@@ -94,6 +117,9 @@ export class FocusTrap {
         }, 1);
     }
 
+    /**
+     * Is element inside one of the containers
+     */
     isInContainers(el: HTMLElement) {
         for (const container of this.containers) {
             if (container.el.contains(el)) {
@@ -128,18 +154,24 @@ export class FocusTrap {
                 return;
             }
 
+            /**
+             * Last focused element
+             */
             const prev = this.lastFocusedElement;
 
+            // Update lastly focused element
             if (document.activeElement instanceof HTMLElement) {
                 this.lastFocusedElement = document.activeElement;
             }
 
             this.updateContainerIndex(e.target);
 
+            // Focus still inside our containers. Nothing to do.
             if (this.isInContainers(e.target)) {
                 return;
             }
 
+            // If focus change was done using mouse revert back to the previous element
             if (this.state.usingMouse && prev) {
                 prev.focus();
                 return;
@@ -147,18 +179,26 @@ export class FocusTrap {
 
             e.stopImmediatePropagation();
 
-            let nextIndex = 1;
+            let nextContainerIndex = 1;
 
+            // Shift+tab move focus backwards
             const direction = this.state.shifKeyDown ? -1 : 1;
 
             if (this.state.currentContainerIndex !== null) {
-                nextIndex =
+                nextContainerIndex =
                     (this.state.currentContainerIndex + direction) %
                     this.containers.length;
             }
 
-            const nextContainer = this.containers[nextIndex];
+            // When backwards from first container
+            if (nextContainerIndex === -1) {
+                // last container index
+                nextContainerIndex = this.containers.length - 1;
+            }
 
+            const nextContainer = this.containers[nextContainerIndex];
+
+            // If going backwards select last tabbable from the new container
             if (this.state.shifKeyDown) {
                 const el =
                     nextContainer.tabbables[nextContainer.tabbables.length - 1];
