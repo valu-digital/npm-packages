@@ -60,21 +60,13 @@ export class FocusTrap {
     }
 
     handleKeyDown = (e: { keyCode: number; shiftKey: boolean }) => {
-        // shift key
         if (e.shiftKey) {
-            if (!this.state.shifKeyDown) {
-                console.log("shifr down!");
-            }
             this.state.shifKeyDown = true;
         }
     };
 
     handleKeyUp = (e: { keyCode: number; shiftKey: boolean }) => {
-        // shift key
         if (e.shiftKey) {
-            if (this.state.shifKeyDown) {
-                console.log("shifr up!");
-            }
             this.state.shifKeyDown = false;
         }
     };
