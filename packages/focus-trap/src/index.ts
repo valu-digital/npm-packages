@@ -47,15 +47,14 @@ export class FocusTrap {
 
         FocusTrap.current = this;
 
-        document.addEventListener("keydown", this.handleKeyDown, false);
-        document.addEventListener("keyup", this.handleKeyUp, false);
-        document.addEventListener("focusin", this.handleFocusIn, false);
+        document.addEventListener("keydown", this.handlers.keyDown, false);
+        document.addEventListener("keyup", this.handlers.keyUp, false);
+        document.addEventListener("focusin", this.handlers.focusIn, false);
 
-        document.addEventListener("mousedown", this.handleMouseDown, false);
-        document.addEventListener("mouseup", this.handleMouseUp, false);
+        document.addEventListener("mousedown", this.handlers.mouseDown, false);
+        document.addEventListener("mouseup", this.handlers.mouseUp, false);
 
         if (this.lastFocusedElement) {
-            console.log("Activating last", this.lastFocusedElement.className);
             this.lastFocusedElement.focus();
         } else {
             this.focusFirst();
@@ -67,9 +66,9 @@ export class FocusTrap {
             console.warn("Not currently active focus-trap, cannot disable");
             return;
         }
-        document.removeEventListener("keydown", this.handleKeyDown, false);
-        document.removeEventListener("keyup", this.handleKeyUp, false);
-        document.removeEventListener("focusin", this.handleFocusIn, false);
+        document.removeEventListener("keydown", this.handlers.keyDown, false);
+        document.removeEventListener("keyup", this.handlers.keyUp, false);
+        document.removeEventListener("focusin", this.handlers.focusIn, false);
         FocusTrap.current = undefined;
         if (this.parent) {
             this.parent.enable();
@@ -95,26 +94,6 @@ export class FocusTrap {
         }, 1);
     }
 
-    handleMouseDown = () => {
-        this.state.usingMouse = true;
-    };
-
-    handleMouseUp = () => {
-        this.state.usingMouse = false;
-    };
-
-    handleKeyDown = (e: { keyCode: number; shiftKey: boolean }) => {
-        if (e.shiftKey) {
-            this.state.shifKeyDown = true;
-        }
-    };
-
-    handleKeyUp = (e: { keyCode: number; shiftKey: boolean }) => {
-        if (e.shiftKey) {
-            this.state.shifKeyDown = false;
-        }
-    };
-
     isInContainers(el: HTMLElement) {
         for (const container of this.containers) {
             if (container.el.contains(el)) {
@@ -125,49 +104,69 @@ export class FocusTrap {
         return false;
     }
 
-    handleFocusIn = (e: Event) => {
-        if (!(e.target instanceof HTMLElement)) {
-            return;
-        }
+    handlers = {
+        mouseDown: () => {
+            this.state.usingMouse = true;
+        },
+        mouseUp: () => {
+            this.state.usingMouse = false;
+        },
 
-        const prev = this.lastFocusedElement;
+        keyDown: (e: { keyCode: number; shiftKey: boolean }) => {
+            if (e.shiftKey) {
+                this.state.shifKeyDown = true;
+            }
+        },
 
-        if (document.activeElement instanceof HTMLElement) {
-            this.lastFocusedElement = document.activeElement;
-        }
+        keyUp: (e: { keyCode: number; shiftKey: boolean }) => {
+            if (e.shiftKey) {
+                this.state.shifKeyDown = false;
+            }
+        },
+        focusIn: (e: Event) => {
+            if (!(e.target instanceof HTMLElement)) {
+                return;
+            }
 
-        this.updateContainerIndex(e.target);
+            const prev = this.lastFocusedElement;
 
-        if (this.isInContainers(e.target)) {
-            return;
-        }
+            if (document.activeElement instanceof HTMLElement) {
+                this.lastFocusedElement = document.activeElement;
+            }
 
-        if (this.state.usingMouse && prev) {
-            prev.focus();
-            return;
-        }
+            this.updateContainerIndex(e.target);
 
-        e.stopImmediatePropagation();
+            if (this.isInContainers(e.target)) {
+                return;
+            }
 
-        let nextIndex = 1;
+            if (this.state.usingMouse && prev) {
+                prev.focus();
+                return;
+            }
 
-        const direction = this.state.shifKeyDown ? -1 : 1;
+            e.stopImmediatePropagation();
 
-        if (this.state.currentContainerIndex !== null) {
-            nextIndex =
-                (this.state.currentContainerIndex + direction) %
-                this.containers.length;
-        }
+            let nextIndex = 1;
 
-        const nextContainer = this.containers[nextIndex];
+            const direction = this.state.shifKeyDown ? -1 : 1;
 
-        if (this.state.shifKeyDown) {
-            const el =
-                nextContainer.tabbables[nextContainer.tabbables.length - 1];
-            el.focus();
-        } else {
-            const el = nextContainer.tabbables[0];
-            el.focus();
-        }
+            if (this.state.currentContainerIndex !== null) {
+                nextIndex =
+                    (this.state.currentContainerIndex + direction) %
+                    this.containers.length;
+            }
+
+            const nextContainer = this.containers[nextIndex];
+
+            if (this.state.shifKeyDown) {
+                const el =
+                    nextContainer.tabbables[nextContainer.tabbables.length - 1];
+                el.focus();
+            } else {
+                const el = nextContainer.tabbables[0];
+                el.focus();
+            }
+        },
     };
 }
