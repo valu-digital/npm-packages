@@ -105,16 +105,12 @@ export class FocusTrap {
      * Update currently active trap container index
      */
     updateContainerIndex(nextElement: Node) {
-        setTimeout(() => {
-            if (nextElement === document.activeElement) {
-                let nextIndex = this.containers.findIndex(container =>
-                    container.el.contains(nextElement),
-                );
-                if (nextIndex !== -1) {
-                    this.state.currentContainerIndex = nextIndex;
-                }
-            }
-        }, 1);
+        let nextIndex = this.containers.findIndex(container =>
+            container.el.contains(nextElement),
+        );
+        if (nextIndex !== -1) {
+            this.state.currentContainerIndex = nextIndex;
+        }
     }
 
     /**

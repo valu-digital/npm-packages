@@ -1,16 +1,18 @@
 import { FocusTrap } from "../../../src";
 
 const trap = new FocusTrap({
-    elements: document.querySelectorAll(".container1,.container2"),
+    elements: document.querySelectorAll(".container"),
 });
 
 const nestedTrap = new FocusTrap({
-    elements: document.querySelectorAll(
-        ".nested-container1,.nested-container2",
-    ),
+    elements: document.querySelectorAll(".nested-container"),
 });
 
 trap.enable();
+
+document.getElementById("ding")!.addEventListener("click", () => {
+    alert("ding");
+});
 
 document.getElementById("disable")!.addEventListener("click", () => {
     trap.disable();
@@ -22,4 +24,12 @@ document.getElementById("enable")!.addEventListener("click", () => {
 
 document.getElementById("nest")!.addEventListener("click", () => {
     nestedTrap.enable();
+});
+
+document.getElementById("next")!.addEventListener("click", () => {
+    nestedTrap.enable();
+});
+
+document.getElementById("back")!.addEventListener("click", () => {
+    trap.enable();
 });
