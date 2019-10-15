@@ -22,7 +22,6 @@ export class FocusTrap {
 
     containers: {
         el: HTMLElement;
-        hasFocus: boolean;
         tabbables: HTMLElement[];
     }[];
 
@@ -44,7 +43,6 @@ export class FocusTrap {
         this.containers = elements.map(el => {
             return {
                 el,
-                hasFocus: false,
                 tabbables: tabbable(el),
             };
         });
