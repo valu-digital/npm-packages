@@ -1,10 +1,25 @@
 import { FocusTrap } from "../../../src";
 
+const toggleActiveClass = {
+    onAfterEnable(trap: FocusTrap) {
+        for (const c of trap.containers) {
+            c.el.classList.add("active");
+        }
+    },
+    onAfterDisable(trap: FocusTrap) {
+        for (const c of trap.containers) {
+            c.el.classList.remove("active");
+        }
+    },
+};
+
 const trap = new FocusTrap({
+    ...toggleActiveClass,
     elements: document.querySelectorAll(".container"),
 });
 
 const nestedTrap = new FocusTrap({
+    ...toggleActiveClass,
     elements: document.querySelectorAll(".nested-container"),
 });
 

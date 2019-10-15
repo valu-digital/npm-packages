@@ -2,8 +2,18 @@
 <html>
     <head>
         <style>
-            .nested {
-                border: 1px solid green;
+            .container,
+            .nested-container {
+                padding: 25px;
+                margin: 25px;
+                border: 5px solid yellow;
+                opacity: 0.2;
+            }
+
+            .active.container,
+            .active.nested-container {
+                border: 5px solid lightgreen;
+                opacity: 1;
             }
         </style>
     </head>

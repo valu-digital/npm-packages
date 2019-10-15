@@ -221,7 +221,7 @@ export class FocusTrap {
 
             let nextContainerIndex = 1;
 
-            // Shift+tab move focus backwards
+            // Shift+tab moves focus backwards
             const direction = this.state.shifKeyDown ? -1 : 1;
 
             if (this.state.currentContainerIndex !== null) {
