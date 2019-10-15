@@ -5,6 +5,10 @@ interface FocusTrapOptions {
 }
 
 export class FocusTrap {
+    static current?: FocusTrap;
+    parent?: FocusTrap;
+    lastFocusedElement?: HTMLElement;
+
     containers: {
         el: HTMLElement;
         hasFocus: boolean;
@@ -14,6 +18,7 @@ export class FocusTrap {
     state = {
         currentContainerIndex: null as number | null,
         shifKeyDown: false,
+        usingMouse: false,
     };
 
     constructor(options: FocusTrapOptions) {
@@ -35,15 +40,46 @@ export class FocusTrap {
     }
 
     enable() {
+        if (FocusTrap.current) {
+            FocusTrap.current.disable();
+            this.parent = FocusTrap.current;
+        }
+
+        FocusTrap.current = this;
+
         document.addEventListener("keydown", this.handleKeyDown, false);
         document.addEventListener("keyup", this.handleKeyUp, false);
         document.addEventListener("focusin", this.handleFocusIn, false);
+
+        document.addEventListener("mousedown", this.handleMouseDown, false);
+        document.addEventListener("mouseup", this.handleMouseUp, false);
+
+        if (this.lastFocusedElement) {
+            console.log("Activating last", this.lastFocusedElement.className);
+            this.lastFocusedElement.focus();
+        } else {
+            this.focusFirst();
+        }
     }
 
     disable() {
+        if (FocusTrap.current !== this) {
+            console.warn("Not currently active focus-trap, cannot disable");
+            return;
+        }
         document.removeEventListener("keydown", this.handleKeyDown, false);
         document.removeEventListener("keyup", this.handleKeyUp, false);
         document.removeEventListener("focusin", this.handleFocusIn, false);
+        FocusTrap.current = undefined;
+        if (this.parent) {
+            this.parent.enable();
+            this.parent = undefined;
+        }
+    }
+
+    focusFirst() {
+        const el = this.containers[0].tabbables[0];
+        el.focus();
     }
 
     updateContainerIndex(nextElement: Node) {
@@ -59,6 +95,14 @@ export class FocusTrap {
         }, 1);
     }
 
+    handleMouseDown = () => {
+        this.state.usingMouse = true;
+    };
+
+    handleMouseUp = () => {
+        this.state.usingMouse = false;
+    };
+
     handleKeyDown = (e: { keyCode: number; shiftKey: boolean }) => {
         if (e.shiftKey) {
             this.state.shifKeyDown = true;
@@ -71,19 +115,36 @@ export class FocusTrap {
         }
     };
 
+    isInContainers(el: HTMLElement) {
+        for (const container of this.containers) {
+            if (container.el.contains(el)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     handleFocusIn = (e: Event) => {
-        if (!(e.target instanceof Node)) {
+        if (!(e.target instanceof HTMLElement)) {
             return;
         }
 
+        const prev = this.lastFocusedElement;
+
+        if (document.activeElement instanceof HTMLElement) {
+            this.lastFocusedElement = document.activeElement;
+        }
+
         this.updateContainerIndex(e.target);
-        for (const container of this.containers) {
-            if (
-                container.el.contains(e.target) ||
-                e.target instanceof Document
-            ) {
-                return;
-            }
+
+        if (this.isInContainers(e.target)) {
+            return;
+        }
+
+        if (this.state.usingMouse && prev) {
+            prev.focus();
+            return;
         }
 
         e.stopImmediatePropagation();
@@ -101,9 +162,12 @@ export class FocusTrap {
         const nextContainer = this.containers[nextIndex];
 
         if (this.state.shifKeyDown) {
-            nextContainer.tabbables[nextContainer.tabbables.length - 1].focus();
+            const el =
+                nextContainer.tabbables[nextContainer.tabbables.length - 1];
+            el.focus();
         } else {
-            nextContainer.tabbables[0].focus();
+            const el = nextContainer.tabbables[0];
+            el.focus();
         }
     };
 }

@@ -1,7 +1,18 @@
 <!DOCTYPE html>
 <html>
-    <head> </head>
+    <head>
+        <style>
+            .nested {
+                border: 1px solid green;
+            }
+        </style>
+    </head>
     <body>
+        <div>
+            <button id="disable">disable</button>
+            <button id="enable">enable</button>
+        </div>
+
         <div class="container1">
             <input type="text" class="first" />
             <input type="text" class="second" />
@@ -11,6 +22,22 @@
 
         <div class="container2">
             <input type="text" class="third" />
+        </div>
+
+        <div class="nested">
+            <h1>nested</h1>
+            <button id="nest">focus</button>
+
+            <div class="nested-container1">
+                <input type="text" class="nested-first" />
+                <input type="text" class="nested-second" />
+            </div>
+
+            <input type="text" class="nested-skip" placeholder="skip" />
+
+            <div class="nested-container2">
+                <input type="text" class="nested-third" />
+            </div>
         </div>
 
         <script src="/basic.js"></script>
