@@ -3,27 +3,26 @@
     <head>
         <style>
             .container,
+            .element-nesting,
             .nested-container {
                 padding: 25px;
                 margin: 25px;
-                border: 5px solid yellow;
-                opacity: 0.2;
+                background-color: beige;
             }
 
             .active.container,
+            .active.element-nesting,
             .active.nested-container {
-                border: 5px solid lightgreen;
-                opacity: 1;
+                background-color: lightgreen;
             }
         </style>
     </head>
     <body>
-        <div>
-            <button id="disable">disable</button>
-            <button id="enable">enable</button>
-        </div>
-
         <div class="container">
+            <div>
+                <button id="disable">disable</button>
+                <button id="enable">enable</button>
+            </div>
             <input type="text" class="first" />
             <input type="text" class="second" />
             <button id="ding">ding</button>
@@ -48,10 +47,29 @@
                 <input type="text" class="nested-second" />
             </div>
 
-            <input type="text" class="nested-skip" placeholder="skip" />
-
             <div class="nested-container">
                 <input type="text" class="nested-third" />
+
+                <h1>Element nesting</h1>
+
+                <div class="element-nesting">
+                    <button id="element-nesting">
+                        focus these only
+                    </button>
+                </div>
+
+                <div class="element-nesting">
+                    <input type="text" class="element-nesting-first" />
+                    <input type="text" class="element-nesting-second" />
+                </div>
+
+                <input type="text" class="nested-skip" placeholder="skip" />
+
+                <div class="element-nesting">
+                    <input type="text" class="element-nesting-third" />
+                    <input type="text" class="element-nesting-fourth" />
+                    <button id="element-nesting-back">back</button>
+                </div>
                 <button id="back">back</button>
             </div>
         </div>

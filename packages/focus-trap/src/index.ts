@@ -76,13 +76,16 @@ export class FocusTrap {
      * Enable trap
      */
     enable() {
+        console.log(this.options._name, "Enabling ");
         if (this.options.onBeforeEnable) {
             this.options.onBeforeEnable(this);
         }
 
         if (FocusTrap.current) {
-            FocusTrap.current.disable();
-            this.parent = FocusTrap.current;
+            console.log(this.options._name, "Found current ");
+            const parent = FocusTrap.current;
+            FocusTrap.current.disable({ _skipParent: true });
+            this.parent = parent;
         }
 
         FocusTrap.current = this;
@@ -110,11 +113,12 @@ export class FocusTrap {
     /**
      * Disable trap
      */
-    disable() {
+    disable(options?: { _skipParent?: boolean }) {
         if (FocusTrap.current !== this) {
             console.warn("Not currently active focus-trap, cannot disable");
             return;
         }
+        console.log(this.options._name, "disabling");
 
         if (this.options.onBeforeDisable) {
             this.options.onBeforeDisable(this);
@@ -131,7 +135,9 @@ export class FocusTrap {
             this.options.onAfterDisable(this);
         }
 
-        if (this.parent) {
+        const skipParent = options && options._skipParent;
+        if (!skipParent && this.parent) {
+            console.log(this.options._name, "re-enabling parent ");
             this.parent.enable();
             this.parent = undefined;
         }
@@ -142,7 +148,9 @@ export class FocusTrap {
      */
     focusFirst() {
         const el = this.containers[0].tabbables[0];
-        el.focus();
+        if (el) {
+            el.focus();
+        }
     }
 
     /**
@@ -242,10 +250,16 @@ export class FocusTrap {
             if (this.state.shifKeyDown) {
                 const el =
                     nextContainer.tabbables[nextContainer.tabbables.length - 1];
-                el.focus();
+                if (el) {
+                    el.focus();
+                }
             } else {
                 const el = nextContainer.tabbables[0];
-                el.focus();
+                if (el) {
+                    el.focus();
+                } else {
+                    console.log("no tappable");
+                }
             }
         },
     };
