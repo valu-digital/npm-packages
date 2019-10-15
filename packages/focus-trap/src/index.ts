@@ -59,17 +59,23 @@ export class FocusTrap {
         }, 1);
     }
 
-    handleKeyDown = (e: any) => {
+    handleKeyDown = (e: { keyCode: number; shiftKey: boolean }) => {
         // shift key
-        if (e.keyCode === 16) {
+        if (e.shiftKey) {
+            if (!this.state.shifKeyDown) {
+                console.log("shifr down!");
+            }
             this.state.shifKeyDown = true;
         }
     };
 
-    handleKeyUp = (e: any) => {
+    handleKeyUp = (e: { keyCode: number; shiftKey: boolean }) => {
         // shift key
-        if (e.keyCode === 16) {
-            this.state.shifKeyDown = true;
+        if (e.shiftKey) {
+            if (this.state.shifKeyDown) {
+                console.log("shifr up!");
+            }
+            this.state.shifKeyDown = false;
         }
     };
 
@@ -92,14 +98,20 @@ export class FocusTrap {
 
         let nextIndex = 1;
 
+        const direction = this.state.shifKeyDown ? -1 : 1;
+
         if (this.state.currentContainerIndex !== null) {
             nextIndex =
-                (this.state.currentContainerIndex + 1) % this.containers.length;
+                (this.state.currentContainerIndex + direction) %
+                this.containers.length;
         }
 
         const nextContainer = this.containers[nextIndex];
 
-        console.log("Sending to next trap", nextContainer.el);
-        nextContainer.tabbables[0].focus();
+        if (this.state.shifKeyDown) {
+            nextContainer.tabbables[nextContainer.tabbables.length - 1].focus();
+        } else {
+            nextContainer.tabbables[0].focus();
+        }
     };
 }
