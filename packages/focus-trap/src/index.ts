@@ -31,14 +31,17 @@ interface FocusTrapOptions {
      * Executed before trap enables
      */
     onBeforeEnable?(trap: FocusTrap): void;
+
     /**
      * Executed after the trap has been enabled
      */
     onBeforeDisable?(trap: FocusTrap): void;
+
     /**
      * Execute before the trap gets disabled
      */
     onAfterEnable?(trap: FocusTrap): void;
+
     /**
      * Executed after the trap has been disabled
      */
