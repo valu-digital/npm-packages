@@ -1,5 +1,14 @@
 import tabbable from "tabbable";
 
+function getTabbables(el: HTMLElement) {
+    const tabbables = tabbable(el);
+    if (tabbables.length === 0) {
+        return null;
+    }
+
+    return tabbables;
+}
+
 interface FocusTrapOptions {
     _name?: string;
     elements: HTMLElement[] | NodeList | HTMLElement | null | undefined;
@@ -45,10 +54,7 @@ export class FocusTrap {
      */
     elementBeforeTrap?: HTMLElement;
 
-    containers: {
-        el: HTMLElement;
-        tabbables: (HTMLElement | undefined)[];
-    }[];
+    containers: HTMLElement[];
 
     private state = {
         active: false,
@@ -77,12 +83,7 @@ export class FocusTrap {
             console.warn("No elements passed to FocusTrap");
         }
 
-        this.containers = elements.map(el => {
-            return {
-                el,
-                tabbables: tabbable(el),
-            };
-        });
+        this.containers = elements;
     }
 
     isActive() {
@@ -166,9 +167,10 @@ export class FocusTrap {
      * Focus first tabbable element from the first container
      */
     focusFirst() {
-        const el = this.containers[0].tabbables[0];
-        if (el) {
-            el.focus();
+        const container = this.containers[0];
+        const tabbables = getTabbables(container);
+        if (tabbables) {
+            tabbables[0].focus();
         }
     }
 
@@ -177,7 +179,7 @@ export class FocusTrap {
      */
     updateContainerIndex(nextElement: Node) {
         let nextIndex = this.containers.findIndex(container =>
-            container.el.contains(nextElement),
+            container.contains(nextElement),
         );
         if (nextIndex !== -1) {
             this.state.currentContainerIndex = nextIndex;
@@ -189,7 +191,7 @@ export class FocusTrap {
      */
     isInContainers(el: HTMLElement) {
         for (const container of this.containers) {
-            if (container.el.contains(el)) {
+            if (container.contains(el)) {
                 return true;
             }
         }
@@ -278,17 +280,14 @@ export class FocusTrap {
 
             // If going backwards select last tabbable from the new container
             if (this.state.shifKeyDown) {
-                const el =
-                    nextContainer.tabbables[nextContainer.tabbables.length - 1];
-                if (el) {
-                    el.focus();
+                const tabbables = getTabbables(nextContainer);
+                if (tabbables) {
+                    tabbables[tabbables.length - 1].focus();
                 }
             } else {
-                const el = nextContainer.tabbables[0];
-                if (el) {
-                    el.focus();
-                } else {
-                    console.log("no tappable");
+                const tabbables = getTabbables(nextContainer);
+                if (tabbables) {
+                    tabbables[0].focus();
                 }
             }
         },

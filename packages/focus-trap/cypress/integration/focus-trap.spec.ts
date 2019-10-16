@@ -104,3 +104,27 @@ describe("nested traps", () => {
             .hasFocused("focus-second");
     });
 });
+
+describe("can handle dynamic elements", () => {
+    beforeEach(() => {
+        cy.visit("http://localhost:8080/dynamic.html");
+    });
+
+    it("going forward", () => {
+        cy.getByTestId("focus")
+            .click()
+            .getByTestId("prepend-link-to-second")
+            .click()
+            .tab()
+            .hasFocused("new-link");
+    });
+
+    it("going backward ", () => {
+        cy.getByTestId("focus")
+            .click()
+            .getByTestId("append-link-to-first")
+            .click()
+            .tab({ shift: true })
+            .hasFocused("new-link");
+    });
+});

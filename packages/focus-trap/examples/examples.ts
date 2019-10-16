@@ -3,12 +3,12 @@ import { FocusTrap } from "../src";
 const toggleActiveClass = {
     onAfterEnable(trap: FocusTrap) {
         for (const c of trap.containers) {
-            c.el.classList.add("active");
+            c.classList.add("active");
         }
     },
     onAfterDisable(trap: FocusTrap) {
         for (const c of trap.containers) {
-            c.el.classList.remove("active");
+            c.classList.remove("active");
         }
     },
 };
@@ -17,6 +17,15 @@ function onClick(testid: string, cb: VoidFunction) {
     document
         .querySelector(`[data-testid="${testid}"]`)!
         .addEventListener("click", cb, false);
+}
+
+function createLink() {
+    const newLink = document.createElement("a");
+    newLink.href = "#";
+    newLink.dataset.testid = "new-link";
+    newLink.innerHTML = "new link";
+
+    return newLink;
 }
 
 const examples = {
@@ -101,6 +110,31 @@ const examples = {
 
         onClick("disable-third", () => {
             trap3.disable();
+        });
+    },
+
+    "/dynamic.html"() {
+        const trap = new FocusTrap({
+            ...toggleActiveClass,
+            _name: "first",
+            elements: document.querySelectorAll(".container"),
+        });
+        onClick("focus", () => {
+            trap.enable();
+        });
+
+        onClick("prepend-link-to-second", () => {
+            const container2 = document.querySelector(
+                "[data-testid=container2]",
+            );
+            container2.insertBefore(createLink(), container2.firstChild);
+        });
+
+        onClick("append-link-to-first", () => {
+            const container1 = document.querySelector(
+                "[data-testid=container1]",
+            );
+            container1.appendChild(createLink());
         });
     },
 };
