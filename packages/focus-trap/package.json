@@ -11,7 +11,7 @@
         "start": "tsdx watch",
         "build": "tsdx build",
         "test": "echo no-op",
-        "lint": "echo no-op",
+        "lint": "tsdx lint",
         "cypress": "cypress open",
         "examples-copy": "mkdir -p examples-dist && cp examples/*.html examples/*.css examples-dist/",
         "build-examples": "npm run examples-copy && webpack --mode production",
