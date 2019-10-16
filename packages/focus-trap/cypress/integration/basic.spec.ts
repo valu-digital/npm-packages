@@ -24,14 +24,6 @@ describe("basic trapping with single container", () => {
             .click()
             .hasFocused("focus");
     });
-
-    it.skip("can go backwards", () => {
-        cy.get(".third")
-            .focus()
-            .tab({ shift: true })
-            .focused()
-            .should("have.class", "second");
-    });
 });
 
 describe("trap with two containers", () => {
@@ -49,8 +41,28 @@ describe("trap with two containers", () => {
             .hasFocused("link3")
             .tab()
             .hasFocused("link4")
+            .tab();
+    });
+
+    it("can go backwards", () => {
+        cy.getByTestId("focus")
+            .click()
+            .hasFocused("link1")
             .tab()
-            .hasFocused("link1");
+            .hasFocused("link2")
+            .tab()
+            .hasFocused("link3")
+            .tab({ shift: true })
+            .hasFocused("link2")
+            .tab();
+    });
+
+    it("can go backwards from first", () => {
+        cy.getByTestId("focus")
+            .click()
+            .hasFocused("link1")
+            .tab({ shift: true })
+            .hasFocused("link4");
     });
 });
 
