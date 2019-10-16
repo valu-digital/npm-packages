@@ -14,10 +14,18 @@ function getTabbables(el: HTMLElement) {
 }
 
 interface FocusTrapOptions {
-    _name?: string;
     containers: HTMLElement[] | NodeList | HTMLElement | null | undefined;
 
+    /**
+     * Disable the trap when user click an element outside of the selected
+     * containers
+     */
     outsideClickDisables?: boolean;
+
+    /**
+     * Disable the trap when user hits escape key
+     */
+    escDisables?: boolean;
 
     /**
      * Executed before trap enables
@@ -226,6 +234,10 @@ export class FocusTrap {
         },
 
         keyDown: (e: { keyCode: number; shiftKey: boolean }) => {
+            if (this.options.escDisables && e.keyCode === 27) {
+                this.disable();
+            }
+
             if (e.shiftKey) {
                 this.state.shifKeyDown = true;
             }

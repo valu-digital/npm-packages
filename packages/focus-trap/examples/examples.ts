@@ -1,6 +1,7 @@
 import { FocusTrap } from "../src";
 
 const toggleActiveClass = {
+    escDisables: true,
     onAfterEnable(trap: FocusTrap) {
         for (const c of trap.containers) {
             c.classList.add("active");
