@@ -40,6 +40,11 @@ export class FocusTrap {
      */
     lastFocusedElement?: HTMLElement;
 
+    /**
+     * Element that had focus before the trap was enabled
+     */
+    elementBeforeTrap?: HTMLElement;
+
     containers: {
         el: HTMLElement;
         tabbables: (HTMLElement | undefined)[];
@@ -91,6 +96,10 @@ export class FocusTrap {
         console.log(this.options._name, "Enabling ");
         if (this.options.onBeforeEnable) {
             this.options.onBeforeEnable(this);
+        }
+
+        if (document.activeElement instanceof HTMLElement) {
+            this.elementBeforeTrap = document.activeElement || undefined;
         }
 
         if (FocusTrap.current) {
@@ -152,6 +161,8 @@ export class FocusTrap {
             console.log(this.options._name, "re-enabling parent ");
             this.parent.enable();
             this.parent = undefined;
+        } else if (this.elementBeforeTrap) {
+            this.elementBeforeTrap.focus();
         }
     }
 
