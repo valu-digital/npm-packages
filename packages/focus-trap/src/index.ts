@@ -2,7 +2,7 @@ import tabbable from "tabbable";
 
 interface FocusTrapOptions {
     _name?: string;
-    elements: HTMLElement[] | NodeList;
+    elements: HTMLElement[] | NodeList | HTMLElement | null | undefined;
 
     outsideClickDisables?: boolean;
 
@@ -58,10 +58,18 @@ export class FocusTrap {
         this.options = options;
         let elements;
 
-        if (!Array.isArray(options.elements)) {
+        if (options.elements instanceof NodeList) {
             elements = Array.from(options.elements) as HTMLElement[];
+        } else if (options.elements instanceof HTMLElement) {
+            elements = [options.elements];
+        } else if (!options.elements) {
+            elements = [] as HTMLElement[];
         } else {
             elements = options.elements;
+        }
+
+        if (elements.length === 0) {
+            console.warn("No elements passed to FocusTrap");
         }
 
         this.containers = elements.map(el => {
