@@ -254,6 +254,7 @@ export class FocusTrap {
 
             // If focus change was done using mouse revert back to the previous element
             if (this.state.usingMouse && prev) {
+                this.lastFocusedElement = prev;
                 prev.focus();
                 return;
             }
