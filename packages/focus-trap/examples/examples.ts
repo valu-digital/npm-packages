@@ -186,5 +186,12 @@ const examples = {
 const fn = examples[window.location.pathname + window.location.search];
 
 if (fn) {
+    const backLink = document.createElement("a");
+    backLink.href = "/";
+    backLink.innerHTML = "Back to index";
+    backLink.tabIndex = -1;
+    document.body.insertBefore(backLink, document.body.firstChild);
     fn();
+} else {
+    document.body.innerHTML = "Unknown example :(";
 }
