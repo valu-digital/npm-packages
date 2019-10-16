@@ -43,7 +43,6 @@ describe("trap with two containers", () => {
         cy.getByTestId("focus")
             .click()
             .hasFocused("link1")
-            .log("lala")
             .tab()
             .hasFocused("link2")
             .tab()
@@ -52,5 +51,29 @@ describe("trap with two containers", () => {
             .hasFocused("link4")
             .tab()
             .hasFocused("link1");
+    });
+});
+
+describe("nested traps", () => {
+    beforeEach(() => {
+        cy.visit("http://localhost:8080/nested-traps.html");
+    });
+
+    it("can use disable to go back to previous traps", () => {
+        cy.getByTestId("focus-first")
+            .click()
+            .hasFocused("first-link1")
+            .getByTestId("focus-second")
+            .click()
+            .hasFocused("second-link1")
+            .getByTestId("focus-third")
+            .click()
+            .hasFocused("third-link1")
+            .getByTestId("disable-third")
+            .click()
+            .hasFocused("focus-third")
+            .getByTestId("disable-second")
+            .click()
+            .hasFocused("focus-second");
     });
 });

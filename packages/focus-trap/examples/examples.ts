@@ -45,6 +45,50 @@ const examples = {
             trap.enable();
         });
     },
+
+    "/nested-traps.html"() {
+        const trap1 = new FocusTrap({
+            ...toggleActiveClass,
+            outsideClickDisables: true,
+            elements: document.querySelectorAll(".first-group"),
+        });
+
+        const trap2 = new FocusTrap({
+            ...toggleActiveClass,
+            outsideClickDisables: true,
+            elements: document.querySelectorAll(".second-group"),
+        });
+
+        const trap3 = new FocusTrap({
+            ...toggleActiveClass,
+            outsideClickDisables: true,
+            elements: document.querySelectorAll(".third-group"),
+        });
+
+        onClick("focus-first", () => {
+            trap1.enable();
+        });
+
+        onClick("disable-first", () => {
+            trap1.disable();
+        });
+
+        onClick("focus-second", () => {
+            trap2.enable();
+        });
+
+        onClick("disable-second", () => {
+            trap2.disable();
+        });
+
+        onClick("focus-third", () => {
+            trap3.enable();
+        });
+
+        onClick("disable-third", () => {
+            trap3.disable();
+        });
+    },
 };
 
 const fn = examples[window.location.pathname + window.location.search];
