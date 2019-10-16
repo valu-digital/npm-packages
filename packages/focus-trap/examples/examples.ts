@@ -69,6 +69,17 @@ const examples = {
         });
     },
 
+    "/tabbable-container.html"() {
+        const trap = new FocusTrap({
+            ...toggleActiveClass,
+            _name: "first",
+            containers: document.querySelectorAll(".container"),
+        });
+        onClick("focus", () => {
+            trap.enable();
+        });
+    },
+
     "/nested-traps.html"() {
         const trap1 = new FocusTrap({
             ...toggleActiveClass,

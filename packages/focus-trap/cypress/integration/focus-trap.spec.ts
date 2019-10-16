@@ -1,4 +1,4 @@
-describe("basic trapping with single container", () => {
+describe("basic trapping with single container  ", () => {
     it("focus is trapped into the container", () => {
         cy.visit("http://localhost:8080/basic.html");
         cy.getByTestId("focus")
@@ -126,5 +126,21 @@ describe("can handle dynamic elements", () => {
             .click()
             .tab({ shift: true })
             .hasFocused("new-link");
+    });
+});
+
+describe("tabbable container", () => {
+    beforeEach(() => {
+        cy.visit("http://localhost:8080/tabbable-container.html");
+    });
+
+    it("can focus it", () => {
+        cy.getByTestId("focus")
+            .click()
+            .hasFocused("link1")
+            .tab()
+            .hasFocused("link2")
+            .tab()
+            .hasFocused("tabbable-container");
     });
 });

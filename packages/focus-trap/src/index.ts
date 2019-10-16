@@ -1,8 +1,12 @@
-import tabbable from "tabbable";
+import tabbable, { isTabbable } from "tabbable";
 
 function getTabbables(el: HTMLElement) {
     const tabbables = tabbable(el);
+
     if (tabbables.length === 0) {
+        if (isTabbable(el)) {
+            return [el];
+        }
         return null;
     }
 
