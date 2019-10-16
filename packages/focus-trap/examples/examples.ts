@@ -23,7 +23,21 @@ const examples = {
     "/basic.html"() {
         const trap = new FocusTrap({
             ...toggleActiveClass,
-            _name: "first",
+            elements: document.querySelectorAll(".container"),
+        });
+
+        onClick("focus", () => {
+            trap.enable();
+        });
+
+        onClick("exit-button", () => {
+            trap.disable();
+        });
+    },
+    "/basic.html?outsideClick"() {
+        const trap = new FocusTrap({
+            ...toggleActiveClass,
+            outsideClickDisables: true,
             elements: document.querySelectorAll(".container"),
         });
 
