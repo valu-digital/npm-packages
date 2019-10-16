@@ -1,9 +1,6 @@
 describe("basic trapping with single container", () => {
-    beforeEach(() => {
-        cy.visit("http://localhost:8080/basic.html");
-    });
-
     it("focus is trapped into the container", () => {
+        cy.visit("http://localhost:8080/basic.html");
         cy.getByTestId("focus")
             .click()
             .hasFocused("link")
@@ -21,6 +18,7 @@ describe("basic trapping with single container", () => {
     });
 
     it("can exit trap", () => {
+        cy.visit("http://localhost:8080/basic.html");
         cy.getByTestId("focus")
             .click()
             .getByTestId("exit-button")
@@ -29,6 +27,17 @@ describe("basic trapping with single container", () => {
             // hook test
             .get(".container")
             .should("not.have.class", "active");
+    });
+
+    it("can use outside click to exit  ", () => {
+        cy.visit("http://localhost:8080/basic.html?outsideClick");
+        cy.getByTestId("focus")
+            .click()
+            .getByTestId("title")
+            .click()
+            .get("body")
+            .tab()
+            .hasFocused("outside-input-before1");
     });
 });
 
