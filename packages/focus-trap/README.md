@@ -11,6 +11,7 @@ at once and is maintained.
 -   Nested traps
 -   Automatic deactivation by outside click or escape (optional)
 -   Container can be itself be focusable element
+-   Build-in types (written in TypeScript)
 
 See demos here <http://valu-focus-trap.netlify.com>
 
