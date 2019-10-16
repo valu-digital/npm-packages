@@ -1,0 +1,11 @@
+.container {
+    padding: 25px;
+    margin: 25px;
+    background-color: beige;
+    border: dashed silver 5px;
+}
+
+.active.container {
+    background-color: lightgreen;
+    border: dashed green 5px;
+}

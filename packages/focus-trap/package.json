@@ -14,7 +14,7 @@
         "lint": "tsdx lint",
         "cypress": "cypress open",
         "examples-copy-html": "mkdir -p examples-dist && cp cypress/fixtures/examples/*.html examples-dist/",
-        "examples-dev": "npm run examples-copy-html && webpack-dev-server --mode development"
+        "examples-dev": "webpack-dev-server --mode development"
     },
     "peerDependencies": {},
     "husky": {

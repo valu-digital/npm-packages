@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="styles.css" />
+    </head>
+    <body>
+        <h1>With two containers</h1>
+
+        <button data-testid="focus">focus</button>
+
+        <a href="#" data-testid="outside-link-before">outside</a>
+
+        <div class="container">
+            <a data-testid="link1" href="#">link1</a>
+            <a data-testid="link2" href="#">link2</a>
+        </div>
+
+        <input
+            type="text"
+            data-testid="input-between"
+            placeholder="Skipped when focused"
+        />
+
+        <div class="container">
+            <a data-testid="link3" href="#">link3</a>
+            <a data-testid="link4" href="#">link4</a>
+        </div>
+
+        <a href="#" data-testid="outside-link-after">outside</a>
+
+        <script src="/examples.js"></script>
+    </body>
+</html>

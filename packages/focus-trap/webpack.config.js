@@ -3,7 +3,11 @@ const {
     autoloadEntries,
 } = require("@valu/webpack-config");
 
+const isDevServer = Boolean(process.env.WEBPACK_DEV_SERVER);
+
 module.exports = createWebpackConfig({
-    outputPath: __dirname + "/examples-dist",
-    entry: autoloadEntries(__dirname + "/cypress/fixtures/examples/"),
+    outputPath: isDevServer
+        ? __dirname + "/examples"
+        : __dirname + "/examples-dist",
+    entry: autoloadEntries(__dirname + "/examples"),
 });
