@@ -15,7 +15,8 @@
         "cypress": "cypress open",
         "examples-copy": "mkdir -p examples-dist && cp examples/*.html examples/*.css examples-dist/",
         "build-examples": "npm run examples-copy && webpack --mode production",
-        "examples-dev": "webpack-dev-server --mode development"
+        "examples-dev": "webpack-dev-server --mode development",
+        "prepublishOnly": "npm run build"
     },
     "peerDependencies": {},
     "husky": {
