@@ -11,7 +11,7 @@ function getTabbables(el: HTMLElement) {
 
 interface FocusTrapOptions {
     _name?: string;
-    elements: HTMLElement[] | NodeList | HTMLElement | null | undefined;
+    containers: HTMLElement[] | NodeList | HTMLElement | null | undefined;
 
     outsideClickDisables?: boolean;
 
@@ -69,14 +69,14 @@ export class FocusTrap {
         this.options = options;
         let elements;
 
-        if (options.elements instanceof NodeList) {
-            elements = Array.from(options.elements) as HTMLElement[];
-        } else if (options.elements instanceof HTMLElement) {
-            elements = [options.elements];
-        } else if (!options.elements) {
+        if (options.containers instanceof NodeList) {
+            elements = Array.from(options.containers) as HTMLElement[];
+        } else if (options.containers instanceof HTMLElement) {
+            elements = [options.containers];
+        } else if (!options.containers) {
             elements = [] as HTMLElement[];
         } else {
-            elements = options.elements;
+            elements = options.containers;
         }
 
         if (elements.length === 0) {
@@ -86,7 +86,7 @@ export class FocusTrap {
         this.containers = elements;
     }
 
-    isActive() {
+    isEnabled() {
         return this.state.active;
     }
 
@@ -134,7 +134,7 @@ export class FocusTrap {
      * Disable trap
      */
     disable(options?: { ignoreParent?: boolean }) {
-        if (!this.isActive()) {
+        if (!this.isEnabled()) {
             return;
         }
 

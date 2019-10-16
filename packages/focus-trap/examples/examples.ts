@@ -32,7 +32,7 @@ const examples = {
     "/basic.html"() {
         const trap = new FocusTrap({
             ...toggleActiveClass,
-            elements: document.querySelectorAll(".container"),
+            containers: document.querySelectorAll(".container"),
         });
 
         onClick("focus", () => {
@@ -47,7 +47,7 @@ const examples = {
         const trap = new FocusTrap({
             ...toggleActiveClass,
             outsideClickDisables: true,
-            elements: document.querySelectorAll(".container"),
+            containers: document.querySelectorAll(".container"),
         });
 
         onClick("focus", () => {
@@ -62,7 +62,7 @@ const examples = {
         const trap = new FocusTrap({
             ...toggleActiveClass,
             _name: "first",
-            elements: document.querySelectorAll(".container"),
+            containers: document.querySelectorAll(".container"),
         });
         onClick("focus", () => {
             trap.enable();
@@ -73,19 +73,19 @@ const examples = {
         const trap1 = new FocusTrap({
             ...toggleActiveClass,
             outsideClickDisables: true,
-            elements: document.querySelectorAll(".first-group"),
+            containers: document.querySelectorAll(".first-group"),
         });
 
         const trap2 = new FocusTrap({
             ...toggleActiveClass,
             outsideClickDisables: true,
-            elements: document.querySelectorAll(".second-group"),
+            containers: document.querySelectorAll(".second-group"),
         });
 
         const trap3 = new FocusTrap({
             ...toggleActiveClass,
             outsideClickDisables: true,
-            elements: document.querySelectorAll(".third-group"),
+            containers: document.querySelectorAll(".third-group"),
         });
 
         onClick("focus-first", () => {
@@ -117,7 +117,7 @@ const examples = {
         const trap = new FocusTrap({
             ...toggleActiveClass,
             _name: "first",
-            elements: document.querySelectorAll(".container"),
+            containers: document.querySelectorAll(".container"),
         });
         onClick("focus", () => {
             trap.enable();
