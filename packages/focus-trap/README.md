@@ -5,6 +5,13 @@ at once and is maintained.
 
 [davidtheclark/focus-trap]: https://github.com/davidtheclark/focus-trap
 
+## Features
+
+-   Focus can move between different focus roots (containers)
+-   Nested traps
+-   Automatic deactivation by outside click or escape (optional)
+-   Container can be itself be focusable element
+
 See demos here <http://valu-focus-trap.netlify.com>
 
 ## Installation
@@ -16,8 +23,8 @@ See demos here <http://valu-focus-trap.netlify.com>
 ```ts
 import { FocusTrap } from "@valu/focus-trap";
 
-const trap = new FocusTraps({
-    elements: document.querySelectorAll(".container"),
+const trap = new FocusTrap({
+    containers: document.querySelectorAll(".container"),
 });
 
 trap.enable();
