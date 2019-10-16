@@ -14,7 +14,7 @@ function getTabbables(el: HTMLElement) {
 }
 
 interface FocusTrapOptions {
-    containers: HTMLElement[] | NodeList | HTMLElement | null | undefined;
+    containers: HTMLElement | HTMLElement[] | NodeList | null | undefined;
 
     /**
      * Disable the trap when user click an element outside of the selected
