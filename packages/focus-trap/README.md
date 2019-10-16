@@ -33,3 +33,39 @@ document.querySelector("button#disable").addEventListener(() => {
     trap.disable();
 });
 ```
+
+## Options
+
+```ts
+interface FocusTrapOptions {
+    containers: HTMLElement | HTMLElement[] | NodeList | null | undefined;
+
+    /**
+     * Disable the trap when user click an element outside of the selected
+     * containers
+     */
+    outsideClickDisables?: boolean;
+
+    /**
+     * Disable the trap when user hits escape key
+     */
+    escDisables?: boolean;
+
+    /**
+     * Executed before trap enables
+     */
+    onBeforeEnable?(trap: FocusTrap): void;
+    /**
+     * Executed after the trap has been enabled
+     */
+    onBeforeDisable?(trap: FocusTrap): void;
+    /**
+     * Execute before the trap gets disabled
+     */
+    onAfterEnable?(trap: FocusTrap): void;
+    /**
+     * Executed after the trap has been disabled
+     */
+    onAfterDisable?(trap: FocusTrap): void;
+}
+```
