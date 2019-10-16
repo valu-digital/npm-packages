@@ -93,7 +93,6 @@ export class FocusTrap {
      * Enable trap
      */
     enable() {
-        console.log(this.options._name, "Enabling ");
         if (this.options.onBeforeEnable) {
             this.options.onBeforeEnable(this);
         }
@@ -103,7 +102,6 @@ export class FocusTrap {
         }
 
         if (FocusTrap.current) {
-            console.log(this.options._name, "Found current ");
             const parent = FocusTrap.current;
             FocusTrap.current.disable({ ignoreParent: true });
             this.parent = parent;
@@ -139,7 +137,6 @@ export class FocusTrap {
             console.warn("Not currently active focus-trap, cannot disable");
             return;
         }
-        console.log(this.options._name, "disabling");
 
         if (this.options.onBeforeDisable) {
             this.options.onBeforeDisable(this);
@@ -158,7 +155,6 @@ export class FocusTrap {
 
         const skipParent = options && options.ignoreParent;
         if (!skipParent && this.parent) {
-            console.log(this.options._name, "re-enabling parent ");
             this.parent.enable();
             this.parent = undefined;
         } else if (this.elementBeforeTrap) {
