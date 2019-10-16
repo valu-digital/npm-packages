@@ -134,6 +134,10 @@ export class FocusTrap {
      * Disable trap
      */
     disable(options?: { ignoreParent?: boolean }) {
+        if (!this.isActive()) {
+            return;
+        }
+
         if (FocusTrap.current !== this) {
             console.warn("Not currently active focus-trap, cannot disable");
             return;
