@@ -1,6 +1,6 @@
 {
     "name": "@valu/focus-trap",
-    "version": "0.1.0",
+    "version": "0.0.3",
     "main": "dist/index.js",
     "module": "dist/focus-trap.esm.js",
     "typings": "dist/index.d.ts",
@@ -10,8 +10,8 @@
     "scripts": {
         "start": "tsdx watch",
         "build": "tsdx build",
-        "test": "tsdx test",
-        "lint": "tsdx lint",
+        "test": "echo no-op",
+        "lint": "echo no-op",
         "cypress": "cypress open",
         "examples-copy": "mkdir -p examples-dist && cp examples/*.html examples/*.css examples-dist/",
         "build-examples": "npm run examples-copy && webpack --mode production",
@@ -29,12 +29,11 @@
     },
     "devDependencies": {
         "@testing-library/cypress": "^5.0.2",
-        "@types/jest": "^24.0.18",
         "@types/tabbable": "^3.1.0",
         "cypress": "^3.4.1",
         "cypress-plugin-tab": "^1.0.3",
         "husky": "^3.0.9",
-        "tsdx": "^0.9.3",
+        "tsdx": "^0.10.0",
         "tslib": "^1.10.0",
         "typescript": "^3.6.4"
     },
