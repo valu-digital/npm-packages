@@ -14,7 +14,10 @@ describe("basic trapping with single container", () => {
             .tab()
             .hasFocused("exit-button")
             .tab()
-            .hasFocused("link");
+            .hasFocused("link")
+            // Hook test
+            .get(".container")
+            .should("have.class", "active");
     });
 
     it("can exit trap", () => {
@@ -22,7 +25,10 @@ describe("basic trapping with single container", () => {
             .click()
             .getByTestId("exit-button")
             .click()
-            .hasFocused("focus");
+            .hasFocused("focus")
+            // hook test
+            .get(".container")
+            .should("not.have.class", "active");
     });
 });
 
