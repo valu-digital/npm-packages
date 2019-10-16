@@ -13,7 +13,8 @@
         "test": "tsdx test",
         "lint": "tsdx lint",
         "cypress": "cypress open",
-        "examples-copy-html": "mkdir -p examples-dist && cp cypress/fixtures/examples/*.html examples-dist/",
+        "examples-copy": "mkdir -p examples-dist && cp examples/*.{html,css} examples-dist/",
+        "build-examples": "npm run examples-copy && webpack --mode production",
         "examples-dev": "webpack-dev-server --mode development"
     },
     "peerDependencies": {},

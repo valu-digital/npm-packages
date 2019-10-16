@@ -29,8 +29,8 @@ describe("basic trapping with single container  ", () => {
             .should("not.have.class", "active");
     });
 
-    it("can use outside click to exit  ", () => {
-        cy.visit("http://localhost:8080/basic.html?outsideClick");
+    it("can use outside click to exit", () => {
+        cy.visit("http://localhost:8080/basic.html#outsideClick");
         cy.getByTestId("focus")
             .click()
             .getByTestId("title")

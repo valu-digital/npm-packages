@@ -29,7 +29,7 @@ function createLink() {
 }
 
 const examples = {
-    "/basic.html"() {
+    "/basic"() {
         const trap = new FocusTrap({
             ...toggleActiveClass,
             containers: document.querySelectorAll(".container"),
@@ -43,7 +43,7 @@ const examples = {
             trap.disable();
         });
     },
-    "/basic.html?outsideClick"() {
+    "/basic#outsideClick"() {
         const trap = new FocusTrap({
             ...toggleActiveClass,
             outsideClickDisables: true,
@@ -58,7 +58,7 @@ const examples = {
             trap.disable();
         });
     },
-    "/multi-container.html"() {
+    "/multi-container"() {
         const trap = new FocusTrap({
             ...toggleActiveClass,
             _name: "first",
@@ -69,7 +69,7 @@ const examples = {
         });
     },
 
-    "/tabbable-container.html"() {
+    "/tabbable-container"() {
         const trap = new FocusTrap({
             ...toggleActiveClass,
             _name: "first",
@@ -80,7 +80,7 @@ const examples = {
         });
     },
 
-    "/nested-traps.html"() {
+    "/nested-traps"() {
         const trap1 = new FocusTrap({
             ...toggleActiveClass,
             outsideClickDisables: true,
@@ -124,7 +124,7 @@ const examples = {
         });
     },
 
-    "/nested-containers.html"() {
+    "/nested-containers"() {
         const trap1 = new FocusTrap({
             ...toggleActiveClass,
             outsideClickDisables: true,
@@ -168,7 +168,7 @@ const examples = {
         });
     },
 
-    "/dynamic.html"() {
+    "/dynamic"() {
         const trap = new FocusTrap({
             ...toggleActiveClass,
             _name: "first",
@@ -194,7 +194,16 @@ const examples = {
     },
 };
 
-const fn = examples[window.location.pathname + window.location.search];
+function getExample() {
+    let path = window.location.pathname;
+    if (path.endsWith(".html")) {
+        path = path.slice(0, -".html".length);
+    }
+
+    return path + window.location.hash;
+}
+
+const fn = examples[getExample()];
 
 if (fn) {
     const backLink = document.createElement("a");
