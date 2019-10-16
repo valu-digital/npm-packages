@@ -1,4 +1,4 @@
-# Multicontainer Focus Trap
+# Multi-Container Focus Trap
 
 Like [davidtheclark/focus-trap][] but can trap focus to multiple containers
 at once and is maintained.
