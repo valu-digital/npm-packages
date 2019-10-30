@@ -60,7 +60,6 @@ interface FocusTrapOptions {
     /**
      * Executed after the trap has been enabled
      */
-
     onBeforeDisable?(trap: FocusTrap): void;
 
     /**
@@ -69,7 +68,9 @@ interface FocusTrapOptions {
     onAfterEnable?(trap: FocusTrap): void;
 
     /**
-     * Executed after the trap has been disabled
+     * Executed after the trap has been disabled. By default the focus trap
+     * restores focus to the element that had the focus before trap activation.
+     * This hook can used to focus some other element manually.
      */
     onAfterDisable?(trap: FocusTrap): void;
 }
