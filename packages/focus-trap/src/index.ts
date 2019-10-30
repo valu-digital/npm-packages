@@ -169,16 +169,18 @@ export class FocusTrap {
         this.state.active = false;
         FocusTrap.current = undefined;
 
-        if (this.options.onAfterDisable) {
-            this.options.onAfterDisable(this);
-        }
-
         const skipParent = options && options.ignoreParent;
         if (!skipParent && this.parent) {
+            if (this.options.onAfterDisable) {
+                this.options.onAfterDisable(this);
+            }
             this.parent.enable();
             this.parent = undefined;
         } else if (this.elementBeforeTrap) {
             this.elementBeforeTrap.focus();
+            if (this.options.onAfterDisable) {
+                this.options.onAfterDisable(this);
+            }
         }
     }
 
