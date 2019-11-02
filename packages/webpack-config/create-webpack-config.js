@@ -42,6 +42,13 @@ function hasBabelrc(dir) {
     return fs.readdirSync(dir).some(file => rcFiles.includes(file));
 }
 
+/**
+ * @param {string} dir
+ */
+function hasPostCSSConfig(dir) {
+    return fs.readdirSync(dir).some(file => file === "postcss.config.js");
+}
+
 function getDefaultConfig() {
     return {
         entry: {
@@ -142,6 +149,12 @@ function getCssLoaderConfig(options = {}) {
                 ? {
                       loader: "sass-loader",
                       options: {sourceMap: true},
+                  }
+                : null,
+
+            hasPostCSSConfig(process.cwd())
+                ? {
+                      loader: "postcss-loader",
                   }
                 : null,
         ].filter(Boolean),
