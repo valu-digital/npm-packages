@@ -37,6 +37,8 @@ document.querySelector("button#disable").addEventListener(() => {
 
 ## Options
 
+The `FocusTrap` constructor takes following options object
+
 ```ts
 interface FocusTrapOptions {
     containers: HTMLElement | HTMLElement[] | NodeList | null | undefined;
