@@ -17,6 +17,8 @@ test("can render template", () => {
         "main.js",
         "main.js.map",
         "manifest.json",
+        "module.js",
+        "module.js.map",
         "out.php",
     ]);
 
@@ -24,5 +26,6 @@ test("can render template", () => {
         .readFileSync(__dirname + "/fixtures/template/dist/out.php")
         .toString();
 
-    expect(out).toMatchSnapshot();
+    expect(out).toMatch(`<?php define( 'JS', 'main.js?v=`);
+    expect(out).toMatch(`' );`);
 });
