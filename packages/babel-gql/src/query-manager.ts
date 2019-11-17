@@ -116,7 +116,12 @@ export class QueryManager {
             },
             FragmentDefinition: def => {
                 const fragmentName = def.name.value;
-                this.knownFragments.set(fragmentName, print(def).trim());
+                const fragment = print(def).trim();
+                if (this.knownFragments.get(fragmentName) === fragment) {
+                    return;
+                }
+
+                this.knownFragments.set(fragmentName, fragment);
                 this.fragmentsUsedByFragment.set(fragmentName, new Set());
 
                 const relatedFragments = new Set<string>();

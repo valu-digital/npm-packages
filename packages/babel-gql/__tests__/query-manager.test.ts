@@ -531,3 +531,41 @@ test("change to nested fragment triggers update", async () => {
         ],
     });
 });
+
+test("no export if fragment does not actually change", async () => {
+    const spy = jest.fn();
+
+    const qm = new QueryManager({
+        onExportQuery: spy,
+    });
+
+    qm.parseGraphQL(gql`
+        fragment Fragment1 on Foo {
+            field1
+        }
+
+        fragment Fragment2 on Foo {
+            field2
+            ...Fragment1
+        }
+
+        query FooQuery {
+            field3
+            ...Fragment2
+        }
+    `);
+
+    await qm.exportDirtyQueries();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+
+    qm.parseGraphQL(gql`
+        fragment Fragment1 on Foo {
+            field1
+        }
+    `);
+
+    await qm.exportDirtyQueries();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+});
