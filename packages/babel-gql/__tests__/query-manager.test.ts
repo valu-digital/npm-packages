@@ -400,3 +400,67 @@ test("does not export when all nested fragments are not defined", async () => {
         ],
     });
 });
+
+test("change to nested fragment triggers update", async () => {
+    const spy = jest.fn();
+
+    const qm = new QueryManager({
+        onExportQuery: spy,
+    });
+
+    qm.parseGraphQL(gql`
+        fragment Fragment1 on Foo {
+            field1
+        }
+
+        fragment Fragment2 on Foo {
+            field2
+            ...Fragment1
+        }
+
+        query FooQuery {
+            field3
+            ...Fragment2
+        }
+    `);
+
+    await qm.exportDirtyQueries();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+
+    qm.parseGraphQL(gql`
+        fragment Fragment1 on Foo {
+            fieldChange
+        }
+    `);
+
+    await qm.exportDirtyQueries();
+
+    expect(spy).toHaveBeenCalledTimes(2);
+
+    const arg = spy.mock.calls[1][0];
+
+    expect(arg.fragments).toHaveLength(2);
+
+    expect(arg).toEqual({
+        query: gql`
+            query FooQuery {
+                field3
+                ...Fragment2
+            }
+        `,
+        fragments: [
+            gql`
+                fragment Fragment1 on Foo {
+                    fieldChange
+                }
+            `,
+            gql`
+                fragment Fragment2 on Foo {
+                    field2
+                    ...Fragment1
+                }
+            `,
+        ],
+    });
+});

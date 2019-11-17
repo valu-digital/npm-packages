@@ -107,19 +107,35 @@ export class QueryManager {
                 this.fragmentsUsedByQuery.set(def.name.value, new Set());
             },
             FragmentDefinition: def => {
-                this.knownFragments.set(def.name.value, print(def).trim());
-                this.fragmentsUsedByFragment.set(def.name.value, new Set());
+                const fragmentName = def.name.value;
+                this.knownFragments.set(fragmentName, print(def).trim());
+                this.fragmentsUsedByFragment.set(fragmentName, new Set());
+
+                const relatedFragments = new Set<string>();
+                relatedFragments.add(fragmentName);
+
+                for (const [
+                    relatedFragmentName,
+                    usedFragmentNames,
+                ] of this.fragmentsUsedByFragment.entries()) {
+                    if (!usedFragmentNames) {
+                        continue;
+                    }
+                    if (usedFragmentNames.has(fragmentName)) {
+                        relatedFragments.add(relatedFragmentName);
+                    }
+                }
 
                 for (const [
                     queryName,
-                    fragmentNames,
+                    usedFragmentNames,
                 ] of this.fragmentsUsedByQuery.entries()) {
-                    if (!fragmentNames) {
+                    if (!usedFragmentNames) {
                         continue;
                     }
 
-                    for (const fragmentName of fragmentNames) {
-                        if (fragmentName === def.name.value) {
+                    for (const usedFragmentName of usedFragmentNames) {
+                        if (relatedFragments.has(usedFragmentName)) {
                             this.dirtyQueries.add(queryName);
                         }
                     }
