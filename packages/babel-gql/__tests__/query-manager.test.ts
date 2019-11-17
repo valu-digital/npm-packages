@@ -24,6 +24,45 @@ test("single query", async () => {
     expect(spy).toHaveBeenCalledTimes(1);
 });
 
+test("single query can update", async () => {
+    const spy = jest.fn();
+
+    const qm = new QueryManager({
+        onExportQuery: spy,
+    });
+
+    qm.parseGraphQL(gql`
+        query FooQuery {
+            field
+        }
+    `);
+
+    await qm.exportDirtyQueries();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+
+    qm.parseGraphQL(gql`
+        query FooQuery {
+            fieldUpdated
+        }
+    `);
+
+    await qm.exportDirtyQueries();
+
+    expect(spy).toHaveBeenCalledTimes(2);
+
+    const arg = spy.mock.calls[1][0];
+
+    expect(arg).toEqual({
+        query: gql`
+            query FooQuery {
+                fieldUpdated
+            }
+        `,
+        fragments: [],
+    });
+});
+
 test("multiple queries in single string", async () => {
     const spy = jest.fn();
 
