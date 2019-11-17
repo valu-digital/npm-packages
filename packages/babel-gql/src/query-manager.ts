@@ -78,8 +78,8 @@ function isOperationDefinition(ob: any): ob is OperationDefinitionNode {
  */
 export class QueryManager {
     queries = new Map<string, string | undefined>();
-    fragments = new Map<string, string | undefined>();
-    queryDeps = new Map<string, Set<string> | undefined>();
+    knownFragments = new Map<string, string | undefined>();
+    fragmentsUsedByQuery = new Map<string, Set<string> | undefined>();
     fragmentDeps = new Map<string, Set<string> | undefined>();
     dirtyQueries = new Set<string>();
 
@@ -100,16 +100,16 @@ export class QueryManager {
 
                 this.dirtyQueries.add(def.name.value);
                 this.queries.set(def.name.value, print(def).trim());
-                this.queryDeps.set(def.name.value, new Set());
+                this.fragmentsUsedByQuery.set(def.name.value, new Set());
             },
             FragmentDefinition: def => {
-                this.fragments.set(def.name.value, print(def).trim());
+                this.knownFragments.set(def.name.value, print(def).trim());
                 this.fragmentDeps.set(def.name.value, new Set());
 
                 for (const [
                     queryName,
                     fragmentNames,
-                ] of this.queryDeps.entries()) {
+                ] of this.fragmentsUsedByQuery.entries()) {
                     if (!fragmentNames) {
                         continue;
                     }
@@ -129,7 +129,7 @@ export class QueryManager {
                             continue;
                         }
 
-                        const deps = this.queryDeps.get(queryName);
+                        const deps = this.fragmentsUsedByQuery.get(queryName);
                         if (!deps) {
                             continue;
                         }
@@ -141,33 +141,38 @@ export class QueryManager {
         });
     }
 
-    addQuery(name: string, query: string) {}
+    popDirtyQueries() {
+        const availableQueries = this.dirtyQueries;
+        const popQueries = new Set<string>();
+        this.dirtyQueries = new Set();
 
-    addFragment(name: string, fragment: string) {}
+        for (const query of availableQueries) {
+            const usedFragments = this.fragmentsUsedByQuery.get(query);
+            if (!usedFragments) {
+                // Does not use fragments, all good
+                popQueries.add(query);
+                continue;
+            }
 
-    // hasRequiredFragments(queryName: string) {
-    //     const query = this.queries.get(queryName);
-    //     if (!query) {
-    //         return false;
-    //     }
+            for (const fragment of usedFragments) {
+                if (!this.knownFragments.has(fragment)) {
+                    // put it back if even one used fragment is missing
+                    this.dirtyQueries.add(query);
+                    continue;
+                }
+            }
 
-    //     return query.requiredFragments.every(fragmentName =>
-    //         this.fragments.has(fragmentName),
-    //     );
-    // }
+            // All dep available
+            if (!this.dirtyQueries.has(query)) {
+                popQueries.add(query);
+            }
+        }
 
-    formatQuery(query: QueryData) {
-        const fragments = query.requiredFragments
-            .map(fragmentName => this.fragments.get(fragmentName))
-            .join("\n");
-
-        return `${fragments}\n${query.query}`;
+        return popQueries;
     }
 
     async exportDirtyQueries() {
-        const queries = this.dirtyQueries;
-        this.dirtyQueries = new Set();
-        for (const queryName of queries) {
+        for (const queryName of this.popDirtyQueries()) {
             await this.exportQuery(queryName);
         }
     }
@@ -183,11 +188,11 @@ export class QueryManager {
             return;
         }
 
-        const fragments = Array.from(this.queryDeps.get(queryName) ?? []).map(
-            fragmentName => {
-                return this.fragments.get(fragmentName)!;
-            },
-        );
+        const fragments = Array.from(
+            this.fragmentsUsedByQuery.get(queryName) ?? [],
+        ).map(fragmentName => {
+            return this.knownFragments.get(fragmentName)!;
+        });
 
         await this.options.onExportQuery(
             {

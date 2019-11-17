@@ -256,3 +256,33 @@ test("adding fragment dep causes export", async () => {
         ],
     });
 });
+
+test("does not export before all fragments are defined", async () => {
+    const spy = jest.fn();
+
+    const qm = new QueryManager({
+        onExportQuery: spy,
+    });
+
+    qm.parseGraphQL(gql`
+        query FooQuery {
+            field2
+            ...FooFragment
+        }
+    `);
+
+    await qm.exportDirtyQueries();
+
+    expect(spy).toHaveBeenCalledTimes(0);
+
+    qm.parseGraphQL(gql`
+        fragment FooFragment on Foo {
+            field2
+            newField
+        }
+    `);
+
+    await qm.exportDirtyQueries();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+});
