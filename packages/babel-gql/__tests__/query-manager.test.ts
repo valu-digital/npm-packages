@@ -569,3 +569,32 @@ test("no export if fragment does not actually change", async () => {
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
+
+test("can define query before fragment it uses", async () => {
+    const spy = jest.fn();
+
+    const qm = new QueryManager({
+        onExportQuery: spy,
+    });
+
+    qm.parseGraphQL(gql`
+        query FooQuery {
+            field3
+            ...Fragment
+        }
+    `);
+
+    await qm.exportDirtyQueries();
+
+    expect(spy).toHaveBeenCalledTimes(0);
+
+    qm.parseGraphQL(gql`
+        fragment Fragment on Foo {
+            field1
+        }
+    `);
+
+    await qm.exportDirtyQueries();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+});
