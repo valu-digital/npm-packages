@@ -63,6 +63,34 @@ test("single query can update", async () => {
     });
 });
 
+test("no export if no change in query", async () => {
+    const spy = jest.fn();
+
+    const qm = new QueryManager({
+        onExportQuery: spy,
+    });
+
+    qm.parseGraphQL(gql`
+        query FooQuery {
+            field
+        }
+    `);
+
+    await qm.exportDirtyQueries();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+
+    qm.parseGraphQL(gql`
+        query FooQuery {
+            field
+        }
+    `);
+
+    await qm.exportDirtyQueries();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+});
+
 test("multiple queries in single string", async () => {
     const spy = jest.fn();
 

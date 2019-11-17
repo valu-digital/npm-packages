@@ -102,9 +102,17 @@ export class QueryManager {
                     throw new Error("OperationDefinition missing name");
                 }
 
-                this.dirtyQueries.add(def.name.value);
-                this.knownQueries.set(def.name.value, print(def).trim());
-                this.fragmentsUsedByQuery.set(def.name.value, new Set());
+                const queryName = def.name.value;
+
+                const query = print(def).trim();
+
+                if (this.knownQueries.get(queryName) === query) {
+                    return;
+                }
+
+                this.dirtyQueries.add(queryName);
+                this.knownQueries.set(queryName, query);
+                this.fragmentsUsedByQuery.set(queryName, new Set());
             },
             FragmentDefinition: def => {
                 const fragmentName = def.name.value;
