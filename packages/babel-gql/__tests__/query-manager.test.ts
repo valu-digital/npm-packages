@@ -286,3 +286,59 @@ test("does not export before all fragments are defined", async () => {
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
+
+test("can handle nested fragments", async () => {
+    const spy = jest.fn();
+
+    const qm = new QueryManager({
+        onExportQuery: spy,
+    });
+
+    qm.parseGraphQL(gql`
+        fragment Fragment1 on Foo {
+            field1
+        }
+
+        fragment Fragment2 on Foo {
+            field2
+            ...Fragment1
+        }
+
+        query FooQuery {
+            field3
+            ...Fragment2
+        }
+    `);
+
+    await qm.exportDirtyQueries();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+
+    const arg = spy.mock.calls[0][0];
+
+    expect(arg.fragments).toHaveLength(2);
+
+    expect(arg).toEqual({
+        query: gql`
+            query FooQuery {
+                field3
+                ...Fragment2
+            }
+        `,
+        fragments: [
+            gql`
+                fragment Fragment2 on Foo {
+                    field2
+                    ...Fragment1
+                }
+            `,
+            gql`
+                fragment Fragment1 on Foo {
+                    field1
+                }
+            `,
+        ],
+    });
+});
+
+test("does not export when all nested fragments are not defined", async () => {});

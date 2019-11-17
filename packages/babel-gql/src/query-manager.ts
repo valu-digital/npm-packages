@@ -73,6 +73,10 @@ function isOperationDefinition(ob: any): ob is OperationDefinitionNode {
     return Boolean(ob && ob.kind === "OperationDefinition");
 }
 
+function isFragmentDefinition(ob: any): ob is FragmentDefinitionNode {
+    return Boolean(ob && ob.kind === "FragmentDefinition");
+}
+
 /**
  * In memory presentation of GraphQL queries that appear in the code
  */
@@ -80,7 +84,7 @@ export class QueryManager {
     queries = new Map<string, string | undefined>();
     knownFragments = new Map<string, string | undefined>();
     fragmentsUsedByQuery = new Map<string, Set<string> | undefined>();
-    fragmentDeps = new Map<string, Set<string> | undefined>();
+    fragmentsUsedByFragment = new Map<string, Set<string> | undefined>();
     dirtyQueries = new Set<string>();
 
     options: QueryManagerOptions;
@@ -104,7 +108,7 @@ export class QueryManager {
             },
             FragmentDefinition: def => {
                 this.knownFragments.set(def.name.value, print(def).trim());
-                this.fragmentDeps.set(def.name.value, new Set());
+                this.fragmentsUsedByFragment.set(def.name.value, new Set());
 
                 for (const [
                     queryName,
@@ -122,49 +126,74 @@ export class QueryManager {
                 }
             },
             FragmentSpread: (node, key, parent, path, ancestors) => {
+                const fragmentSpreadName = node.name.value;
+
                 for (const a of ancestors) {
+                    if (isFragmentDefinition(a)) {
+                        const parentFragmentName = a.name.value;
+
+                        let fragments = this.fragmentsUsedByFragment.get(
+                            parentFragmentName,
+                        );
+
+                        if (!fragments) {
+                            fragments = new Set();
+                            this.fragmentsUsedByFragment.set(
+                                parentFragmentName,
+                                fragments,
+                            );
+                        }
+
+                        fragments.add(fragmentSpreadName);
+                    }
+
                     if (isOperationDefinition(a)) {
                         const queryName = a.name?.value;
                         if (!queryName) {
                             continue;
                         }
 
-                        const deps = this.fragmentsUsedByQuery.get(queryName);
-                        if (!deps) {
-                            continue;
+                        let fragments = this.fragmentsUsedByQuery.get(
+                            queryName,
+                        );
+
+                        if (!fragments) {
+                            fragments = new Set();
+                            this.fragmentsUsedByQuery.set(queryName, fragments);
                         }
 
-                        deps.add(node.name.value);
+                        fragments.add(fragmentSpreadName);
                     }
                 }
             },
         });
     }
 
+    queryHasRequiredFragments(queryName: string) {
+        const usedFragments = this.getUsedFragmentNamesForQuery(queryName);
+
+        for (const fragmentName of usedFragments) {
+            if (!this.knownFragments.has(fragmentName)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Get set of dirty queries that have all required fragments
+     */
     popDirtyQueries() {
         const availableQueries = this.dirtyQueries;
         const popQueries = new Set<string>();
         this.dirtyQueries = new Set();
 
-        for (const query of availableQueries) {
-            const usedFragments = this.fragmentsUsedByQuery.get(query);
-            if (!usedFragments) {
-                // Does not use fragments, all good
-                popQueries.add(query);
-                continue;
-            }
-
-            for (const fragment of usedFragments) {
-                if (!this.knownFragments.has(fragment)) {
-                    // put it back if even one used fragment is missing
-                    this.dirtyQueries.add(query);
-                    continue;
-                }
-            }
-
-            // All dep available
-            if (!this.dirtyQueries.has(query)) {
-                popQueries.add(query);
+        for (const queryName of availableQueries) {
+            if (this.queryHasRequiredFragments(queryName)) {
+                popQueries.add(queryName);
+            } else {
+                this.dirtyQueries.add(queryName);
             }
         }
 
@@ -175,6 +204,45 @@ export class QueryManager {
         for (const queryName of this.popDirtyQueries()) {
             await this.exportQuery(queryName);
         }
+    }
+
+    getUsedFragmentNamesForQuery(queryName: string) {
+        const fragmentNames = new Set<string>();
+        const usedFragments = this.fragmentsUsedByQuery.get(queryName);
+
+        if (!usedFragments) {
+            return fragmentNames;
+        }
+
+        for (const usedFragmentName of usedFragments) {
+            fragmentNames.add(usedFragmentName);
+            this.getNestedFragmentNamesForFragment(
+                usedFragmentName,
+                fragmentNames,
+            );
+        }
+
+        return fragmentNames;
+    }
+
+    getNestedFragmentNamesForFragment(
+        fragmentName: string,
+        _fragments?: Set<string>,
+    ) {
+        const fragments = _fragments || new Set();
+        const usedFragments = this.fragmentsUsedByFragment.get(fragmentName);
+
+        if (usedFragments) {
+            for (const usedFragmentName of usedFragments) {
+                fragments.add(usedFragmentName);
+                this.getNestedFragmentNamesForFragment(
+                    usedFragmentName,
+                    fragments,
+                );
+            }
+        }
+
+        return fragments;
     }
 
     async exportQuery(queryName: string) {
@@ -189,7 +257,7 @@ export class QueryManager {
         }
 
         const fragments = Array.from(
-            this.fragmentsUsedByQuery.get(queryName) ?? [],
+            this.getUsedFragmentNamesForQuery(queryName),
         ).map(fragmentName => {
             return this.knownFragments.get(fragmentName)!;
         });
