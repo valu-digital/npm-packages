@@ -258,9 +258,11 @@ export class QueryManager {
 
         const fragments = Array.from(
             this.getUsedFragmentNamesForQuery(queryName),
-        ).map(fragmentName => {
-            return this.knownFragments.get(fragmentName)!;
-        });
+        )
+            .map(fragmentName => {
+                return this.knownFragments.get(fragmentName)!;
+            })
+            .sort();
 
         await this.options.onExportQuery(
             {

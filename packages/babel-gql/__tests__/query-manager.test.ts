@@ -327,14 +327,14 @@ test("can handle nested fragments", async () => {
         `,
         fragments: [
             gql`
-                fragment Fragment2 on Foo {
-                    field2
-                    ...Fragment1
+                fragment Fragment1 on Foo {
+                    field1
                 }
             `,
             gql`
-                fragment Fragment1 on Foo {
-                    field1
+                fragment Fragment2 on Foo {
+                    field2
+                    ...Fragment1
                 }
             `,
         ],
@@ -387,14 +387,14 @@ test("does not export when all nested fragments are not defined", async () => {
         `,
         fragments: [
             gql`
-                fragment Fragment2 on Foo {
-                    field2
-                    ...Fragment1
+                fragment Fragment1 on Foo {
+                    field1
                 }
             `,
             gql`
-                fragment Fragment1 on Foo {
-                    field1
+                fragment Fragment2 on Foo {
+                    field2
+                    ...Fragment1
                 }
             `,
         ],
