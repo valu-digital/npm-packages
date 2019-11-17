@@ -81,7 +81,7 @@ function isFragmentDefinition(ob: any): ob is FragmentDefinitionNode {
  * In memory presentation of GraphQL queries that appear in the code
  */
 export class QueryManager {
-    queries = new Map<string, string | undefined>();
+    knownQueries = new Map<string, string | undefined>();
     knownFragments = new Map<string, string | undefined>();
     fragmentsUsedByQuery = new Map<string, Set<string> | undefined>();
     fragmentsUsedByFragment = new Map<string, Set<string> | undefined>();
@@ -103,7 +103,7 @@ export class QueryManager {
                 }
 
                 this.dirtyQueries.add(def.name.value);
-                this.queries.set(def.name.value, print(def).trim());
+                this.knownQueries.set(def.name.value, print(def).trim());
                 this.fragmentsUsedByQuery.set(def.name.value, new Set());
             },
             FragmentDefinition: def => {
@@ -266,7 +266,7 @@ export class QueryManager {
         //     return;
         // }
 
-        const query = this.queries.get(queryName);
+        const query = this.knownQueries.get(queryName);
 
         if (!query) {
             return;
