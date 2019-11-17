@@ -55,6 +55,7 @@ export function findUsedFragments(
 export interface QueryManagerOptions {
     onExportQuery(
         query: {
+            queryName: string;
             query: string;
             fragments: string[];
         },
@@ -275,10 +276,6 @@ export class QueryManager {
     }
 
     async exportQuery(queryName: string) {
-        // if (!this.hasRequiredFragments(queryName)) {
-        //     return;
-        // }
-
         const query = this.knownQueries.get(queryName);
 
         if (!query) {
@@ -297,9 +294,7 @@ export class QueryManager {
             {
                 query,
                 fragments,
-                // query: this.formatQuery(query),
-                // queryId: query.queryId,
-                // queryName: query.queryName,
+                queryName,
             },
             this,
         );

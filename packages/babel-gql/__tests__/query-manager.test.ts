@@ -54,6 +54,7 @@ test("single query can update", async () => {
     const arg = spy.mock.calls[1][0];
 
     expect(arg).toEqual({
+        queryName: "FooQuery",
         query: gql`
             query FooQuery {
                 fieldUpdated
@@ -179,6 +180,7 @@ test("single query with fragment", async () => {
     expect(spy).toHaveBeenCalledTimes(1);
     const arg = spy.mock.calls[0][0];
     expect(arg).toEqual({
+        queryName: "FooQuery",
         query: gql`
             query FooQuery {
                 field2
@@ -228,6 +230,7 @@ test("fragment update triggers query export", async () => {
     const arg = spy.mock.calls[1][0];
 
     expect(arg).toEqual({
+        queryName: "FooQuery",
         query: gql`
             query FooQuery {
                 field2
@@ -308,6 +311,7 @@ test("adding fragment dep causes export", async () => {
     const arg = spy.mock.calls[1][0];
 
     expect(arg).toEqual({
+        queryName: "FooQuery",
         query: gql`
             query FooQuery {
                 ...SomeFragment
@@ -386,6 +390,7 @@ test("can handle nested fragments", async () => {
     expect(arg.fragments).toHaveLength(2);
 
     expect(arg).toEqual({
+        queryName: "FooQuery",
         query: gql`
             query FooQuery {
                 field3
@@ -446,6 +451,7 @@ test("does not export when all nested fragments are not defined", async () => {
     expect(arg.fragments).toHaveLength(2);
 
     expect(arg).toEqual({
+        queryName: "FooQuery",
         query: gql`
             query FooQuery {
                 field3
@@ -510,6 +516,7 @@ test("change to nested fragment triggers update", async () => {
     expect(arg.fragments).toHaveLength(2);
 
     expect(arg).toEqual({
+        queryName: "FooQuery",
         query: gql`
             query FooQuery {
                 field3
