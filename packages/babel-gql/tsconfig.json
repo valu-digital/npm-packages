@@ -8,6 +8,5 @@
         "forceConsistentCasingInFileNames": true,
         "strict": true,
         "esModuleInterop": true
-    },
-    "exclude": ["docs", "__tests__"]
+    }
 }

@@ -27,6 +27,7 @@ export default function bemedBabelPlugin(
     babel: Babel,
 ): { visitor: Visitor<VisitorState> } {
     const t = babel.types;
+    console.log("creati plugin instance");
 
     /**
      * Local name of the css import from babel-gql if any
