@@ -6,7 +6,7 @@ import {
     visit,
     OperationDefinitionNode,
 } from "graphql";
-import { ParsedGQLTag } from "./shared";
+import { ParsedGQLTag, combinedIds } from "./shared";
 
 function hash(s: string) {
     return crypto
@@ -47,6 +47,8 @@ export interface QueryManagerOptions {
         query: {
             queryName: string;
             queryId: string;
+            fullQueryId: string;
+            fullQuery: string;
             query: string;
             usedFragments: {
                 fragment: string;
@@ -340,10 +342,21 @@ export class QueryManager {
                 return a.fragmentName.localeCompare(b.fragmentName);
             });
 
+        const fragmentIds = fragments.map(f => f.fragmentId);
+
+        const fragmentsString = fragments.map(f => f.fragment).join("\n");
+
+        const fullQuery = (fragmentsString + "\n" + query).trim();
+
+        const queryId = hash(query);
+        const fullQueryId = combinedIds([queryId, ...fragmentIds]);
+
         await this.options.onExportQuery(
             {
                 query,
-                queryId: hash(query),
+                queryId,
+                fullQueryId,
+                fullQuery,
                 usedFragments: fragments,
                 queryName,
             },

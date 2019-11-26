@@ -3,7 +3,6 @@ import PathUtils from "path";
 import * as _BabelTypes from "@babel/types";
 import { Visitor, NodePath } from "@babel/traverse";
 import { QueryManager } from "./query-manager";
-import { combinedIds } from "./shared";
 
 type BabelTypes = typeof _BabelTypes;
 
@@ -49,22 +48,12 @@ export default function bemedBabelPlugin(
 
             await fs.mkdir(target, { recursive: true });
 
-            const fragmentIds = query.usedFragments.map(f => f.fragmentId);
-            const fragments = query.usedFragments
-                .map(f => f.fragment)
-                .join("\n");
-
-            const finalQueryId = combinedIds([query.queryId, ...fragmentIds]);
-
-            const fullQuery = (fragments + "\n" + query.query).trim();
-
             await fs.writeFile(
                 PathUtils.join(
                     target,
-
-                    `${query.queryName}-${finalQueryId}.graphql`,
+                    `${query.queryName}-${query.fullQueryId}.graphql`,
                 ),
-                fullQuery,
+                query.fullQuery,
             );
         },
     });
