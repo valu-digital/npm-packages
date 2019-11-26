@@ -43,6 +43,10 @@ export default function bemedBabelPlugin(
 
     const qm = new QueryManager({
         async onExportQuery(query, target) {
+            if (!target) {
+                return;
+            }
+
             await fs.mkdir(target, { recursive: true });
 
             const fragmentIds = query.usedFragments.map(f => f.fragmentId);

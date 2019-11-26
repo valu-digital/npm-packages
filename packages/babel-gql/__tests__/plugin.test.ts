@@ -1,11 +1,18 @@
 import { transform } from "@babel/core";
 import dedent from "dedent";
+import { BabelGQLOptions } from "../src/plugin";
 
 function lines(...args: string[]) {
     return args.join("\n");
 }
 
-function runPlugin(code: string, options?: unknown) {
+function runPlugin(code: string, options?: BabelGQLOptions) {
+    options = options ?? {};
+
+    if (!options.active) {
+        options = { ...options, active: true };
+    }
+
     const res = transform(code, {
         babelrc: false,
         filename: "test.ts",
