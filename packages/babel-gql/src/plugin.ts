@@ -1,6 +1,9 @@
+import { promises as fs } from "fs";
+import PathUtils from "path";
 import * as _BabelTypes from "@babel/types";
 import { Visitor, NodePath } from "@babel/traverse";
 import { QueryManager } from "./query-manager";
+import { combinedIds } from "./shared";
 
 type BabelTypes = typeof _BabelTypes;
 
@@ -18,7 +21,14 @@ interface BabelFile {
 
 export interface BabelGQLOptions {
     moduleName?: string;
-    removeQuery?: boolean;
+    active?: boolean;
+    target?: string;
+}
+
+function isActive(state: VisitorState) {
+    const defaultValue = Boolean(process.env.NODE_ENV === "production");
+
+    return state.opts?.active ?? defaultValue;
 }
 
 interface VisitorState {
@@ -32,7 +42,27 @@ export default function bemedBabelPlugin(
     const t = babel.types;
 
     const qm = new QueryManager({
-        async onExportQuery(query) {
+        async onExportQuery(query, target) {
+            await fs.mkdir(target, { recursive: true });
+
+            const fragmentIds = query.usedFragments.map(f => f.fragmentId);
+            const fragments = query.usedFragments
+                .map(f => f.fragment)
+                .join("\n");
+
+            const finalQueryId = combinedIds([query.queryId, ...fragmentIds]);
+
+            const fullQuery = (fragments + "\n" + query.query).trim();
+
+            await fs.writeFile(
+                PathUtils.join(
+                    target,
+
+                    `${query.queryName}-${finalQueryId}.graphql`,
+                ),
+                fullQuery,
+            );
+
             console.log("would export", query);
         },
     });
@@ -70,6 +100,10 @@ export default function bemedBabelPlugin(
             },
 
             TaggedTemplateExpression(path, state) {
+                if (!isActive(state)) {
+                    return;
+                }
+
                 if (!name) {
                     return;
                 }
@@ -106,7 +140,10 @@ export default function bemedBabelPlugin(
                     ]),
                 );
 
-                qm.exportDirtyQueries();
+                qm.exportDirtyQueries(
+                    state.opts?.target ??
+                        PathUtils.join(process.cwd(), ".queries"),
+                );
             },
         },
     };

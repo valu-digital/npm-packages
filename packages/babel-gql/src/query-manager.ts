@@ -46,18 +46,17 @@ export interface QueryManagerOptions {
     onExportQuery(
         query: {
             queryName: string;
+            queryId: string;
             query: string;
-            fragments: string[];
+            usedFragments: {
+                fragment: string;
+                fragmentName: string;
+                fragmentId: string;
+            }[];
         },
+        target: string,
         queryManager: QueryManager,
     ): Promise<any>;
-}
-
-interface QueryData {
-    query: string;
-    queryId: string;
-    queryName: string;
-    requiredFragments: string[];
 }
 
 function isOperationDefinition(ob: any): ob is OperationDefinitionNode {
