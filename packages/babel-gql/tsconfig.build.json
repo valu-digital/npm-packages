@@ -3,9 +3,10 @@
     "exclude": ["__tests__"],
     "compilerOptions": {
         "sourceMap": true,
+        "target": "es6",
         "noEmit": false,
         "outDir": "./dist",
         "declaration": true,
-        "declarationDir": "./build"
+        "declarationDir": "./dist"
     }
 }
