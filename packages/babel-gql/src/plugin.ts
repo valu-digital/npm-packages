@@ -105,6 +105,8 @@ export default function bemedBabelPlugin(
                         }),
                     ]),
                 );
+
+                qm.exportDirtyQueries();
             },
         },
     };
