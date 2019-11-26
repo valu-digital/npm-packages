@@ -113,6 +113,10 @@ function recursiveObjectExpression(t: BabelTypes, ob: any): any {
         return t.stringLiteral(ob);
     }
 
+    if (typeof ob === "boolean") {
+        return t.booleanLiteral(ob);
+    }
+
     if (Array.isArray(ob)) {
         return t.arrayExpression(
             ob.map(item => recursiveObjectExpression(t, item)),

@@ -29,7 +29,7 @@ export function createRuntimeGQL() {
         return { babel: false as const, query: result };
     }
 
-    function runtimeGQL(parsed: ParsedGQLTag) {
+    function runtimeGQL(parsed: Omit<ParsedGQLTag, "babel">) {
         parsed.queries.forEach(query => {
             queries[query.queryName] = query;
         });
@@ -37,7 +37,7 @@ export function createRuntimeGQL() {
             fragments[fragment.fragmentName] = fragment;
         });
 
-        return parsed;
+        return { ...parsed, babel: true as const };
     }
 
     function findFragmentsOfFragments(

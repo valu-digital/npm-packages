@@ -25,7 +25,6 @@ test("runtime return value with babel", () => {
     const { runtimeGQL } = createRuntimeGQL();
 
     const query = runtimeGQL({
-        babel: true,
         queries: [{ queryId: "123", queryName: "getTest", usedFragments: [] }],
         fragments: [],
     });
@@ -41,7 +40,6 @@ test("can get query", () => {
     const { runtimeGQL, getQuery } = createRuntimeGQL();
 
     runtimeGQL({
-        babel: true,
         queries: [{ queryId: "123", queryName: "getTest", usedFragments: [] }],
         fragments: [],
     });
@@ -56,7 +54,6 @@ test("can get query with fragments", () => {
     const { runtimeGQL, getQuery } = createRuntimeGQL();
 
     runtimeGQL({
-        babel: true,
         queries: [
             {
                 queryId: "123",
@@ -83,7 +80,6 @@ test("can get query with fragments depending on fragments", () => {
     const { runtimeGQL, getQuery } = createRuntimeGQL();
 
     runtimeGQL({
-        babel: true,
         queries: [
             {
                 queryId: "123",
@@ -115,7 +111,6 @@ test("can use multiple runtime calls", () => {
     const { runtimeGQL, getQuery } = createRuntimeGQL();
 
     runtimeGQL({
-        babel: true,
         queries: [],
         fragments: [
             {
@@ -127,7 +122,6 @@ test("can use multiple runtime calls", () => {
     });
 
     runtimeGQL({
-        babel: true,
         queries: [
             {
                 queryId: "123",
