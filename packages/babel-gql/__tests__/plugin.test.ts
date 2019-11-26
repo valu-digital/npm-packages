@@ -47,6 +47,34 @@ test("simple transformation", () => {
     );
 });
 
+test("can follow import alias", () => {
+    const code = dedent`
+    import { gql as foo } from "babel-gql";
+    const query = foo\`
+        query Foo {
+            bar
+        }
+    \`
+    `;
+
+    const res = runPlugin(code);
+    runPlugin(code);
+
+    expect(res.code).toEqual(
+        dedent`
+        import { gql as foo } from "babel-gql";
+        const query = foo({
+          fragments: [],
+          queries: [{
+            queryId: "5430c050ffd840248a6724bb3a674ffb347dce047429ba5bf61a9edee3d8d699",
+            queryName: "Foo",
+            usedFragments: []
+          }]
+        });
+    `.trim(),
+    );
+});
+
 test("can handle fragments", () => {
     const code = dedent`
     import { gql } from "babel-gql";
