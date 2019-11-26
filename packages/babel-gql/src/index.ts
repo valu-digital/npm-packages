@@ -99,3 +99,8 @@ export function createRuntimeGQL() {
         },
     };
 }
+
+const babelqgl = createRuntimeGQL();
+
+export const gql = babelqgl.gql;
+export const getQuery = babelqgl.getQuery;
