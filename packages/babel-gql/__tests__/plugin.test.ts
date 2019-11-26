@@ -1,10 +1,6 @@
 import { transform } from "@babel/core";
 import dedent from "dedent";
 
-function lines(...args: string[]) {
-    return args.join("\n");
-}
-
 function runPlugin(code: string, options?: unknown) {
     const res = transform(code, {
         babelrc: false,
