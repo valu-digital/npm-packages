@@ -3,11 +3,10 @@ import {
     parse,
     print,
     FragmentDefinitionNode,
-    DocumentNode,
     visit,
     OperationDefinitionNode,
-    isOutputType,
 } from "graphql";
+import { ParsedGQLTag } from "./shared";
 
 function hash(s: string) {
     return crypto
@@ -101,22 +100,7 @@ export class QueryManager {
         this.options = options;
     }
 
-    parseGraphQL(
-        graphql: string,
-    ): {
-        queries: {
-            queryName: string;
-            queryId: string;
-            query: string;
-            usedFragments: string[];
-        }[];
-        fragments: {
-            fragmentName: string;
-            fragmentId: string;
-            fragment: string;
-            usedFragments: string[];
-        }[];
-    } {
+    parseGraphQL(graphql: string): ParsedGQLTag {
         const doc = parse(graphql);
 
         const queries = [] as string[];

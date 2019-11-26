@@ -1,6 +1,10 @@
 import { transform } from "@babel/core";
 import dedent from "dedent";
 
+function lines(...args: string[]) {
+    return args.join("\n");
+}
+
 function runPlugin(code: string, options?: unknown) {
     const res = transform(code, {
         babelrc: false,
@@ -118,6 +122,37 @@ test("fragments can use fragments", () => {
             usedFragments: ["NameParts"]
           }],
           queries: []
+        });
+        `.trim(),
+    );
+});
+
+test("can handle embedded fragments", () => {
+    const code = lines(
+        'import { gql } from "babel-gql";',
+        "const query = gql`",
+        "   ${NameParts}",
+        "   query GetPerson {",
+        '       people(id: "7") {',
+        "           ...NameParts",
+        "           avatar(size: LARGE)",
+        "       }",
+        "}`",
+    );
+
+    const res = runPlugin(code);
+    runPlugin(code);
+
+    expect(res.code).toEqual(
+        dedent`
+        import { gql } from "babel-gql";
+        const query = gql({
+          fragments: [],
+          queries: [{
+            queryId: "ea45bb731caccf48a370efdd98de551f9cb8c4926ddd6e440ad95a5090387716",
+            queryName: "GetPerson",
+            usedFragments: ["NameParts"]
+          }]
         });
         `.trim(),
     );

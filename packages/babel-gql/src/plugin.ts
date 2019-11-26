@@ -81,8 +81,9 @@ export default function bemedBabelPlugin(
                 }
 
                 const gqlString = path.node.quasi.quasis
-                    .map(q => q.value.raw)
-                    .join();
+                    .map(q => q.value.cooked)
+                    .join("")
+                    .trim();
 
                 const parsed = qm.parseGraphQL(gqlString);
 

@@ -1,10 +1,5 @@
 import { QueryManager } from "../src/query-manager";
-import { print, parse } from "graphql";
-import dedent from "dedent";
-// Nooop gql fn for prettier
-function gql(...things: TemplateStringsArray[]) {
-    return print(parse(things.join(""))).trim();
-}
+import { gql } from "./helpers";
 
 test("single query", async () => {
     const spy = jest.fn();
