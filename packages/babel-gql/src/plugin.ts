@@ -32,7 +32,9 @@ export default function bemedBabelPlugin(
     const t = babel.types;
 
     const qm = new QueryManager({
-        async onExportQuery() {},
+        async onExportQuery(query) {
+            console.log("would export", query);
+        },
     });
 
     /**
