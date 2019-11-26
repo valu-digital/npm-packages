@@ -71,7 +71,7 @@ test("can get query with fragments", () => {
     });
 
     expect(getQuery("getTest")).toEqual({
-        queryId: "123abc",
+        queryId: "1a",
         queryName: "getTest",
     });
 });
@@ -102,7 +102,7 @@ test("can get query with fragments depending on fragments", () => {
     });
 
     expect(getQuery("getTest")).toEqual({
-        queryId: "123abcefg",
+        queryId: "1ae",
         queryName: "getTest",
     });
 });
@@ -139,7 +139,7 @@ test("can use multiple runtime calls", () => {
     });
 
     expect(getQuery("getTest")).toEqual({
-        queryId: "123abcefg",
+        queryId: "1ae",
         queryName: "getTest",
     });
 });
