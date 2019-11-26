@@ -1,8 +1,11 @@
-import * as BabelTypes from "@babel/types";
+import * as _BabelTypes from "@babel/types";
 import { Visitor, NodePath } from "@babel/traverse";
+import { QueryManager } from "./query-manager";
+
+type BabelTypes = typeof _BabelTypes;
 
 export interface Babel {
-    types: typeof BabelTypes;
+    types: BabelTypes;
 }
 
 interface BabelFile {
@@ -27,7 +30,10 @@ export default function bemedBabelPlugin(
     babel: Babel,
 ): { visitor: Visitor<VisitorState> } {
     const t = babel.types;
-    console.log("creati plugin instance");
+
+    const qm = new QueryManager({
+        async onExportQuery() {},
+    });
 
     /**
      * Local name of the css import from babel-gql if any
@@ -74,21 +80,60 @@ export default function bemedBabelPlugin(
                     return;
                 }
 
+                const gqlString = path.node.quasi.quasis
+                    .map(q => q.value.raw)
+                    .join();
+
+                const parsed = qm.parseGraphQL(gqlString);
+
                 path.replaceWith(
                     t.callExpression(t.identifier(name), [
-                        t.objectExpression([
-                            t.objectProperty(
-                                t.identifier("queryName"),
-                                t.stringLiteral("sdf"),
-                            ),
-                            t.objectProperty(
-                                t.identifier("query"),
-                                path.node.quasi,
-                            ),
-                        ]),
+                        recursiveObjectExpression(t, {
+                            queries: parsed.queries.map(query => ({
+                                queryName: query.queryName,
+                                queryId: query.queryId,
+                                usedFragments: query.usedFragments,
+                            })),
+                            fragments: parsed.fragments.map(fragment => ({
+                                fragmentName: fragment.fragmentName,
+                                fragmentId: fragment.fragmentId,
+                                usedFragments: fragment.usedFragments,
+                            })),
+                        }),
                     ]),
                 );
             },
         },
     };
+}
+
+function recursiveObjectExpression(t: BabelTypes, ob: any): any {
+    if (typeof ob === "string") {
+        return t.stringLiteral(ob);
+    }
+
+    if (Array.isArray(ob)) {
+        return t.arrayExpression(
+            ob.map(item => recursiveObjectExpression(t, item)),
+        );
+    }
+
+    if (typeof ob === "number") {
+        return t.numericLiteral(ob);
+    }
+
+    if (!ob) {
+        return t.nullLiteral();
+    }
+
+    return t.objectExpression(
+        Object.keys(ob)
+            .sort()
+            .map(key => {
+                return t.objectProperty(
+                    t.identifier(key),
+                    recursiveObjectExpression(t, ob[key]),
+                );
+            }),
+    );
 }

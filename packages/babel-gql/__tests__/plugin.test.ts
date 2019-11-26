@@ -19,7 +19,7 @@ function runPlugin(code: string, options?: unknown) {
     return res;
 }
 
-test("adds source maps", () => {
+test("simple transformation", () => {
     const code = dedent`
     import { gql } from "babel-gql";
     const query = gql\`
@@ -31,5 +31,18 @@ test("adds source maps", () => {
 
     const res = runPlugin(code);
     runPlugin(code);
-    // expect(res.code).toEqual(lines(""));
+
+    expect(res.code).toEqual(
+        dedent`
+        import { gql } from "babel-gql";
+        const query = gql({
+          fragments: [],
+          queries: [{
+            queryId: "5430c050ffd840248a6724bb3a674ffb347dce047429ba5bf61a9edee3d8d699",
+            queryName: "Foo",
+            usedFragments: []
+          }]
+        });
+    `.trim(),
+    );
 });

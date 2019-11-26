@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import {
     parse,
     print,
@@ -8,22 +9,12 @@ import {
     isOutputType,
 } from "graphql";
 
-function findFragmentDefinitions(
-    docs: (DocumentNode | FragmentDefinitionNode)[],
-) {
-    const fragments = new Map<string, FragmentDefinitionNode>();
-
-    for (const doc of docs) {
-        visit(doc, {
-            FragmentDefinition: {
-                enter(node) {
-                    fragments.set(node.name.value, node);
-                },
-            },
-        });
-    }
-
-    return fragments;
+function hash(s: string) {
+    return crypto
+        .createHash("sha256")
+        .update(s, "utf8")
+        .digest()
+        .toString("hex");
 }
 
 export function findUsedFragments(
@@ -82,10 +73,26 @@ function isFragmentDefinition(ob: any): ob is FragmentDefinitionNode {
  * In memory presentation of GraphQL queries that appear in the code
  */
 export class QueryManager {
+    /**
+     * Queries by name
+     */
     knownQueries = new Map<string, string | undefined>();
+
+    /**
+     * Fragments by name
+     */
     knownFragments = new Map<string, string | undefined>();
+
+    /**
+     * Fragments by query name
+     */
     fragmentsUsedByQuery = new Map<string, Set<string> | undefined>();
+
+    /**
+     * Fragments by fragment name
+     */
     fragmentsUsedByFragment = new Map<string, Set<string> | undefined>();
+
     dirtyQueries = new Set<string>();
 
     options: QueryManagerOptions;
@@ -94,8 +101,27 @@ export class QueryManager {
         this.options = options;
     }
 
-    parseGraphQL(graphql: string) {
+    parseGraphQL(
+        graphql: string,
+    ): {
+        queries: {
+            queryName: string;
+            queryId: string;
+            query: string;
+            usedFragments: string[];
+        }[];
+        fragments: {
+            fragmentName: string;
+            fragmentId: string;
+            fragment: string;
+            usedFragments: string[];
+        }[];
+    } {
         const doc = parse(graphql);
+
+        const queries = [] as string[];
+
+        const fragments = [] as string[];
 
         visit(doc, {
             OperationDefinition: def => {
@@ -107,7 +133,10 @@ export class QueryManager {
 
                 const query = print(def).trim();
 
+                queries.push(queryName);
+
                 if (this.knownQueries.get(queryName) === query) {
+                    // no changes
                     return;
                 }
 
@@ -118,7 +147,10 @@ export class QueryManager {
             FragmentDefinition: def => {
                 const fragmentName = def.name.value;
                 const fragment = print(def).trim();
+
+                fragments.push(fragmentName);
                 if (this.knownFragments.get(fragmentName) === fragment) {
+                    // no changes
                     return;
                 }
 
@@ -197,6 +229,33 @@ export class QueryManager {
                 }
             },
         });
+
+        return {
+            queries: queries.map(queryName => {
+                const query = this.knownQueries.get(queryName)!;
+
+                return {
+                    query,
+                    queryName,
+                    queryId: hash(query),
+                    usedFragments: Array.from(
+                        this.fragmentsUsedByQuery.get(queryName) ?? [],
+                    ),
+                };
+            }),
+            fragments: fragments.map(fragmentName => {
+                const fragment = this.knownFragments.get(fragmentName)!;
+
+                return {
+                    fragment,
+                    fragmentName,
+                    fragmentId: hash(fragment),
+                    usedFragments: Array.from(
+                        this.fragmentsUsedByFragment.get(fragmentName) ?? [],
+                    ),
+                };
+            }),
+        };
     }
 
     queryHasRequiredFragments(queryName: string) {
