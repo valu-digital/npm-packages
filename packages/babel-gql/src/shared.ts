@@ -13,5 +13,8 @@ export interface ParsedGQLTag {
 }
 
 export function combinedIds(ids: string[]) {
-    return ids.join("");
+    return ids
+        .slice()
+        .sort()
+        .join("");
 }

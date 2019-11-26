@@ -40,6 +40,30 @@ export function createRuntimeGQL() {
         return parsed;
     }
 
+    function findFragmentsOfFragments(
+        fragmentName: string,
+        _frags: Record<string, boolean>,
+    ): Record<string, boolean> {
+        const fragment = fragments[fragmentName];
+
+        if (!fragment) {
+            throw new Error(`Cannot find fragment ${fragmentName}`);
+        }
+
+        if (!_frags) {
+            _frags = {};
+        }
+
+        _frags[fragmentName] = true;
+
+        fragment.usedFragments.forEach(fragmenName => {
+            _frags[fragmenName] = true;
+            findFragmentsOfFragments(fragmenName, _frags);
+        });
+
+        return _frags;
+    }
+
     return {
         gql,
         runtimeGQL,
@@ -50,7 +74,13 @@ export function createRuntimeGQL() {
                 throw new Error(`Cannot find query ${queryName}`);
             }
 
-            const fragmentIds = query.usedFragments.map(fragmentName => {
+            const frags: Record<string, boolean> = {};
+
+            query.usedFragments.forEach(fragmentName => {
+                findFragmentsOfFragments(fragmentName, frags);
+            });
+
+            const fragmentIds = Object.keys(frags).map(fragmentName => {
                 const fragment = fragments[fragmentName];
 
                 if (!fragment) {
