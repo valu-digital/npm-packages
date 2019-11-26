@@ -66,8 +66,6 @@ export default function bemedBabelPlugin(
                 ),
                 fullQuery,
             );
-
-            console.log("would export", query);
         },
     });
 
