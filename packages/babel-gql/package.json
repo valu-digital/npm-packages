@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "tsc --project tsconfig.build.json",
+        "build": "rm -rf dist && tsc --project tsconfig.build.json",
         "prepublishOnly": "npm test && npm run build",
         "test": "jest"
     },
