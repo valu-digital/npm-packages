@@ -12,6 +12,7 @@ export function createRuntimeGQL() {
         ...placeholders: string[]
     ): ParsedGQLTag | { babel: false; query: string } {
         if (!Array.isArray(literals)) {
+            // Was converted to a normal function call via babel
             return runtimeGQL(literals as any);
         }
 
