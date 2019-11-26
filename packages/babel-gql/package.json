@@ -2,7 +2,7 @@
     "name": "babel-gql",
     "version": "0.0.1",
     "description": "",
-    "main": "index.js",
+    "main": "dist/index.js",
     "scripts": {
         "build": "rm -rf dist && tsc --project tsconfig.build.json",
         "prepublishOnly": "npm test && npm run build",
