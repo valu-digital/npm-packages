@@ -100,7 +100,7 @@ export class QueryManager {
         this.options = options;
     }
 
-    parseGraphQL(graphql: string): ParsedGQLTag {
+    parseGraphQL(graphql: string): Omit<ParsedGQLTag, "babel"> {
         const doc = parse(graphql);
 
         const queries = [] as string[];
