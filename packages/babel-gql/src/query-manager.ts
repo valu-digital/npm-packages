@@ -273,9 +273,9 @@ export class QueryManager {
         return popQueries;
     }
 
-    async exportDirtyQueries() {
+    async exportDirtyQueries(target: string) {
         for (const queryName of this.popDirtyQueries()) {
-            await this.exportQuery(queryName);
+            await this.exportQuery(queryName, target);
         }
     }
 
@@ -318,7 +318,7 @@ export class QueryManager {
         return fragments;
     }
 
-    async exportQuery(queryName: string) {
+    async exportQuery(queryName: string, target: string) {
         const query = this.knownQueries.get(queryName);
 
         if (!query) {
@@ -329,16 +329,26 @@ export class QueryManager {
             this.getUsedFragmentNamesForQuery(queryName),
         )
             .map(fragmentName => {
-                return this.knownFragments.get(fragmentName)!;
+                const fragment = this.knownFragments.get(fragmentName)!;
+
+                return {
+                    fragment,
+                    fragmentName,
+                    fragmentId: hash(fragment),
+                };
             })
-            .sort();
+            .sort((a, b) => {
+                return a.fragmentName.localeCompare(b.fragmentName);
+            });
 
         await this.options.onExportQuery(
             {
                 query,
-                fragments,
+                queryId: hash(query),
+                usedFragments: fragments,
                 queryName,
             },
+            target,
             this,
         );
     }

@@ -14,7 +14,7 @@ test("single query", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
@@ -32,7 +32,7 @@ test("single query can update", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -42,20 +42,21 @@ test("single query can update", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(2);
 
     const arg = spy.mock.calls[1][0];
 
-    expect(arg).toEqual({
+    expect(arg).toMatchObject({
         queryName: "FooQuery",
+        queryId: expect.stringMatching(/.+/),
         query: gql`
             query FooQuery {
                 fieldUpdated
             }
         `,
-        fragments: [],
+        usedFragments: [],
     });
 });
 
@@ -72,7 +73,7 @@ test("no export if no change in query", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -82,7 +83,7 @@ test("no export if no change in query", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
@@ -103,7 +104,7 @@ test("multiple queries in single string", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(2);
 });
@@ -127,7 +128,7 @@ test("multiple queries in multiple strings", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(2);
 });
@@ -147,7 +148,7 @@ test("single mutation", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
@@ -170,11 +171,11 @@ test("single query with fragment", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
     const arg = spy.mock.calls[0][0];
-    expect(arg).toEqual({
+    expect(arg).toMatchObject({
         queryName: "FooQuery",
         query: gql`
             query FooQuery {
@@ -182,12 +183,16 @@ test("single query with fragment", async () => {
                 ...FooFragment
             }
         `,
-        fragments: [
-            gql`
-                fragment FooFragment on Foo {
-                    field2
-                }
-            `,
+        usedFragments: [
+            {
+                fragmentName: "FooFragment",
+                fragmentId: expect.stringMatching(/.+/),
+                fragment: gql`
+                    fragment FooFragment on Foo {
+                        field2
+                    }
+                `,
+            },
         ],
     });
 });
@@ -210,7 +215,7 @@ test("fragment update triggers query export", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     qm.parseGraphQL(gql`
         fragment FooFragment on Foo {
@@ -219,12 +224,12 @@ test("fragment update triggers query export", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(2);
     const arg = spy.mock.calls[1][0];
 
-    expect(arg).toEqual({
+    expect(arg).toMatchObject({
         queryName: "FooQuery",
         query: gql`
             query FooQuery {
@@ -232,13 +237,17 @@ test("fragment update triggers query export", async () => {
                 ...FooFragment
             }
         `,
-        fragments: [
-            gql`
-                fragment FooFragment on Foo {
-                    field2
-                    newField
-                }
-            `,
+        usedFragments: [
+            {
+                fragmentName: "FooFragment",
+                fragmentId: expect.stringMatching(/.+/),
+                fragment: gql`
+                    fragment FooFragment on Foo {
+                        field2
+                        newField
+                    }
+                `,
+            },
         ],
     });
 });
@@ -256,7 +265,7 @@ test("unrelated fragment does not trigger export", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -266,7 +275,7 @@ test("unrelated fragment does not trigger export", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
@@ -288,7 +297,7 @@ test("adding fragment dep causes export", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -299,13 +308,13 @@ test("adding fragment dep causes export", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(2);
 
     const arg = spy.mock.calls[1][0];
 
-    expect(arg).toEqual({
+    expect(arg).toMatchObject({
         queryName: "FooQuery",
         query: gql`
             query FooQuery {
@@ -313,12 +322,15 @@ test("adding fragment dep causes export", async () => {
                 field2
             }
         `,
-        fragments: [
-            gql`
-                fragment SomeFragment on Foo {
-                    field2
-                }
-            `,
+        usedFragments: [
+            {
+                fragmentName: "SomeFragment",
+                fragment: gql`
+                    fragment SomeFragment on Foo {
+                        field2
+                    }
+                `,
+            },
         ],
     });
 });
@@ -337,7 +349,7 @@ test("does not export before all fragments are defined", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(0);
 
@@ -348,7 +360,7 @@ test("does not export before all fragments are defined", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
@@ -376,15 +388,15 @@ test("can handle nested fragments", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
     const arg = spy.mock.calls[0][0];
 
-    expect(arg.fragments).toHaveLength(2);
+    expect(arg.usedFragments).toHaveLength(2);
 
-    expect(arg).toEqual({
+    expect(arg).toMatchObject({
         queryName: "FooQuery",
         query: gql`
             query FooQuery {
@@ -392,18 +404,22 @@ test("can handle nested fragments", async () => {
                 ...Fragment2
             }
         `,
-        fragments: [
-            gql`
-                fragment Fragment1 on Foo {
-                    field1
-                }
-            `,
-            gql`
-                fragment Fragment2 on Foo {
-                    field2
-                    ...Fragment1
-                }
-            `,
+        usedFragments: [
+            {
+                fragment: gql`
+                    fragment Fragment1 on Foo {
+                        field1
+                    }
+                `,
+            },
+            {
+                fragment: gql`
+                    fragment Fragment2 on Foo {
+                        field2
+                        ...Fragment1
+                    }
+                `,
+            },
         ],
     });
 });
@@ -427,7 +443,7 @@ test("does not export when all nested fragments are not defined", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(0);
 
@@ -437,15 +453,15 @@ test("does not export when all nested fragments are not defined", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
     const arg = spy.mock.calls[0][0];
 
-    expect(arg.fragments).toHaveLength(2);
+    expect(arg.usedFragments).toHaveLength(2);
 
-    expect(arg).toEqual({
+    expect(arg).toMatchObject({
         queryName: "FooQuery",
         query: gql`
             query FooQuery {
@@ -453,18 +469,22 @@ test("does not export when all nested fragments are not defined", async () => {
                 ...Fragment2
             }
         `,
-        fragments: [
-            gql`
-                fragment Fragment1 on Foo {
-                    field1
-                }
-            `,
-            gql`
-                fragment Fragment2 on Foo {
-                    field2
-                    ...Fragment1
-                }
-            `,
+        usedFragments: [
+            {
+                fragment: gql`
+                    fragment Fragment1 on Foo {
+                        field1
+                    }
+                `,
+            },
+            {
+                fragment: gql`
+                    fragment Fragment2 on Foo {
+                        field2
+                        ...Fragment1
+                    }
+                `,
+            },
         ],
     });
 });
@@ -492,7 +512,7 @@ test("change to nested fragment triggers update", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -502,15 +522,15 @@ test("change to nested fragment triggers update", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(2);
 
     const arg = spy.mock.calls[1][0];
 
-    expect(arg.fragments).toHaveLength(2);
+    expect(arg.usedFragments).toHaveLength(2);
 
-    expect(arg).toEqual({
+    expect(arg).toMatchObject({
         queryName: "FooQuery",
         query: gql`
             query FooQuery {
@@ -518,18 +538,22 @@ test("change to nested fragment triggers update", async () => {
                 ...Fragment2
             }
         `,
-        fragments: [
-            gql`
-                fragment Fragment1 on Foo {
-                    fieldChange
-                }
-            `,
-            gql`
-                fragment Fragment2 on Foo {
-                    field2
-                    ...Fragment1
-                }
-            `,
+        usedFragments: [
+            {
+                fragment: gql`
+                    fragment Fragment1 on Foo {
+                        fieldChange
+                    }
+                `,
+            },
+            {
+                fragment: gql`
+                    fragment Fragment2 on Foo {
+                        field2
+                        ...Fragment1
+                    }
+                `,
+            },
         ],
     });
 });
@@ -557,7 +581,7 @@ test("no export if fragment does not actually change", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -567,7 +591,7 @@ test("no export if fragment does not actually change", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
@@ -586,7 +610,7 @@ test("can define query before fragment it uses", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(0);
 
@@ -596,7 +620,7 @@ test("can define query before fragment it uses", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries();
+    await qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
