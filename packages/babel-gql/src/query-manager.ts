@@ -274,9 +274,9 @@ export class QueryManager {
         return popQueries;
     }
 
-    async exportDirtyQueries(target: string) {
+    exportDirtyQueries(target: string) {
         for (const queryName of this.popDirtyQueries()) {
-            await this.exportQuery(queryName, target);
+            this.exportQuery(queryName, target);
         }
     }
 
