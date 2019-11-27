@@ -98,22 +98,26 @@ export function createRuntimeGQL() {
     };
 }
 
-function doRequest(options: {
-    endpoint: string;
-    query: {
-        queryName: string;
-        queryId: string;
-        query: string;
-    };
-    variables?: object;
-}) {
+function doRequest(
+    endpoint: string,
+    options: {
+        query: {
+            queryName: string;
+            queryId: string;
+            query: string;
+        };
+        variables?: object;
+    },
+) {
     if (process.env.NODE_ENV !== "production") {
-        return fetch(options.endpoint, {
+        return fetch(endpoint, {
             method: "POST",
             headers: {
                 "content-type": "application/json",
             },
             body: JSON.stringify({
+                variables: options.variables,
+                operationName: options.query.queryName,
                 query: options.query.query,
             }),
         });
@@ -136,18 +140,22 @@ function doRequest(options: {
     );
 
     // XXX turn to POST if mutation
-    return fetch(options.endpoint + "?" + params.toString());
+    return fetch(endpoint + "?" + params.toString());
 }
 
 export function request<ResponseType = any>(
     endpoint: string,
-    query: string | ParsedGQLTag,
-    variables?: object,
+    options: {
+        query: string | ParsedGQLTag;
+        variables?: object;
+    },
 ): Promise<{
     response: Response;
     errors?: any[];
     data: ResponseType;
 }> {
+    const query = options.query;
+
     if (typeof query !== "string") {
         if (query.queries.length === 0) {
             throw new Error("Cannot find graphql query from tag");
@@ -164,13 +172,15 @@ export function request<ResponseType = any>(
     let promise;
 
     if (typeof query === "string") {
-        promise = doRequest({ endpoint, query: getQuery(query), variables });
+        promise = doRequest(endpoint, {
+            query: getQuery(query),
+            variables: options.variables,
+        });
     } else {
         const queryOb = query.queries[0];
-        promise = doRequest({
-            endpoint,
+        promise = doRequest(endpoint, {
             query: getQuery(queryOb.queryName),
-            variables,
+            variables: options.variables,
         });
     }
 
