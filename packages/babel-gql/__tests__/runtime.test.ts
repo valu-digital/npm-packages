@@ -1,37 +1,30 @@
 import { createRuntimeGQL } from "../src";
 import dedent from "dedent";
 
-test("usage without babel", () => {
-    const { gql } = createRuntimeGQL();
-
-    const query = gql`
-        query getFoo {
-            foo
-        }
-    `;
-
-    if (query.babel) {
-        throw new Error("no babel here");
-    }
-
-    expect(dedent(query.query)).toEqual(dedent`
-        query getFoo {
-            foo
-        }
-    `);
-});
-
 test("runtime return value with babel", () => {
     const { runtimeGQL } = createRuntimeGQL();
 
     const query = runtimeGQL({
-        queries: [{ queryId: "123", queryName: "getTest", usedFragments: [] }],
+        queries: [
+            {
+                query: "",
+                queryId: "123",
+                queryName: "getTest",
+                usedFragments: [],
+            },
+        ],
         fragments: [],
     });
 
     expect(query).toEqual({
-        babel: true,
-        queries: [{ queryId: "123", queryName: "getTest", usedFragments: [] }],
+        queries: [
+            {
+                query: "",
+                queryId: "123",
+                queryName: "getTest",
+                usedFragments: [],
+            },
+        ],
         fragments: [],
     });
 });
@@ -40,11 +33,19 @@ test("can get query", () => {
     const { runtimeGQL, getQuery } = createRuntimeGQL();
 
     runtimeGQL({
-        queries: [{ queryId: "123", queryName: "getTest", usedFragments: [] }],
+        queries: [
+            {
+                query: "query getTest { foo }",
+                queryId: "123",
+                queryName: "getTest",
+                usedFragments: [],
+            },
+        ],
         fragments: [],
     });
 
     expect(getQuery("getTest")).toEqual({
+        query: "query getTest { foo }",
         queryId: "123",
         queryName: "getTest",
     });
@@ -56,6 +57,7 @@ test("can get query with fragments", () => {
     runtimeGQL({
         queries: [
             {
+                query: "query getTest { field, ...NamedParts }",
                 queryId: "123",
                 queryName: "getTest",
                 usedFragments: ["NamedParts"],
@@ -63,6 +65,7 @@ test("can get query with fragments", () => {
         ],
         fragments: [
             {
+                fragment: "fragment NamedPars on Person { field2 }",
                 fragmentId: "abc",
                 fragmentName: "NamedParts",
                 usedFragments: [],
@@ -70,10 +73,12 @@ test("can get query with fragments", () => {
         ],
     });
 
-    expect(getQuery("getTest")).toEqual({
+    expect(getQuery("getTest")).toMatchObject({
         queryId: "1a",
         queryName: "getTest",
     });
+
+    expect(getQuery("getTest").query).toMatchSnapshot();
 });
 
 test("can get query with fragments depending on fragments", () => {
@@ -82,6 +87,7 @@ test("can get query with fragments depending on fragments", () => {
     runtimeGQL({
         queries: [
             {
+                query: "",
                 queryId: "123",
                 queryName: "getTest",
                 usedFragments: ["NamedParts"],
@@ -89,11 +95,13 @@ test("can get query with fragments depending on fragments", () => {
         ],
         fragments: [
             {
+                fragment: "",
                 fragmentId: "abc",
                 fragmentName: "NamedParts",
                 usedFragments: ["OtherFragment"],
             },
             {
+                fragment: "",
                 fragmentId: "efg",
                 fragmentName: "OtherFragment",
                 usedFragments: [],
@@ -101,7 +109,7 @@ test("can get query with fragments depending on fragments", () => {
         ],
     });
 
-    expect(getQuery("getTest")).toEqual({
+    expect(getQuery("getTest")).toMatchObject({
         queryId: "1ae",
         queryName: "getTest",
     });
@@ -114,6 +122,7 @@ test("can use multiple runtime calls", () => {
         queries: [],
         fragments: [
             {
+                fragment: "",
                 fragmentId: "efg",
                 fragmentName: "OtherFragment",
                 usedFragments: [],
@@ -124,6 +133,7 @@ test("can use multiple runtime calls", () => {
     runtimeGQL({
         queries: [
             {
+                query: "",
                 queryId: "123",
                 queryName: "getTest",
                 usedFragments: ["NamedParts"],
@@ -131,6 +141,7 @@ test("can use multiple runtime calls", () => {
         ],
         fragments: [
             {
+                fragment: "",
                 fragmentId: "abc",
                 fragmentName: "NamedParts",
                 usedFragments: ["OtherFragment"],
@@ -138,7 +149,7 @@ test("can use multiple runtime calls", () => {
         ],
     });
 
-    expect(getQuery("getTest")).toEqual({
+    expect(getQuery("getTest")).toMatchObject({
         queryId: "1ae",
         queryName: "getTest",
     });

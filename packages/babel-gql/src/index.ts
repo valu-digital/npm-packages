@@ -10,27 +10,16 @@ export function createRuntimeGQL() {
     function gql(
         literals: TemplateStringsArray,
         ...placeholders: string[]
-    ): ParsedGQLTag | { babel: false; query: string } {
+    ): ParsedGQLTag {
         if (!Array.isArray(literals)) {
             // Was converted to a normal function call via babel
             return runtimeGQL(literals as any);
         }
 
-        let result = "";
-
-        // interleave the literals with the placeholders
-        for (let i = 0; i < placeholders.length; i++) {
-            result += literals[i];
-            result += placeholders[i];
-        }
-
-        // add the last literal
-        result += literals[literals.length - 1];
-
-        return { babel: false as const, query: result };
+        throw new Error("babel-gql not configured?");
     }
 
-    function runtimeGQL(parsed: Omit<ParsedGQLTag, "babel">) {
+    function runtimeGQL(parsed: ParsedGQLTag) {
         parsed.queries.forEach(query => {
             queries[query.queryName] = query;
         });
@@ -38,7 +27,7 @@ export function createRuntimeGQL() {
             fragments[fragment.fragmentName] = fragment;
         });
 
-        return { ...parsed, babel: true as const };
+        return parsed;
     }
 
     function findFragmentsOfFragments(
@@ -81,7 +70,7 @@ export function createRuntimeGQL() {
                 findFragmentsOfFragments(fragmentName, frags);
             });
 
-            const fragmentIds = Object.keys(frags).map(fragmentName => {
+            const usedFragments = Object.keys(frags).map(fragmentName => {
                 const fragment = fragments[fragmentName];
 
                 if (!fragment) {
@@ -90,12 +79,20 @@ export function createRuntimeGQL() {
                     );
                 }
 
-                return fragment.fragmentId;
+                return fragment;
             });
 
             return {
+                query: (
+                    usedFragments.map(f => f.fragment).join("\n") +
+                    "\n" +
+                    query.query
+                ).trim(),
                 queryName: queryName,
-                queryId: combinedIds([query.queryId, ...fragmentIds]),
+                queryId: combinedIds([
+                    query.queryId,
+                    ...usedFragments.map(f => f.fragmentId),
+                ]),
             };
         },
     };
