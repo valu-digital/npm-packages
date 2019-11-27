@@ -253,10 +253,14 @@ export default function bemedBabelPlugin(
                     }
                 }
 
-                qm.exportDirtyQueries(
-                    state.opts?.target ??
-                        PathUtils.join(process.cwd(), ".queries"),
-                );
+                const shouldExport = state.opts?.export ?? isProduction;
+
+                if (shouldExport) {
+                    qm.exportDirtyQueries(
+                        state.opts?.target ??
+                            PathUtils.join(process.cwd(), ".queries"),
+                    );
+                }
             },
         },
     };
