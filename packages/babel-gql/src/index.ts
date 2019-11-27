@@ -98,6 +98,103 @@ export function createRuntimeGQL() {
     };
 }
 
+function doRequest(options: {
+    endpoint: string;
+    query: {
+        queryName: string;
+        queryId: string;
+        query: string;
+    };
+    variables?: object;
+}) {
+    if (process.env.NODE_ENV !== "production") {
+        return fetch(options.endpoint, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify({
+                query: options.query.query,
+            }),
+        });
+    }
+
+    const params = new URLSearchParams();
+    params.append("operationName", options.query.queryName);
+    if (options.variables) {
+        params.append("variables", JSON.stringify(options.variables));
+    }
+
+    params.append(
+        "extensions",
+        JSON.stringify({
+            persistedQuery: {
+                version: 1,
+                sha256Hash: options.query.queryId,
+            },
+        }),
+    );
+
+    // XXX turn to POST if mutation
+    return fetch(options.endpoint + "?" + params.toString());
+}
+
+export function request<ResponseType = any>(
+    endpoint: string,
+    query: string | ParsedGQLTag,
+    variables?: object,
+): Promise<{
+    response: Response;
+    errors?: any[];
+    data: ResponseType;
+}> {
+    if (typeof query !== "string") {
+        if (query.queries.length === 0) {
+            throw new Error("Cannot find graphql query from tag");
+        }
+
+        if (query.queries.length > 1) {
+            console.warn(
+                "Multiple queries defined in request query " +
+                    query.queries.map(q => q.queryName).join(", "),
+            );
+        }
+    }
+
+    let promise;
+
+    if (typeof query === "string") {
+        promise = doRequest({ endpoint, query: getQuery(query), variables });
+    } else {
+        const queryOb = query.queries[0];
+        promise = doRequest({
+            endpoint,
+            query: getQuery(queryOb.queryName),
+            variables,
+        });
+    }
+
+    let response: Response;
+    return promise
+        .then(res => {
+            response = res;
+            return res.json();
+        })
+        .then(data => {
+            if (data.errors?.length ?? 0 > 0) {
+                data.errors.forEach((error: any) => {
+                    console.error(
+                        "GraphQL response error:",
+                        error.message,
+                        error,
+                    );
+                });
+            }
+            data.response = response;
+            return data;
+        });
+}
+
 const babelqgl = createRuntimeGQL();
 
 export const gql = babelqgl.gql;
