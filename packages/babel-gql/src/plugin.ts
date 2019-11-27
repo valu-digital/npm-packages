@@ -112,7 +112,16 @@ export default function bemedBabelPlugin(
                     .join("")
                     .trim();
 
-                const parsed = qm.parseGraphQL(gqlString);
+                let parsed;
+
+                try {
+                    parsed = qm.parseGraphQL(gqlString);
+                } catch (error) {
+                    throw path.buildCodeFrameError(
+                        "GraphQL: " + error.message ??
+                            "Unknown graphql parsing error",
+                    );
+                }
 
                 path.replaceWith(
                     t.callExpression(t.identifier(name), [

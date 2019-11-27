@@ -190,3 +190,18 @@ test("can handle embedded fragments", () => {
         `.trim(),
     );
 });
+
+test("invalid graphql shows proper error message", () => {
+    const code = dedent`
+    import { gql } from "babel-gql";
+    const query = gql\`
+        query Foo
+            bar
+        }
+    \`
+    `;
+
+    expect(() => {
+        runPlugin(code);
+    }).toThrow("GraphQL:");
+});
