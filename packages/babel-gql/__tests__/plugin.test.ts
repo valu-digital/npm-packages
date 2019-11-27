@@ -40,7 +40,7 @@ test("simple transformation", () => {
         const query = gql({
           fragments: [],
           queries: [{
-            query: null,
+            query: "",
             queryId: "5430c050ffd840248a6724bb3a674ffb347dce047429ba5bf61a9edee3d8d699",
             queryName: "Foo",
             usedFragments: []
@@ -68,7 +68,7 @@ test("can follow import alias", () => {
         const query = foo({
           fragments: [],
           queries: [{
-            query: null,
+            query: "",
             queryId: "5430c050ffd840248a6724bb3a674ffb347dce047429ba5bf61a9edee3d8d699",
             queryName: "Foo",
             usedFragments: []
@@ -103,13 +103,13 @@ test("can handle fragments", () => {
         import { gql } from "babel-gql";
         const query = gql({
           fragments: [{
-            fragment: null,
+            fragment: "",
             fragmentId: "599e02d0c3048527281d6b78058b8886cb93fca9d4f795f8383190abfcaecf5e",
             fragmentName: "NameParts",
             usedFragments: []
           }],
           queries: [{
-            query: null,
+            query: "",
             queryId: "ea45bb731caccf48a370efdd98de551f9cb8c4926ddd6e440ad95a5090387716",
             queryName: "GetPerson",
             usedFragments: ["NameParts"]
@@ -144,12 +144,12 @@ test("fragments can use fragments", () => {
         import { gql } from "babel-gql";
         const query = gql({
           fragments: [{
-            fragment: null,
+            fragment: "",
             fragmentId: "599e02d0c3048527281d6b78058b8886cb93fca9d4f795f8383190abfcaecf5e",
             fragmentName: "NameParts",
             usedFragments: []
           }, {
-            fragment: null,
+            fragment: "",
             fragmentId: "e600ee95689cda215e9fe3b8f65b4b4958284c2cc0d239379eda71cd427b2cc3",
             fragmentName: "MoreParts",
             usedFragments: ["NameParts"]
@@ -181,7 +181,7 @@ test("can handle embedded fragments", () => {
         const query = gql({
           fragments: [],
           queries: [{
-            query: null,
+            query: "",
             queryId: "ea45bb731caccf48a370efdd98de551f9cb8c4926ddd6e440ad95a5090387716",
             queryName: "GetPerson",
             usedFragments: ["NameParts"]

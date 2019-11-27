@@ -51,13 +51,13 @@ function parseTag(
 
     return recursiveObjectExpression(t, {
         queries: parsed.queries.map(query => ({
-            query: removeQuery ? null : query.query,
+            query: removeQuery ? "" : query.query,
             queryName: query.queryName,
             queryId: query.queryId,
             usedFragments: query.usedFragments,
         })),
         fragments: parsed.fragments.map(fragment => ({
-            fragment: removeQuery ? null : fragment.fragment,
+            fragment: removeQuery ? "" : fragment.fragment,
             fragmentName: fragment.fragmentName,
             fragmentId: fragment.fragmentId,
             usedFragments: fragment.usedFragments,
@@ -269,6 +269,10 @@ function recursiveObjectExpression(t: typeof BabelTypes, ob: any): any {
 
     if (typeof ob === "boolean") {
         return t.booleanLiteral(ob);
+    }
+
+    if (ob === null) {
+        return t.nullLiteral();
     }
 
     if (Array.isArray(ob)) {
