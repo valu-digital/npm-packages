@@ -1,13 +1,11 @@
 import { promises as fs } from "fs";
 import PathUtils from "path";
-import * as _BabelTypes from "@babel/types";
+import * as BabelTypes from "@babel/types";
 import { Visitor, NodePath } from "@babel/traverse";
 import { QueryManager } from "./query-manager";
 
-type BabelTypes = typeof _BabelTypes;
-
 export interface Babel {
-    types: BabelTypes;
+    types: typeof BabelTypes;
 }
 
 interface BabelFile {
@@ -33,6 +31,110 @@ function isActive(state: VisitorState) {
 interface VisitorState {
     opts?: BabelGQLOptions;
     file: BabelFile;
+}
+
+function parseTag(
+    t: typeof BabelTypes,
+    qm: QueryManager,
+    path: NodePath<BabelTypes.TaggedTemplateExpression>,
+) {
+    const gqlString = path.node.quasi.quasis
+        .map(q => q.value.cooked)
+        .join("")
+        .trim();
+
+    let parsed;
+
+    try {
+        parsed = qm.parseGraphQL(gqlString);
+    } catch (error) {
+        throw path.buildCodeFrameError(
+            "GraphQL: " + error.message ?? "Unknown graphql parsing error",
+        );
+    }
+
+    return recursiveObjectExpression(t, {
+        queries: parsed.queries.map(query => ({
+            queryName: query.queryName,
+            queryId: query.queryId,
+            usedFragments: query.usedFragments,
+        })),
+        fragments: parsed.fragments.map(fragment => ({
+            fragmentName: fragment.fragmentName,
+            fragmentId: fragment.fragmentId,
+            usedFragments: fragment.usedFragments,
+        })),
+    });
+}
+
+const externalModules: {
+    name: string;
+    identifier?: string;
+}[] = [
+    {
+        // import gql from 'graphql-tag'
+        name: "graphql-tag",
+    },
+    {
+        name: "graphql-tag.macro",
+    },
+    {
+        // import { graphql } from 'gatsby'
+        name: "gatsby",
+        identifier: "graphql",
+    },
+    {
+        name: "apollo-server-express",
+        identifier: "gql",
+    },
+    {
+        name: "apollo-server",
+        identifier: "gql",
+    },
+    {
+        name: "react-relay",
+        identifier: "graphql",
+    },
+    {
+        name: "apollo-boost",
+        identifier: "gql",
+    },
+    {
+        name: "apollo-server-koa",
+        identifier: "gql",
+    },
+    {
+        name: "apollo-server-hapi",
+        identifier: "gql",
+    },
+    {
+        name: "apollo-server-fastify",
+        identifier: "gql",
+    },
+    {
+        name: " apollo-server-lambda",
+        identifier: "gql",
+    },
+    {
+        name: "apollo-server-micro",
+        identifier: "gql",
+    },
+    {
+        name: "apollo-server-azure-functions",
+        identifier: "gql",
+    },
+    {
+        name: "apollo-server-cloud-functions",
+        identifier: "gql",
+    },
+    {
+        name: "apollo-server-cloudflare",
+        identifier: "gql",
+    },
+];
+
+function findIdentifier(importName: string) {
+    return externalModules.find(m => m.name === importName);
 }
 
 export default function bemedBabelPlugin(
@@ -61,31 +163,68 @@ export default function bemedBabelPlugin(
     /**
      * Local name of the css import from babel-gql if any
      */
-    let name: string | null = null;
+    let ourName: string | null = null;
+    let externalTags = new Set<string>();
+    let inject: any[] = [];
 
     return {
         visitor: {
-            Program() {
-                // Reset import name state when entering a new file
-                name = null;
+            Program: {
+                enter(path) {
+                    // Reset import name state when entering a new file
+                    ourName = null;
+                    inject = [];
+                    externalTags = new Set();
+                },
+
+                exit(path) {
+                    if (!ourName) {
+                        return;
+                    }
+
+                    for (const graphqObject of inject) {
+                        path.pushContainer(
+                            "body",
+                            t.callExpression(t.identifier(ourName), [
+                                graphqObject,
+                            ]),
+                        );
+                    }
+                },
             },
 
             ImportDeclaration(path, state) {
                 const opts = state.opts || {};
 
                 const target = opts?.moduleName ?? "babel-gql";
+                const importName = path.node.source.value;
 
-                if (path.node.source.value !== target) {
-                    return;
+                if (importName === target) {
+                    for (const s of path.node.specifiers) {
+                        if (!t.isImportSpecifier(s)) {
+                            continue;
+                        }
+
+                        if (s.imported.name === "gql") {
+                            ourName = s.local.name;
+                        }
+                    }
                 }
 
-                for (const s of path.node.specifiers) {
-                    if (!t.isImportSpecifier(s)) {
-                        continue;
-                    }
+                const external = findIdentifier(importName);
 
-                    if (s.imported.name === "gql") {
-                        name = s.local.name;
+                if (external) {
+                    for (const s of path.node.specifiers) {
+                        if (!t.isImportSpecifier(s)) {
+                            continue;
+                        }
+
+                        if (
+                            external.identifier &&
+                            s.imported.name === external.identifier
+                        ) {
+                            externalTags.add(s.local.name);
+                        }
                     }
                 }
             },
@@ -95,50 +234,27 @@ export default function bemedBabelPlugin(
                     return;
                 }
 
-                if (!name) {
-                    return;
-                }
-
-                if (!t.isIdentifier(path.node.tag, { name })) {
-                    return;
-                }
-
                 if (!path.node.loc) {
                     return;
                 }
 
-                const gqlString = path.node.quasi.quasis
-                    .map(q => q.value.cooked)
-                    .join("")
-                    .trim();
+                const tag = path.node.tag;
 
-                let parsed;
-
-                try {
-                    parsed = qm.parseGraphQL(gqlString);
-                } catch (error) {
-                    throw path.buildCodeFrameError(
-                        "GraphQL: " + error.message ??
-                            "Unknown graphql parsing error",
-                    );
+                if (!t.isIdentifier(tag)) {
+                    return;
                 }
 
-                path.replaceWith(
-                    t.callExpression(t.identifier(name), [
-                        recursiveObjectExpression(t, {
-                            queries: parsed.queries.map(query => ({
-                                queryName: query.queryName,
-                                queryId: query.queryId,
-                                usedFragments: query.usedFragments,
-                            })),
-                            fragments: parsed.fragments.map(fragment => ({
-                                fragmentName: fragment.fragmentName,
-                                fragmentId: fragment.fragmentId,
-                                usedFragments: fragment.usedFragments,
-                            })),
-                        }),
-                    ]),
-                );
+                if (ourName && tag.name === ourName) {
+                    const graphqObject = parseTag(t, qm, path);
+
+                    path.replaceWith(
+                        t.callExpression(t.identifier(ourName), [graphqObject]),
+                    );
+                } else if (externalTags.has(tag.name)) {
+                    if (inject) {
+                        inject.push(parseTag(t, qm, path));
+                    }
+                }
 
                 qm.exportDirtyQueries(
                     state.opts?.target ??
@@ -149,7 +265,7 @@ export default function bemedBabelPlugin(
     };
 }
 
-function recursiveObjectExpression(t: BabelTypes, ob: any): any {
+function recursiveObjectExpression(t: typeof BabelTypes, ob: any): any {
     if (typeof ob === "string") {
         return t.stringLiteral(ob);
     }
