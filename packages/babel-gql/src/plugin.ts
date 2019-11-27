@@ -32,6 +32,7 @@ function parseTag(
     t: typeof BabelTypes,
     qm: QueryManager,
     path: NodePath<BabelTypes.TaggedTemplateExpression>,
+    removeQuery: boolean,
 ) {
     const gqlString = path.node.quasi.quasis
         .map(q => q.value.cooked)
@@ -50,11 +51,13 @@ function parseTag(
 
     return recursiveObjectExpression(t, {
         queries: parsed.queries.map(query => ({
+            query: removeQuery ? null : query.query,
             queryName: query.queryName,
             queryId: query.queryId,
             usedFragments: query.usedFragments,
         })),
         fragments: parsed.fragments.map(fragment => ({
+            fragment: removeQuery ? null : fragment.fragment,
             fragmentName: fragment.fragmentName,
             fragmentId: fragment.fragmentId,
             usedFragments: fragment.usedFragments,
@@ -136,7 +139,6 @@ export default function bemedBabelPlugin(
     babel: Babel,
 ): { visitor: Visitor<VisitorState> } {
     const t = babel.types;
-
     const isProduction = Boolean(process.env.NODE_ENV === "production");
 
     const qm = new QueryManager({
@@ -174,7 +176,7 @@ export default function bemedBabelPlugin(
                     externalTags = new Set();
                 },
 
-                exit(path) {
+                exit(path, state) {
                     if (!ourName) {
                         return;
                     }
@@ -237,24 +239,24 @@ export default function bemedBabelPlugin(
                     return;
                 }
 
+                const removeQuery = state.opts?.removeQuery ?? isProduction;
+
                 if (ourName && tag.name === ourName) {
-                    const graphqObject = parseTag(t, qm, path);
+                    const graphqObject = parseTag(t, qm, path, removeQuery);
 
                     path.replaceWith(
                         t.callExpression(t.identifier(ourName), [graphqObject]),
                     );
                 } else if (externalTags.has(tag.name)) {
                     if (inject) {
-                        inject.push(parseTag(t, qm, path));
+                        inject.push(parseTag(t, qm, path, removeQuery));
                     }
                 }
 
-                if (state.opts?.export ?? isProduction) {
-                    qm.exportDirtyQueries(
-                        state.opts?.target ??
-                            PathUtils.join(process.cwd(), ".queries"),
-                    );
-                }
+                qm.exportDirtyQueries(
+                    state.opts?.target ??
+                        PathUtils.join(process.cwd(), ".queries"),
+                );
             },
         },
     };

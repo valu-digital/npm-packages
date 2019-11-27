@@ -1,11 +1,12 @@
 export interface ParsedGQLTag {
-    babel: true;
     queries: {
+        query: string;
         queryName: string;
         queryId: string;
         usedFragments: string[];
     }[];
     fragments: {
+        fragment: string;
         fragmentName: string;
         fragmentId: string;
         usedFragments: string[];
