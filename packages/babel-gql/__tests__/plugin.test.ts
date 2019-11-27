@@ -9,7 +9,7 @@ function lines(...args: string[]) {
 function runPlugin(code: string, options?: BabelGQLOptions) {
     options = options ?? {};
 
-    options = { ...options, active: true, target: "" };
+    options = { ...options, export: false, target: "" };
 
     const res = transform(code, {
         babelrc: false,

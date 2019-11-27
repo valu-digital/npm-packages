@@ -17,15 +17,10 @@ interface BabelFile {
 }
 
 export interface BabelGQLOptions {
-    moduleName?: string;
-    active?: boolean;
+    ownModuleName?: string;
+    export?: boolean;
+    removeQuery?: boolean;
     target?: string;
-}
-
-function isActive(state: VisitorState) {
-    const defaultValue = Boolean(process.env.NODE_ENV === "production");
-
-    return state.opts?.active ?? defaultValue;
 }
 
 interface VisitorState {
@@ -142,6 +137,8 @@ export default function bemedBabelPlugin(
 ): { visitor: Visitor<VisitorState> } {
     const t = babel.types;
 
+    const isProduction = Boolean(process.env.NODE_ENV === "production");
+
     const qm = new QueryManager({
         async onExportQuery(query, target) {
             if (!target) {
@@ -196,7 +193,7 @@ export default function bemedBabelPlugin(
             ImportDeclaration(path, state) {
                 const opts = state.opts || {};
 
-                const target = opts?.moduleName ?? "babel-gql";
+                const target = opts?.ownModuleName ?? "babel-gql";
                 const importName = path.node.source.value;
 
                 if (importName === target) {
@@ -230,10 +227,6 @@ export default function bemedBabelPlugin(
             },
 
             TaggedTemplateExpression(path, state) {
-                if (!isActive(state)) {
-                    return;
-                }
-
                 if (!path.node.loc) {
                     return;
                 }
@@ -256,10 +249,12 @@ export default function bemedBabelPlugin(
                     }
                 }
 
-                qm.exportDirtyQueries(
-                    state.opts?.target ??
-                        PathUtils.join(process.cwd(), ".queries"),
-                );
+                if (state.opts?.export ?? isProduction) {
+                    qm.exportDirtyQueries(
+                        state.opts?.target ??
+                            PathUtils.join(process.cwd(), ".queries"),
+                    );
+                }
             },
         },
     };
