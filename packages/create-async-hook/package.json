@@ -1,0 +1,26 @@
+{
+    "name": "@valu/create-async-hook",
+    "version": "0.0.1",
+    "description": "",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "rm -rf dist && tsc --project tsconfig.build.json",
+        "watch": "tsc --watch --project tsconfig.build.json",
+        "prepublishOnly": "npm test && npm run build",
+        "test": "jest"
+    },
+    "files": [
+        "dist"
+    ],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@testing-library/react": "^9.3.2",
+        "@types/jest": "^24.0.23",
+        "@types/node": "^12.12.14",
+        "jest": "^24.9.0",
+        "prettier": "^1.19.1",
+        "ts-jest": "^24.2.0",
+        "typescript": "^3.7.2"
+    }
+}
