@@ -1,6 +1,6 @@
 # babel-gql
 
-Persisted query compiler for Babel and a tiny GraphQL client.
+Persisted GraphQL Query Compiler for Babel and a tiny GraphQL client.
 
 ## Install
 
