@@ -60,7 +60,7 @@ test("can use fetcher args", async () => {
     });
 
     function Component() {
-        const res = useAsync({ args: ["testarg"] });
+        const res = useAsync({ variables: "testarg" });
 
         return (
             <div data-testid="content">
@@ -90,13 +90,13 @@ test("can use variables in update", async () => {
         },
         update(state, res, meta) {
             return {
-                foo: "fromupdate:" + meta.args,
+                foo: "fromupdate:" + meta.variables,
             };
         },
     });
 
     function Component() {
-        const res = useAsync({ args: ["testarg"] });
+        const res = useAsync({ variables: "testarg" });
 
         return (
             <div data-testid="content">
@@ -135,7 +135,7 @@ test("variables change triggers fetch", async () => {
 
     function Component() {
         const [state, setState] = React.useState("first");
-        const res = useAsync({ args: [state] });
+        const res = useAsync({ variables: state });
 
         return (
             <div>
@@ -209,7 +209,7 @@ test("variables are checked deeply", async () => {
             },
         });
 
-        const res = useAsync({ args: [state] });
+        const res = useAsync({ variables: state });
 
         return (
             <div>
@@ -276,7 +276,7 @@ test("can use previous state", async () => {
 
     function Component() {
         const [state, setState] = React.useState("first");
-        const res = useAsync({ args: [state] });
+        const res = useAsync({ variables: state });
 
         return (
             <div>

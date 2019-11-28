@@ -37,10 +37,7 @@ function useDeepEqualRef<T>(o: T): T {
     return ref.current ?? o;
 }
 
-export function createAsyncHook<
-    Fn extends (...args: any[]) => Promise<any>,
-    State
->(
+export function createAsyncHook<Fn extends (args?: any) => Promise<any>, State>(
     fetcher: Fn,
     options: {
         initialState: State;
@@ -49,21 +46,24 @@ export function createAsyncHook<
             res: UnwrapPromise<ReturnType<Fn>>,
             meta: {
                 refreshed: boolean;
-                args: Parameters<Fn>;
-                previousArgs: Parameters<Fn>;
+                variables: Parameters<Fn>[0];
+                previousVariables: Parameters<Fn>[0];
             },
         ) => State;
     },
 ): (
-    args: Parameters<Fn> extends [] ? {} | undefined : { args: Parameters<Fn> },
+    variables: Parameters<Fn> extends []
+        ? {} | undefined
+        : { variables: Parameters<Fn>[0] },
 ) => {
     loading: boolean;
     state: State;
 } {
-    return function useAsyncState(runtimeOptions: { args: Parameters<Fn> }) {
+    return function useAsyncState(runtimeOptions: {
+        variables: Parameters<Fn>[0];
+    }) {
         const refresh = React.useCallback(() => {
             setState(s => {
-                console.log(s.key);
                 return {
                     ...s,
                     key: s.key + 1,
@@ -71,11 +71,11 @@ export function createAsyncHook<
             });
         }, []);
 
-        const refArgs = useDeepEqualRef(runtimeOptions.args ?? []);
+        const refVariables = useDeepEqualRef(runtimeOptions.variables ?? []);
 
         const [state, setState] = React.useState({
             loading: true,
-            args: refArgs,
+            variables: refVariables,
             key: 0,
             state: options.initialState,
             refresh,
@@ -93,20 +93,20 @@ export function createAsyncHook<
                 };
             });
 
-            fetcher(...refArgs).then((res: any) => {
+            fetcher(refVariables).then((res: any) => {
                 setState(prevState => ({
                     ...prevState,
-                    variables: refArgs,
+                    variables: refVariables,
                     state: options.update(prevState.state, res, {
-                        refreshed: state.args === refArgs,
-                        previousArgs: state.args,
-                        args: refArgs,
+                        refreshed: state.variables === refVariables,
+                        previousVariables: state.variables,
+                        variables: refVariables,
                     }),
 
                     loading: false,
                 }));
             });
-        }, [refArgs, state.key]);
+        }, [refVariables, state.key]);
 
         return state;
     } as any;
