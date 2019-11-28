@@ -20,6 +20,8 @@ module.exports = {
 ## Usage
 
 ```js
+import { gql, request } from "babel-gql";
+
 const getPostsQuery = gql`
     query getPosts($first: Int) {
         posts(first: $first) {
