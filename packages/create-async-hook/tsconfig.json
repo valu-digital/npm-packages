@@ -4,6 +4,7 @@
         "target": "es6",
         "noEmit": true,
         "lib": ["esnext", "dom"],
+        "jsx": "react",
         "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
         "strict": true,
