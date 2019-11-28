@@ -8,8 +8,13 @@ With focus on simple pagination.
 
 ## Usage
 
+Example with [babel-gql][]
+
+[babel-gql]: https://github.com/valu-digital/babel-gql
+
 ```tsx
 import { createAsyncHook } from "@valu/create-async-hook";
+import { gql, request } from "babel-gql";
 
 const getPostsQuery = gql`
     query getPosts($cursor: String) {
@@ -27,7 +32,7 @@ const getPostsQuery = gql`
 `;
 
 const usePagedPosts = createAsyncHook(
-    async variables => {
+    async function(variables) {
         return request("/graphql", {
             query: getPostsQuery,
             variables: {
@@ -43,7 +48,7 @@ const usePagedPosts = createAsyncHook(
         },
         update(state, response, meta) {
             return {
-                posts: state.posts.concat(res.data.posts.nodes),
+                posts: [...state.posts, ...res.data.posts.nodes],
                 endCursor: res.data.posts.pageInfo.endCursor,
                 hasNextPage: res.data.posts.pageInfo.hasNextPage,
             };
