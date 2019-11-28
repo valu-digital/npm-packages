@@ -8,12 +8,12 @@ Persisted query compiler for Babel and a tiny GraphQL client.
 
 Add `babel-gql/plugin` to your babel plugins. Ex.
 
-babel.config.js
+`babel.config.js`:
 
 ```js
 module.exports = {
     presets: ["@babel/preset-env"],
-    plugins: ["babel-gql/plugin"],
+    plugins: ["babel-gql/plugin"], // <-- add this
 };
 ```
 
