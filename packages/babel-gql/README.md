@@ -90,7 +90,7 @@ If you are using [WPGraphQL][] with WordPress you can use the
 
 ```php
 add_filter( 'pre_graphql_lock_load_query', function(  $query,  $query_id, $query_name ) {
-	$query_dir = realpath( __DIR__ . '/../.queries' );
+	$query_dir = realpath( __DIR__ . '/.queries' );
 	$full_path = realpath( $query_dir . "/$query_name-$query_id.graphql" );
 
 	// Check for ../../ attacks
@@ -101,6 +101,9 @@ add_filter( 'pre_graphql_lock_load_query', function(  $query,  $query_id, $query
     return file_get_contents($full_path);
 }, 10, 3 );
 ```
+
+This assumes that `.queries` is commited to git in your theme directly and
+the above code is in `functions.php`.
 
 [wp-graphql-lock]: https://github.com/valu-digital/wp-graphql-lock
 [wpgraphql]: https://www.wpgraphql.com/
