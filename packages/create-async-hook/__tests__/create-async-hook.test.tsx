@@ -255,3 +255,68 @@ test("variables are checked deeply", async () => {
     expect(getByTestId("content").innerHTML).toEqual("async-result:value");
     expect(spy).toHaveBeenCalledTimes(1);
 });
+
+test("can use previous state", async () => {
+    const spy = jest.fn();
+    async function doAsync(arg: string) {
+        spy();
+        return ["res", arg];
+    }
+
+    const useAsync = createAsyncHook(doAsync, {
+        initialState: {
+            foo: [] as string[],
+        },
+        update(state, res, meta) {
+            return {
+                foo: state.foo.concat(res),
+            };
+        },
+    });
+
+    function Component() {
+        const [state, setState] = React.useState("first");
+        const res = useAsync({ args: [state] });
+
+        return (
+            <div>
+                <button
+                    data-testid="button"
+                    onClick={() => {
+                        setState("second");
+                    }}
+                >
+                    click
+                </button>
+                <div data-testid="content">
+                    {res.loading && "loading"}
+                    {!res.loading && res.state.foo.join(",")}
+                </div>
+            </div>
+        );
+    }
+
+    const { getByTestId, getByText } = render(<Component />);
+
+    expect(getByTestId("content").innerHTML).toEqual("loading");
+
+    await waitForElementToBeRemoved(() => getByText("loading"));
+
+    expect(getByTestId("content").innerHTML).toEqual("res,first");
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    fireEvent(
+        getByTestId("button"),
+        new MouseEvent("click", {
+            bubbles: true,
+            cancelable: true,
+        }),
+    );
+
+    expect(getByTestId("content").innerHTML).toEqual("loading");
+
+    await waitForElementToBeRemoved(() => getByText("loading"));
+
+    expect(getByTestId("content").innerHTML).toEqual("res,first,res,second");
+    expect(spy).toHaveBeenCalledTimes(2);
+});
