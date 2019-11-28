@@ -116,9 +116,10 @@ test("can use variables in update", async () => {
 });
 
 test("variables change triggers fetch", async () => {
-    const spy = jest.fn();
+    const fetcherSpy = jest.fn();
+    const metaSpy = jest.fn();
     async function doAsync(arg: string) {
-        spy();
+        fetcherSpy();
         return "async-result:" + arg;
     }
 
@@ -127,6 +128,7 @@ test("variables change triggers fetch", async () => {
             foo: "",
         },
         update(state, res, meta) {
+            metaSpy(meta);
             return {
                 foo: res,
             };
@@ -163,7 +165,7 @@ test("variables change triggers fetch", async () => {
 
     expect(getByTestId("content").innerHTML).toEqual("async-result:first");
 
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(fetcherSpy).toHaveBeenCalledTimes(1);
     fireEvent(
         getByTestId("button"),
         new MouseEvent("click", {
@@ -177,7 +179,14 @@ test("variables change triggers fetch", async () => {
     await waitForElementToBeRemoved(() => getByText("loading"));
 
     expect(getByTestId("content").innerHTML).toEqual("async-result:second");
-    expect(spy).toHaveBeenCalledTimes(2);
+    expect(fetcherSpy).toHaveBeenCalledTimes(2);
+
+    // Assert previous variables
+    expect(metaSpy).toHaveBeenCalledTimes(2);
+    expect(metaSpy.mock.calls[1][0]).toMatchObject({
+        previousVariables: "first",
+        variables: "second",
+    });
 });
 
 test("variables are checked deeply", async () => {
