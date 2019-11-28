@@ -369,3 +369,41 @@ test("can handle errors", async () => {
 
     expect(getByTestId("content").innerHTML).toEqual("async-error");
 });
+
+test("can throw errors from update", async () => {
+    async function doAsync() {
+        return "async-result";
+    }
+
+    const useAsync = createAsyncHook(doAsync, {
+        initialState: {
+            foo: "",
+        },
+        update(state, res) {
+            throw new Error("update-error");
+        },
+    });
+
+    function Component() {
+        const res = useAsync({});
+
+        if (res.error) {
+            return <div data-testid="content">{res.error.message}</div>;
+        }
+
+        return (
+            <div data-testid="content">
+                {res.loading && "loading"}
+                {!res.loading && res.state.foo}
+            </div>
+        );
+    }
+
+    const { getByTestId, getByText } = render(<Component />);
+
+    expect(getByTestId("content").innerHTML).toEqual("loading");
+
+    await waitForElementToBeRemoved(() => getByText("loading"));
+
+    expect(getByTestId("content").innerHTML).toEqual("update-error");
+});

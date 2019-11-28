@@ -97,17 +97,32 @@ export function createAsyncHook<Fn extends (args?: any) => Promise<any>, State>(
 
             fetcher(refVariables).then(
                 (res: any) => {
-                    setState(prevState => ({
-                        ...prevState,
-                        variables: refVariables,
-                        state: options.update(prevState.state, res, {
-                            refreshed: state.variables === refVariables,
-                            previousVariables: state.variables,
-                            variables: refVariables,
-                        }),
+                    setState(prevState => {
+                        let updateError: any = undefined;
+                        let nextState = prevState.state;
 
-                        loading: false,
-                    }));
+                        try {
+                            nextState = options.update(prevState.state, res, {
+                                refreshed: state.variables === refVariables,
+                                previousVariables: state.variables,
+                                variables: refVariables,
+                            });
+                        } catch (_error) {
+                            console.error(
+                                "Error in createAsyncHook#update():",
+                                _error,
+                            );
+                            updateError = _error;
+                        }
+
+                        return {
+                            ...prevState,
+                            variables: refVariables,
+                            error: updateError,
+                            state: nextState,
+                            loading: false,
+                        };
+                    });
                 },
                 error => {
                     setState(prevState => ({
