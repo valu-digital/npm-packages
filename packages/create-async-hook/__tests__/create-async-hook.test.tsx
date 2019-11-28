@@ -24,7 +24,7 @@ test("can show loading and content", async () => {
     });
 
     function Component() {
-        const res = useAsync();
+        const res = useAsync({});
 
         return (
             <div data-testid="content">
@@ -43,7 +43,7 @@ test("can show loading and content", async () => {
     expect(getByTestId("content").innerHTML).toEqual("async-result");
 });
 
-test("can use fetcher arg", async () => {
+test("can use fetcher args", async () => {
     async function doAsync(arg: string) {
         return "async-result:" + arg;
     }
@@ -60,7 +60,7 @@ test("can use fetcher arg", async () => {
     });
 
     function Component() {
-        const res = useAsync("testarg");
+        const res = useAsync({ args: ["testarg"] });
 
         return (
             <div data-testid="content">
@@ -90,13 +90,13 @@ test("can use variables in update", async () => {
         },
         update(state, res, meta) {
             return {
-                foo: "fromupdate:" + meta.variables,
+                foo: "fromupdate:" + meta.args,
             };
         },
     });
 
     function Component() {
-        const res = useAsync("testarg");
+        const res = useAsync({ args: ["testarg"] });
 
         return (
             <div data-testid="content">
@@ -135,7 +135,7 @@ test("variables change triggers fetch", async () => {
 
     function Component() {
         const [state, setState] = React.useState("first");
-        const res = useAsync(state);
+        const res = useAsync({ args: [state] });
 
         return (
             <div>
@@ -209,7 +209,7 @@ test("variables are checked deeply", async () => {
             },
         });
 
-        const res = useAsync(state);
+        const res = useAsync({ args: [state] });
 
         return (
             <div>

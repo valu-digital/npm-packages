@@ -14,18 +14,18 @@ export function createAsyncHook<
             res: UnwrapPromise<ReturnType<Fn>>,
             meta: {
                 refreshed: boolean;
-                variables: Parameters<Fn>[0];
-                previousVariables: Parameters<Fn>[0];
+                args: Parameters<Fn>;
+                previousArgs: Parameters<Fn>;
             },
         ) => State;
     },
 ): (
-    variables?: Parameters<Fn>[0],
+    args: Parameters<Fn> extends [] ? {} | undefined : { args: Parameters<Fn> },
 ) => {
     loading: boolean;
     state: State;
 } {
-    return function useAsyncState(_variables: Parameters<Fn>[0]) {
+    return function useAsyncState(runtimeOptions: { args: Parameters<Fn> }) {
         const refresh = React.useCallback(() => {
             setState(s => {
                 console.log(s.key);
@@ -36,18 +36,20 @@ export function createAsyncHook<
             });
         }, []);
 
+        const runtimeArgs = runtimeOptions.args ?? [];
+
         const [state, setState] = React.useState({
             loading: true,
-            variables: _variables,
+            args: runtimeArgs,
             key: 0,
             state: options.initialState,
             refresh,
         });
 
-        const memoVariables = React.useMemo(
-            () => _variables,
+        const memoArgs = React.useMemo(
+            () => runtimeArgs,
             // eslint-disable-next-line react-hooks/exhaustive-deps
-            [JSON.stringify(_variables)],
+            [JSON.stringify(runtimeArgs)],
         );
 
         React.useEffect(
@@ -63,14 +65,14 @@ export function createAsyncHook<
                     };
                 });
 
-                fetcher(memoVariables).then((res: any) => {
+                fetcher(...memoArgs).then((res: any) => {
                     setState(prevState => ({
                         ...prevState,
-                        variables: memoVariables,
+                        variables: memoArgs,
                         state: options.update(prevState.state, res, {
-                            refreshed: state.variables === memoVariables,
-                            previousVariables: state.variables,
-                            variables: memoVariables,
+                            refreshed: state.args === memoArgs,
+                            previousArgs: state.args,
+                            args: memoArgs,
                         }),
 
                         loading: false,
@@ -78,9 +80,9 @@ export function createAsyncHook<
                 });
             },
             // eslint-disable-next-line react-hooks/exhaustive-deps
-            [memoVariables, state.key],
+            [memoArgs, state.key],
         );
 
         return state;
-    };
+    } as any;
 }
