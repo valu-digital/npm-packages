@@ -329,3 +329,43 @@ test("can use previous state", async () => {
     expect(getByTestId("content").innerHTML).toEqual("res,first,res,second");
     expect(spy).toHaveBeenCalledTimes(2);
 });
+
+test("can handle errors", async () => {
+    async function doAsync(): Promise<string> {
+        throw Error("async-error");
+    }
+
+    const useAsync = createAsyncHook(doAsync, {
+        initialState: {
+            foo: "",
+        },
+        update(state, res) {
+            return {
+                foo: res,
+            };
+        },
+    });
+
+    function Component() {
+        const res = useAsync({});
+
+        if (res.error) {
+            return <div data-testid="content">{res.error.message}</div>;
+        }
+
+        return (
+            <div data-testid="content">
+                {res.loading && "loading"}
+                {!res.loading && res.state.foo}
+            </div>
+        );
+    }
+
+    const { getByTestId, getByText } = render(<Component />);
+
+    expect(getByTestId("content").innerHTML).toEqual("loading");
+
+    await waitForElementToBeRemoved(() => getByText("loading"));
+
+    expect(getByTestId("content").innerHTML).toEqual("async-error");
+});

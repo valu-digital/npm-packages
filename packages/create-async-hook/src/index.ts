@@ -57,6 +57,7 @@ export function createAsyncHook<Fn extends (args?: any) => Promise<any>, State>(
         : { variables: Parameters<Fn>[0] },
 ) => {
     loading: boolean;
+    error: any;
     state: State;
 } {
     return function useAsyncState(runtimeOptions: {
@@ -75,6 +76,7 @@ export function createAsyncHook<Fn extends (args?: any) => Promise<any>, State>(
 
         const [state, setState] = React.useState({
             loading: true,
+            error: undefined,
             variables: refVariables,
             key: 0,
             state: options.initialState,
@@ -93,19 +95,28 @@ export function createAsyncHook<Fn extends (args?: any) => Promise<any>, State>(
                 };
             });
 
-            fetcher(refVariables).then((res: any) => {
-                setState(prevState => ({
-                    ...prevState,
-                    variables: refVariables,
-                    state: options.update(prevState.state, res, {
-                        refreshed: state.variables === refVariables,
-                        previousVariables: state.variables,
+            fetcher(refVariables).then(
+                (res: any) => {
+                    setState(prevState => ({
+                        ...prevState,
                         variables: refVariables,
-                    }),
+                        state: options.update(prevState.state, res, {
+                            refreshed: state.variables === refVariables,
+                            previousVariables: state.variables,
+                            variables: refVariables,
+                        }),
 
-                    loading: false,
-                }));
-            });
+                        loading: false,
+                    }));
+                },
+                error => {
+                    setState(prevState => ({
+                        ...prevState,
+                        error,
+                        loading: false,
+                    }));
+                },
+            );
         }, [refVariables, state.key]);
 
         return state;

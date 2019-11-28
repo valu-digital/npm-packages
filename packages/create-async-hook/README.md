@@ -65,6 +65,10 @@ function Component() {
         setCursor(res.state.endCursor);
     };
 
+    if (res.error) {
+        return <div>error</div>;
+    }
+
     return (
         <>
             <ul>
