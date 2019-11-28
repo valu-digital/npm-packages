@@ -40,6 +40,7 @@ function useDeepEqualRef<T>(o: T): T {
 export function createAsyncHook<Fn extends (args?: any) => Promise<any>, State>(
     fetcher: Fn,
     options: {
+        throwErrors?: boolean;
         initialState: State;
         update: (
             state: State,
@@ -133,6 +134,10 @@ export function createAsyncHook<Fn extends (args?: any) => Promise<any>, State>(
                 },
             );
         }, [refVariables, state.key]);
+
+        if (options.throwErrors && state.error) {
+            throw state.error;
+        }
 
         return state;
     } as any;

@@ -330,80 +330,155 @@ test("can use previous state", async () => {
     expect(spy).toHaveBeenCalledTimes(2);
 });
 
-test("can handle errors", async () => {
-    async function doAsync(): Promise<string> {
-        throw Error("async-error");
-    }
-
-    const useAsync = createAsyncHook(doAsync, {
-        initialState: {
-            foo: "",
-        },
-        update(state, res) {
-            return {
-                foo: res,
-            };
-        },
-    });
-
-    function Component() {
-        const res = useAsync({});
-
-        if (res.error) {
-            return <div data-testid="content">{res.error.message}</div>;
+describe("errors", () => {
+    test("can handle errors", async () => {
+        async function doAsync(): Promise<string> {
+            throw Error("async-error");
         }
 
-        return (
-            <div data-testid="content">
-                {res.loading && "loading"}
-                {!res.loading && res.state.foo}
-            </div>
-        );
-    }
+        const useAsync = createAsyncHook(doAsync, {
+            initialState: {
+                foo: "",
+            },
+            update(state, res) {
+                return {
+                    foo: res,
+                };
+            },
+        });
 
-    const { getByTestId, getByText } = render(<Component />);
+        function Component() {
+            const res = useAsync({});
 
-    expect(getByTestId("content").innerHTML).toEqual("loading");
+            if (res.error) {
+                return <div data-testid="content">{res.error.message}</div>;
+            }
 
-    await waitForElementToBeRemoved(() => getByText("loading"));
-
-    expect(getByTestId("content").innerHTML).toEqual("async-error");
-});
-
-test("can throw errors from update", async () => {
-    async function doAsync() {
-        return "async-result";
-    }
-
-    const useAsync = createAsyncHook(doAsync, {
-        initialState: {
-            foo: "",
-        },
-        update(state, res) {
-            throw new Error("update-error");
-        },
-    });
-
-    function Component() {
-        const res = useAsync({});
-
-        if (res.error) {
-            return <div data-testid="content">{res.error.message}</div>;
+            return (
+                <div data-testid="content">
+                    {res.loading && "loading"}
+                    {!res.loading && res.state.foo}
+                </div>
+            );
         }
 
-        return (
-            <div data-testid="content">
-                {res.loading && "loading"}
-                {!res.loading && res.state.foo}
-            </div>
+        const { getByTestId, getByText } = render(<Component />);
+
+        expect(getByTestId("content").innerHTML).toEqual("loading");
+
+        await waitForElementToBeRemoved(() => getByText("loading"));
+
+        expect(getByTestId("content").innerHTML).toEqual("async-error");
+    });
+
+    test("can throw errors from update", async () => {
+        async function doAsync() {
+            return "async-result";
+        }
+
+        const useAsync = createAsyncHook(doAsync, {
+            initialState: {
+                foo: "",
+            },
+            update(state, res) {
+                throw new Error("update-error");
+            },
+        });
+
+        function Component() {
+            const res = useAsync({});
+
+            if (res.error) {
+                return <div data-testid="content">{res.error.message}</div>;
+            }
+
+            return (
+                <div data-testid="content">
+                    {res.loading && "loading"}
+                    {!res.loading && res.state.foo}
+                </div>
+            );
+        }
+
+        const { getByTestId, getByText } = render(<Component />);
+
+        expect(getByTestId("content").innerHTML).toEqual("loading");
+
+        await waitForElementToBeRemoved(() => getByText("loading"));
+
+        expect(getByTestId("content").innerHTML).toEqual("update-error");
+    });
+
+    test("throwErrors option", async () => {
+        const errorSpy = jest.fn();
+
+        async function doAsync(): Promise<string> {
+            throw Error("async-error");
+        }
+
+        const useAsync = createAsyncHook(doAsync, {
+            throwErrors: true,
+            initialState: {
+                foo: "",
+            },
+            update(state, res) {
+                return {
+                    foo: res,
+                };
+            },
+        });
+
+        class ErrorBoundary extends React.Component {
+            state = { error: null as any };
+
+            static getDerivedStateFromError(error: any) {
+                return { error };
+            }
+
+            componentDidCatch(error: any) {
+                errorSpy(error);
+            }
+
+            render() {
+                if (this.state.error) {
+                    return (
+                        <div data-testid="content">
+                            catch-error: {this.state.error.message}
+                        </div>
+                    );
+                }
+
+                return this.props.children;
+            }
+        }
+
+        function Component() {
+            const res = useAsync({});
+
+            return (
+                <div data-testid="content">
+                    {res.loading && "loading"}
+                    {!res.loading && res.state.foo}
+                </div>
+            );
+        }
+
+        function Wrap() {
+            return (
+                <ErrorBoundary>
+                    <Component />
+                </ErrorBoundary>
+            );
+        }
+
+        const { getByTestId, getByText } = render(<Wrap />);
+
+        expect(getByTestId("content").innerHTML).toEqual("loading");
+
+        await waitForElementToBeRemoved(() => getByText("loading"));
+
+        expect(getByTestId("content").innerHTML).toEqual(
+            "catch-error: async-error",
         );
-    }
-
-    const { getByTestId, getByText } = render(<Component />);
-
-    expect(getByTestId("content").innerHTML).toEqual("loading");
-
-    await waitForElementToBeRemoved(() => getByText("loading"));
-
-    expect(getByTestId("content").innerHTML).toEqual("update-error");
+    });
 });
