@@ -110,7 +110,7 @@ the above code is in `functions.php`.
 
 ### Usage with React
 
-This does not contain anything React specific but there multiple React Hooks
+This does not contain anything React specific but there are multiple React Hooks
 that can work with Async Functions. Here's few:
 
 -   [@valu/create-async-hook](https://github.com/valu-digital/create-async-hook)
