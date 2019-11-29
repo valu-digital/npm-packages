@@ -82,6 +82,16 @@ getPosts-fc97c4a5683a1c5d521aba0b11a305bfa13e4cded69bf4559cca6e2b6e4c6102.graphq
 The backend must implement this extension too and be able to load the query
 from the file.
 
+### Usage with React
+
+This does not contain anything React specific but there multiple React Hooks
+that can work with Async Functions. Here's few:
+
+-   [@valu/create-async-hook](https://github.com/valu-digital/create-async-hook)
+-   [swr](https://github.com/zeit/swr)
+-   [react-query](https://github.com/tannerlinsley/react-query)
+-   [react-async-hook](https://github.com/slorber/react-async-hook)
+
 ### WPGraphQL
 
 If you are using [WPGraphQL][] with WordPress you can use the
