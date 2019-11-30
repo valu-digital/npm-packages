@@ -71,7 +71,7 @@ export function createAsyncHook<Fn extends (args?: any) => Promise<any>, State>(
             });
         }, []);
 
-        const refVariables = useDeepEqualRef(runtimeOptions.variables ?? []);
+        const refVariables = useDeepEqualRef(runtimeOptions.variables);
 
         const [state, setState] = React.useState({
             loading: true,
