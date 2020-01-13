@@ -6,6 +6,7 @@
 module.exports = {
     moduleFileExtensions: ["ts", "tsx", "js"],
     restoreMocks: true,
+    setupFiles: ["<rootDir>/__tests__/setup.ts"],
     transform: {
         "^.+\\.(ts|tsx)$": "ts-jest",
     },
