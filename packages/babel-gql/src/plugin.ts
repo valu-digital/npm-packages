@@ -10,6 +10,13 @@ export interface Babel {
     types: typeof BabelTypes;
 }
 
+export interface BabelGQLOptions {
+    ownModuleName?: string;
+    export?: boolean;
+    removeQuery?: boolean;
+    target?: string;
+}
+
 interface BabelFile {
     opts: {
         generatorOpts: any;
@@ -18,16 +25,25 @@ interface BabelFile {
     path: NodePath;
 }
 
-export interface BabelGQLOptions {
-    ownModuleName?: string;
-    export?: boolean;
-    removeQuery?: boolean;
-    target?: string;
+/**
+ * Babel visitor state
+ *
+ * XXX find existing type for this
+ */
+interface VisitorState<Options> {
+    opts?: Options;
+    file: BabelFile;
 }
 
-interface VisitorState {
-    opts?: BabelGQLOptions;
-    file: BabelFile;
+/**
+ * Babel plugin type.
+ *
+ * XXX find existing type for this
+ */
+interface BabelPlugin<Options> {
+    visitor: Visitor<VisitorState<Options>>;
+    pre(state: VisitorState<Options>): void;
+    post(state: VisitorState<Options>): void;
 }
 
 function parseTag(
@@ -140,7 +156,7 @@ function findIdentifier(importName: string) {
 function babelGQLWithQueryManager(
     qm: QueryManager,
     babel: Babel,
-): { visitor: Visitor<VisitorState> } {
+): BabelPlugin<BabelGQLOptions> {
     const t = babel.types;
     const isProduction = Boolean(process.env.NODE_ENV === "production");
 
@@ -152,6 +168,16 @@ function babelGQLWithQueryManager(
     let inject: any[] = [];
 
     return {
+        pre() {
+            if (process.env.BABEL_GQL_DEBUG) {
+                console.log("babel-gql/plugin pre");
+            }
+        },
+        post() {
+            if (process.env.BABEL_GQL_DEBUG) {
+                console.log("babel-gql/plugin post");
+            }
+        },
         visitor: {
             Program: {
                 enter(path) {
@@ -253,7 +279,7 @@ function babelGQLWithQueryManager(
 
 export default function babelGQLPlugin(
     babel: Babel,
-): { visitor: Visitor<VisitorState> } {
+): BabelPlugin<BabelGQLOptions> {
     const qm = new QueryManager({
         async onExportQuery(query, target) {
             if (!target) {
