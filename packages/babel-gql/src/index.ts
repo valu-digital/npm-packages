@@ -111,12 +111,15 @@ function doRequest(
     },
 ) {
     if (process.env.NODE_ENV !== "production") {
+        const { headers, ...otherOptions } = options.fetchOptions ?? {};
+
         return fetch(endpoint, {
             method: "POST",
             headers: {
                 "content-type": "application/json",
                 ...options.fetchOptions?.headers,
             },
+            ...otherOptions,
             body: JSON.stringify({
                 variables: options.variables,
                 operationName: options.query.queryName,
