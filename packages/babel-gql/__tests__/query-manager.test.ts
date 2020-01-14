@@ -14,7 +14,7 @@ test("single query", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
@@ -32,7 +32,7 @@ test("single query can update", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -42,7 +42,7 @@ test("single query can update", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(2);
 
@@ -73,7 +73,7 @@ test("no export if no change in query", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -83,7 +83,7 @@ test("no export if no change in query", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
@@ -104,7 +104,7 @@ test("multiple queries in single string", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(2);
 });
@@ -128,7 +128,7 @@ test("multiple queries in multiple strings", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(2);
 });
@@ -148,7 +148,7 @@ test("single mutation", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
@@ -171,7 +171,7 @@ test("single query with fragment", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
     const arg = spy.mock.calls[0][0];
@@ -215,7 +215,7 @@ test("fragment update triggers query export", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     qm.parseGraphQL(gql`
         fragment FooFragment on Foo {
@@ -224,7 +224,7 @@ test("fragment update triggers query export", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(2);
     const arg = spy.mock.calls[1][0];
@@ -265,7 +265,7 @@ test("unrelated fragment does not trigger export", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -275,7 +275,7 @@ test("unrelated fragment does not trigger export", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
@@ -297,7 +297,7 @@ test("adding fragment dep causes export", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -308,7 +308,7 @@ test("adding fragment dep causes export", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(2);
 
@@ -349,7 +349,7 @@ test("does not export before all fragments are defined", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(0);
 
@@ -360,7 +360,7 @@ test("does not export before all fragments are defined", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
@@ -388,7 +388,7 @@ test("can handle nested fragments", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -443,7 +443,7 @@ test("does not export when all nested fragments are not defined", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(0);
 
@@ -453,7 +453,7 @@ test("does not export when all nested fragments are not defined", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -512,7 +512,7 @@ test("change to nested fragment triggers update", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -522,7 +522,7 @@ test("change to nested fragment triggers update", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(2);
 
@@ -581,7 +581,7 @@ test("no export if fragment does not actually change", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -591,7 +591,7 @@ test("no export if fragment does not actually change", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
@@ -610,7 +610,7 @@ test("can define query before fragment it uses", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(0);
 
@@ -620,7 +620,7 @@ test("can define query before fragment it uses", async () => {
         }
     `);
 
-    await qm.exportDirtyQueries("");
+    qm.exportDirtyQueries("");
 
     expect(spy).toHaveBeenCalledTimes(1);
 });
