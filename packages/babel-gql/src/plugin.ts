@@ -153,154 +153,6 @@ function findIdentifier(importName: string) {
     return externalModules.find(m => m.name === importName);
 }
 
-function babelGQLWithQueryManager(
-    qm: QueryManager,
-    babel: Babel,
-): BabelPlugin<BabelGQLOptions> {
-    const t = babel.types;
-    const isProduction = Boolean(process.env.NODE_ENV === "production");
-
-    /**
-     * Local name of the css import from babel-gql if any
-     */
-    let ourName: string | null = null;
-    let externalTags = new Set<string>();
-    let inject: any[] = [];
-
-    return {
-        pre() {
-            if (process.env.BABEL_GQL_DEBUG) {
-                console.log("babel-gql/plugin pre");
-            }
-        },
-        post() {
-            if (process.env.BABEL_GQL_DEBUG) {
-                console.log("babel-gql/plugin post");
-            }
-        },
-        visitor: {
-            Program: {
-                enter(path) {
-                    // Reset import name state when entering a new file
-                    ourName = null;
-                    inject = [];
-                    externalTags = new Set();
-                },
-
-                exit(path, state) {
-                    if (!ourName) {
-                        return;
-                    }
-
-                    for (const graphqObject of inject) {
-                        path.pushContainer(
-                            "body",
-                            t.callExpression(t.identifier(ourName), [
-                                graphqObject,
-                            ]),
-                        );
-                    }
-                },
-            },
-
-            ImportDeclaration(path, state) {
-                const opts = state.opts || {};
-
-                const target = opts?.ownModuleName ?? "babel-gql";
-                const importName = path.node.source.value;
-
-                if (importName === target) {
-                    for (const s of path.node.specifiers) {
-                        if (!t.isImportSpecifier(s)) {
-                            continue;
-                        }
-
-                        if (s.imported.name === "gql") {
-                            ourName = s.local.name;
-                        }
-                    }
-                }
-
-                const external = findIdentifier(importName);
-
-                if (external) {
-                    for (const s of path.node.specifiers) {
-                        if (!t.isImportSpecifier(s)) {
-                            continue;
-                        }
-
-                        if (
-                            external.identifier &&
-                            s.imported.name === external.identifier
-                        ) {
-                            externalTags.add(s.local.name);
-                        }
-                    }
-                }
-            },
-
-            TaggedTemplateExpression(path, state) {
-                if (!path.node.loc) {
-                    return;
-                }
-
-                const tag = path.node.tag;
-
-                if (!t.isIdentifier(tag)) {
-                    return;
-                }
-
-                const removeQuery = state.opts?.removeQuery ?? isProduction;
-
-                if (ourName && tag.name === ourName) {
-                    const graphqObject = parseTag(t, qm, path, removeQuery);
-
-                    path.replaceWith(
-                        t.callExpression(t.identifier(ourName), [graphqObject]),
-                    );
-                } else if (externalTags.has(tag.name)) {
-                    if (inject) {
-                        inject.push(parseTag(t, qm, path, removeQuery));
-                    }
-                }
-
-                const shouldExport = state.opts?.export ?? isProduction;
-
-                if (shouldExport) {
-                    qm.exportDirtyQueries(
-                        state.opts?.target ??
-                            PathUtils.join(process.cwd(), ".queries"),
-                    );
-                }
-            },
-        },
-    };
-}
-
-export default function babelGQLPlugin(
-    babel: Babel,
-): BabelPlugin<BabelGQLOptions> {
-    const qm = new QueryManager({
-        async onExportQuery(query, target) {
-            if (!target) {
-                return;
-            }
-
-            await fs.mkdir(target, { recursive: true });
-
-            await fs.writeFile(
-                PathUtils.join(
-                    target,
-                    `${query.queryName}-${query.fullQueryId}.graphql`,
-                ),
-                query.fullQuery,
-            );
-        },
-    });
-
-    return babelGQLWithQueryManager(qm, babel);
-}
-
 function recursiveObjectExpression(t: typeof BabelTypes, ob: any): any {
     if (typeof ob === "string") {
         return t.stringLiteral(ob);
@@ -338,4 +190,194 @@ function recursiveObjectExpression(t: typeof BabelTypes, ob: any): any {
                 );
             }),
     );
+}
+
+function initFileState(): {
+    /**
+     * Local name of the css import from babel-gql if any
+     */
+    ourName: string | null;
+    externalTags: Set<string>;
+
+    /**
+     * Graphql tags to be injected
+     */
+    inject: any[];
+} {
+    return {
+        ourName: null,
+        externalTags: new Set(),
+        inject: [],
+    };
+}
+
+export class TrasformGQLTags {
+    qm: QueryManager;
+    babel: Babel;
+
+    fileState = initFileState();
+
+    constructor(options: { qm: QueryManager; babel: Babel }) {
+        this.qm = options.qm;
+        this.babel = options.babel;
+    }
+
+    resetFileState() {
+        this.fileState = initFileState();
+    }
+
+    asBabelPlugin(): BabelPlugin<BabelGQLOptions> {
+        const t = this.babel.types;
+        const isProduction = Boolean(process.env.NODE_ENV === "production");
+
+        return {
+            pre() {
+                if (process.env.BABEL_GQL_DEBUG) {
+                    console.log("babel-gql/plugin pre");
+                }
+            },
+            post() {
+                if (process.env.BABEL_GQL_DEBUG) {
+                    console.log("babel-gql/plugin post");
+                }
+            },
+            visitor: {
+                Program: {
+                    enter: path => {
+                        // Reset import name state when entering a new file
+                        this.resetFileState();
+                    },
+
+                    exit: (path, state) => {
+                        if (!this.fileState.ourName) {
+                            return;
+                        }
+
+                        for (const graphqlObject of this.fileState.inject) {
+                            path.pushContainer(
+                                "body",
+                                t.callExpression(
+                                    t.identifier(this.fileState.ourName),
+                                    [graphqlObject],
+                                ),
+                            );
+                        }
+                    },
+                },
+
+                ImportDeclaration: (path, state) => {
+                    const opts = state.opts || {};
+
+                    const target = opts?.ownModuleName ?? "babel-gql";
+                    const importName = path.node.source.value;
+
+                    if (importName === target) {
+                        for (const s of path.node.specifiers) {
+                            if (!t.isImportSpecifier(s)) {
+                                continue;
+                            }
+
+                            if (s.imported.name === "gql") {
+                                this.fileState.ourName = s.local.name;
+                            }
+                        }
+                    }
+
+                    const external = findIdentifier(importName);
+
+                    if (external) {
+                        for (const s of path.node.specifiers) {
+                            if (!t.isImportSpecifier(s)) {
+                                continue;
+                            }
+
+                            if (
+                                external.identifier &&
+                                s.imported.name === external.identifier
+                            ) {
+                                this.fileState.externalTags.add(s.local.name);
+                            }
+                        }
+                    }
+                },
+
+                TaggedTemplateExpression: (path, state) => {
+                    if (!path.node.loc) {
+                        return;
+                    }
+
+                    const tag = path.node.tag;
+
+                    if (!t.isIdentifier(tag)) {
+                        return;
+                    }
+
+                    const removeQuery = state.opts?.removeQuery ?? isProduction;
+
+                    if (
+                        this.fileState.ourName &&
+                        tag.name === this.fileState.ourName
+                    ) {
+                        const graphqObject = parseTag(
+                            t,
+                            this.qm,
+                            path,
+                            removeQuery,
+                        );
+
+                        path.replaceWith(
+                            t.callExpression(
+                                t.identifier(this.fileState.ourName),
+                                [graphqObject],
+                            ),
+                        );
+                    } else if (this.fileState.externalTags.has(tag.name)) {
+                        if (this.fileState.inject) {
+                            this.fileState.inject.push(
+                                parseTag(t, this.qm, path, removeQuery),
+                            );
+                        }
+                    }
+
+                    const shouldExport = state.opts?.export ?? isProduction;
+
+                    if (shouldExport) {
+                        this.qm.exportDirtyQueries(
+                            state.opts?.target ??
+                                PathUtils.join(process.cwd(), ".queries"),
+                        );
+                    }
+                },
+            },
+        };
+    }
+}
+
+export default function babelGQLPlugin(
+    babel: Babel,
+): BabelPlugin<BabelGQLOptions> {
+    const qm = new QueryManager({
+        async onExportQuery(query, target) {
+            if (!target) {
+                return;
+            }
+
+            await fs.mkdir(target, { recursive: true });
+
+            await fs.writeFile(
+                PathUtils.join(
+                    target,
+                    `${query.queryName}-${query.fullQueryId}.graphql`,
+                ),
+                query.fullQuery,
+            );
+        },
+    });
+
+    const transform = new TrasformGQLTags({
+        qm,
+        babel,
+    });
+
+    return transform.asBabelPlugin();
 }
