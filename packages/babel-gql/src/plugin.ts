@@ -135,7 +135,7 @@ function findIdentifier(importName: string) {
     return externalModules.find(m => m.name === importName);
 }
 
-export default function bemedBabelPlugin(
+export default function babelGQLPlugin(
     babel: Babel,
 ): { visitor: Visitor<VisitorState> } {
     const t = babel.types;
