@@ -4,6 +4,8 @@ import * as BabelTypes from "@babel/types";
 import { Visitor, NodePath } from "@babel/traverse";
 import { QueryManager } from "./query-manager";
 
+export { QueryManager };
+
 export interface Babel {
     types: typeof BabelTypes;
 }
@@ -135,29 +137,12 @@ function findIdentifier(importName: string) {
     return externalModules.find(m => m.name === importName);
 }
 
-export default function babelGQLPlugin(
+function babelGQLWithQueryManager(
+    qm: QueryManager,
     babel: Babel,
 ): { visitor: Visitor<VisitorState> } {
     const t = babel.types;
     const isProduction = Boolean(process.env.NODE_ENV === "production");
-
-    const qm = new QueryManager({
-        async onExportQuery(query, target) {
-            if (!target) {
-                return;
-            }
-
-            await fs.mkdir(target, { recursive: true });
-
-            await fs.writeFile(
-                PathUtils.join(
-                    target,
-                    `${query.queryName}-${query.fullQueryId}.graphql`,
-                ),
-                query.fullQuery,
-            );
-        },
-    });
 
     /**
      * Local name of the css import from babel-gql if any
@@ -264,6 +249,30 @@ export default function babelGQLPlugin(
             },
         },
     };
+}
+
+export default function babelGQLPlugin(
+    babel: Babel,
+): { visitor: Visitor<VisitorState> } {
+    const qm = new QueryManager({
+        async onExportQuery(query, target) {
+            if (!target) {
+                return;
+            }
+
+            await fs.mkdir(target, { recursive: true });
+
+            await fs.writeFile(
+                PathUtils.join(
+                    target,
+                    `${query.queryName}-${query.fullQueryId}.graphql`,
+                ),
+                query.fullQuery,
+            );
+        },
+    });
+
+    return babelGQLWithQueryManager(qm, babel);
 }
 
 function recursiveObjectExpression(t: typeof BabelTypes, ob: any): any {
