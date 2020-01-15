@@ -1,10 +1,8 @@
-import { promises as fs } from "fs";
-import PathUtils from "path";
 import * as BabelTypes from "@babel/types";
 import { Visitor, NodePath } from "@babel/traverse";
-import { QueryManager } from "./query-manager";
+import { QueryManager, BabelGQLWebpackPlugin, debug } from "./query-manager";
 
-export { QueryManager };
+export { QueryManager, BabelGQLWebpackPlugin };
 
 export interface Babel {
     types: typeof BabelTypes;
@@ -42,8 +40,8 @@ interface VisitorState<Options> {
  */
 interface BabelPlugin<Options> {
     visitor: Visitor<VisitorState<Options>>;
-    pre(state: VisitorState<Options>): void;
-    post(state: VisitorState<Options>): void;
+    pre?(state: VisitorState<Options>): void;
+    post?(state: VisitorState<Options>): void;
 }
 
 function parseTag(
@@ -211,7 +209,7 @@ function initFileState(): {
     };
 }
 
-export class TrasformGQLTags {
+export class TransformGQLTags {
     qm: QueryManager;
     babel: Babel;
 
@@ -231,16 +229,6 @@ export class TrasformGQLTags {
         const isProduction = Boolean(process.env.NODE_ENV === "production");
 
         return {
-            pre() {
-                if (process.env.BABEL_GQL_DEBUG) {
-                    console.log("babel-gql/plugin pre");
-                }
-            },
-            post() {
-                if (process.env.BABEL_GQL_DEBUG) {
-                    console.log("babel-gql/plugin post");
-                }
-            },
             visitor: {
                 Program: {
                     enter: path => {
@@ -338,15 +326,6 @@ export class TrasformGQLTags {
                             );
                         }
                     }
-
-                    const shouldExport = state.opts?.export ?? isProduction;
-
-                    if (shouldExport) {
-                        this.qm.exportDirtyQueries(
-                            state.opts?.target ??
-                                PathUtils.join(process.cwd(), ".queries"),
-                        );
-                    }
                 },
             },
         };
@@ -356,25 +335,11 @@ export class TrasformGQLTags {
 export default function babelGQLPlugin(
     babel: Babel,
 ): BabelPlugin<BabelGQLOptions> {
-    const qm = new QueryManager({
-        async onExportQuery(query, target) {
-            if (!target) {
-                return;
-            }
+    debug("initializing babel plugin");
+    const qm = new QueryManager();
+    qm.registerAsGlobal();
 
-            await fs.mkdir(target, { recursive: true });
-
-            await fs.writeFile(
-                PathUtils.join(
-                    target,
-                    `${query.queryName}-${query.fullQueryId}.graphql`,
-                ),
-                query.fullQuery,
-            );
-        },
-    });
-
-    const transform = new TrasformGQLTags({
+    const transform = new TransformGQLTags({
         qm,
         babel,
     });

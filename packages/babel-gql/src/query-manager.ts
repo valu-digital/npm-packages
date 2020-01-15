@@ -1,4 +1,7 @@
 import crypto from "crypto";
+
+import { promises as fs } from "fs";
+import PathUtils from "path";
 import {
     parse,
     print,
@@ -7,6 +10,12 @@ import {
     OperationDefinitionNode,
 } from "graphql";
 import { ParsedGQLTag, combinedIds } from "./shared";
+
+export function debug(...args: any[]) {
+    if (process.env.BABEL_GQL_DEBUG) {
+        console.log("[babel-gql]", ...args);
+    }
+}
 
 function hash(s: string) {
     return crypto
@@ -41,32 +50,67 @@ export function findUsedFragments(
 
     return usedFragments;
 }
-
-export interface QueryManagerOptions {
-    onExportQuery(
-        query: {
-            queryName: string;
-            queryId: string;
-            fullQueryId: string;
-            fullQuery: string;
-            query: string;
-            usedFragments: {
-                fragment: string;
-                fragmentName: string;
-                fragmentId: string;
-            }[];
-        },
-        target: string,
-        queryManager: QueryManager,
-    ): Promise<any>;
-}
-
 function isOperationDefinition(ob: any): ob is OperationDefinitionNode {
     return Boolean(ob && ob.kind === "OperationDefinition");
 }
 
 function isFragmentDefinition(ob: any): ob is FragmentDefinitionNode {
     return Boolean(ob && ob.kind === "FragmentDefinition");
+}
+
+interface OnDone {
+    (qm: QueryManager, modifiedQueryCount: number): Promise<any>;
+}
+
+export class BabelGQLWebpackPlugin {
+    target: string;
+    onDone?: OnDone;
+
+    constructor(options: { target: string; onDone?: OnDone }) {
+        debug("Initializing Webpack plugin");
+        if (!options.target) {
+            throw new Error("No target passed to QueryManagerWebpackPlugin");
+        }
+
+        this.target = options.target;
+        this.onDone = options.onDone;
+    }
+
+    apply(compiler: any) {
+        debug("Applying Webpack compiler");
+        compiler.hooks.afterCompile.tapPromise(
+            "BabelGQLWebpackPlugin",
+            async () => {
+                debug("Webpack 'afterCompile'");
+                await this.handleDone();
+            },
+        );
+    }
+
+    async handleDone() {
+        const qm = QueryManager.getRegisteredGlobal();
+
+        await fs.mkdir(this.target, { recursive: true });
+
+        const dirtyQueries = qm.popDirtyQueries();
+
+        await Promise.all(
+            dirtyQueries.map(async query => {
+                const path = PathUtils.join(
+                    this.target,
+                    `${query.queryName}-${query.fullQueryId}.graphql`,
+                );
+
+                await fs.writeFile(path, query.fullQuery);
+
+                debug(`Wrote ${path}`);
+            }),
+        );
+
+        if (this.onDone) {
+            await this.onDone(qm, dirtyQueries.length);
+        }
+    }
 }
 
 /**
@@ -95,10 +139,24 @@ export class QueryManager {
 
     dirtyQueries = new Set<string>();
 
-    options: QueryManagerOptions;
+    static getRegisteredGlobal(): QueryManager {
+        const anyGlobal = global as any;
 
-    constructor(options: QueryManagerOptions) {
-        this.options = options;
+        if (!anyGlobal.QueryManagerGlobal) {
+            throw new Error("No global QueryManager registered (babel-gql)");
+        }
+
+        return anyGlobal.QueryManagerGlobal;
+    }
+
+    registerAsGlobal() {
+        const anyGlobal = global as any;
+        if (anyGlobal.QueryManagerGlobal) {
+            throw new Error(
+                "There's already a global QueryManager defined (babel-gql)",
+            );
+        }
+        anyGlobal.QueryManagerGlobal = this;
     }
 
     parseGraphQL(graphql: string): ParsedGQLTag {
@@ -271,13 +329,19 @@ export class QueryManager {
             }
         }
 
-        return popQueries;
+        return Array.from(popQueries)
+            .map(queryName => {
+                return this.exportQuery(queryName);
+            })
+            .filter(Boolean);
     }
 
-    exportDirtyQueries(target: string) {
-        for (const queryName of this.popDirtyQueries()) {
-            this.exportQuery(queryName, target);
-        }
+    getQueries() {
+        return Array.from(this.knownQueries.keys())
+            .filter(queryName => this.queryHasRequiredFragments(queryName))
+            .map(queryName => {
+                return this.exportQuery(queryName);
+            });
     }
 
     getUsedFragmentNamesForQuery(queryName: string) {
@@ -319,11 +383,11 @@ export class QueryManager {
         return fragments;
     }
 
-    async exportQuery(queryName: string, target: string) {
+    exportQuery(queryName: string) {
         const query = this.knownQueries.get(queryName);
 
         if (!query) {
-            return;
+            throw new Error(`Unknown query ${queryName}`);
         }
 
         const fragments = Array.from(
@@ -351,17 +415,13 @@ export class QueryManager {
         const queryId = hash(query);
         const fullQueryId = combinedIds([queryId, ...fragmentIds]);
 
-        await this.options.onExportQuery(
-            {
-                query,
-                queryId,
-                fullQueryId,
-                fullQuery,
-                usedFragments: fragments,
-                queryName,
-            },
-            target,
-            this,
-        );
+        return {
+            query,
+            queryId,
+            fullQueryId,
+            fullQuery,
+            usedFragments: fragments,
+            queryName,
+        };
     }
 }
