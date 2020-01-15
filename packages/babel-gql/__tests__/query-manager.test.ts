@@ -1,12 +1,8 @@
 import { QueryManager } from "../src/query-manager";
 import { gql } from "./helpers";
 
-test("single query", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+test("single query", () => {
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         query FooQuery {
@@ -14,17 +10,13 @@ test("single query", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(1);
+    const queries = qm.popDirtyQueries();
+    expect(queries).toHaveLength(1);
+    expect(queries[0].queryName).toBe("FooQuery");
 });
 
-test("single query can update", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+test("single query can update", () => {
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         query FooQuery {
@@ -32,9 +24,19 @@ test("single query can update", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
+    const queries = qm.popDirtyQueries();
+    expect(queries).toHaveLength(1);
 
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(queries[0]).toMatchObject({
+        queryName: "FooQuery",
+        queryId: expect.stringMatching(/.+/),
+        query: gql`
+            query FooQuery {
+                field
+            }
+        `,
+        usedFragments: [],
+    });
 
     qm.parseGraphQL(gql`
         query FooQuery {
@@ -42,13 +44,10 @@ test("single query can update", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
+    const queries2 = qm.popDirtyQueries();
+    expect(queries2).toHaveLength(1);
 
-    expect(spy).toHaveBeenCalledTimes(2);
-
-    const arg = spy.mock.calls[1][0];
-
-    expect(arg).toMatchObject({
+    expect(queries2[0]).toMatchObject({
         queryName: "FooQuery",
         queryId: expect.stringMatching(/.+/),
         query: gql`
@@ -61,11 +60,7 @@ test("single query can update", async () => {
 });
 
 test("no export if no change in query", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         query FooQuery {
@@ -73,9 +68,7 @@ test("no export if no change in query", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(qm.popDirtyQueries()).toHaveLength(1);
 
     qm.parseGraphQL(gql`
         query FooQuery {
@@ -83,17 +76,12 @@ test("no export if no change in query", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(qm.popDirtyQueries()).toHaveLength(0);
+    expect(qm.getQueries()).toHaveLength(1);
 });
 
 test("multiple queries in single string", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         query FooQuery {
@@ -104,17 +92,12 @@ test("multiple queries in single string", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(2);
+    expect(qm.popDirtyQueries()).toHaveLength(2);
+    expect(qm.getQueries()).toHaveLength(2);
 });
 
 test("multiple queries in multiple strings", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         query FooQuery {
@@ -128,17 +111,12 @@ test("multiple queries in multiple strings", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(2);
+    expect(qm.popDirtyQueries()).toHaveLength(2);
+    expect(qm.getQueries()).toHaveLength(2);
 });
 
 test("single mutation", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         mutation FooMutation($arg: String!) {
@@ -148,17 +126,12 @@ test("single mutation", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(qm.popDirtyQueries()).toHaveLength(1);
+    expect(qm.getQueries()).toHaveLength(1);
 });
 
 test("single query with fragment", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         fragment FooFragment on Foo {
@@ -171,11 +144,10 @@ test("single query with fragment", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
+    const queries = qm.popDirtyQueries();
+    expect(qm.getQueries()).toHaveLength(1);
 
-    expect(spy).toHaveBeenCalledTimes(1);
-    const arg = spy.mock.calls[0][0];
-    expect(arg).toMatchObject({
+    expect(queries[0]).toMatchObject({
         queryName: "FooQuery",
         query: gql`
             query FooQuery {
@@ -197,12 +169,8 @@ test("single query with fragment", async () => {
     });
 });
 
-test("fragment update triggers query export", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+test("fragment update triggers dirty query export", () => {
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         fragment FooFragment on Foo {
@@ -215,7 +183,7 @@ test("fragment update triggers query export", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
+    expect(qm.popDirtyQueries()).toHaveLength(1);
 
     qm.parseGraphQL(gql`
         fragment FooFragment on Foo {
@@ -224,12 +192,10 @@ test("fragment update triggers query export", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
+    const queries = qm.popDirtyQueries();
+    expect(queries).toHaveLength(1);
 
-    expect(spy).toHaveBeenCalledTimes(2);
-    const arg = spy.mock.calls[1][0];
-
-    expect(arg).toMatchObject({
+    expect(queries[0]).toMatchObject({
         queryName: "FooQuery",
         query: gql`
             query FooQuery {
@@ -252,12 +218,8 @@ test("fragment update triggers query export", async () => {
     });
 });
 
-test("unrelated fragment does not trigger export", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+test("unrelated fragment does not trigger export", () => {
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         query FooQuery {
@@ -265,9 +227,7 @@ test("unrelated fragment does not trigger export", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(qm.popDirtyQueries()).toHaveLength(1);
 
     qm.parseGraphQL(gql`
         fragment SomeFragment on Foo {
@@ -275,17 +235,11 @@ test("unrelated fragment does not trigger export", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(qm.popDirtyQueries()).toHaveLength(0);
 });
 
 test("adding fragment dep causes export", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         fragment SomeFragment on Foo {
@@ -297,9 +251,7 @@ test("adding fragment dep causes export", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(qm.popDirtyQueries()).toHaveLength(1);
 
     qm.parseGraphQL(gql`
         query FooQuery {
@@ -308,13 +260,11 @@ test("adding fragment dep causes export", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
+    const queries = qm.popDirtyQueries();
 
-    expect(spy).toHaveBeenCalledTimes(2);
+    expect(queries).toHaveLength(1);
 
-    const arg = spy.mock.calls[1][0];
-
-    expect(arg).toMatchObject({
+    expect(queries[0]).toMatchObject({
         queryName: "FooQuery",
         query: gql`
             query FooQuery {
@@ -336,11 +286,7 @@ test("adding fragment dep causes export", async () => {
 });
 
 test("does not export before all fragments are defined", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         query FooQuery {
@@ -349,9 +295,8 @@ test("does not export before all fragments are defined", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(0);
+    expect(qm.popDirtyQueries()).toHaveLength(0);
+    expect(qm.getQueries()).toHaveLength(0);
 
     qm.parseGraphQL(gql`
         fragment FooFragment on Foo {
@@ -360,17 +305,12 @@ test("does not export before all fragments are defined", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(qm.popDirtyQueries()).toHaveLength(1);
+    expect(qm.getQueries()).toHaveLength(1);
 });
 
 test("can handle nested fragments", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         fragment Fragment1 on Foo {
@@ -388,15 +328,12 @@ test("can handle nested fragments", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
+    const queries = qm.popDirtyQueries();
+    expect(queries).toHaveLength(1);
 
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(queries[0].usedFragments).toHaveLength(2);
 
-    const arg = spy.mock.calls[0][0];
-
-    expect(arg.usedFragments).toHaveLength(2);
-
-    expect(arg).toMatchObject({
+    expect(queries[0]).toMatchObject({
         queryName: "FooQuery",
         query: gql`
             query FooQuery {
@@ -425,11 +362,7 @@ test("can handle nested fragments", async () => {
 });
 
 test("does not export when all nested fragments are not defined", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         fragment Fragment2 on Foo {
@@ -443,9 +376,8 @@ test("does not export when all nested fragments are not defined", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(0);
+    expect(qm.popDirtyQueries()).toHaveLength(0);
+    expect(qm.getQueries()).toHaveLength(0);
 
     qm.parseGraphQL(gql`
         fragment Fragment1 on Foo {
@@ -453,15 +385,14 @@ test("does not export when all nested fragments are not defined", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
+    const queries = qm.popDirtyQueries();
 
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(queries).toHaveLength(1);
+    expect(qm.getQueries()).toHaveLength(1);
 
-    const arg = spy.mock.calls[0][0];
+    expect(queries[0].usedFragments).toHaveLength(2);
 
-    expect(arg.usedFragments).toHaveLength(2);
-
-    expect(arg).toMatchObject({
+    expect(queries[0]).toMatchObject({
         queryName: "FooQuery",
         query: gql`
             query FooQuery {
@@ -490,11 +421,7 @@ test("does not export when all nested fragments are not defined", async () => {
 });
 
 test("change to nested fragment triggers update", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         fragment Fragment1 on Foo {
@@ -512,9 +439,7 @@ test("change to nested fragment triggers update", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(qm.popDirtyQueries()).toHaveLength(1);
 
     qm.parseGraphQL(gql`
         fragment Fragment1 on Foo {
@@ -522,15 +447,12 @@ test("change to nested fragment triggers update", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
+    const queries = qm.popDirtyQueries();
+    expect(queries).toHaveLength(1);
 
-    expect(spy).toHaveBeenCalledTimes(2);
+    expect(queries[0].usedFragments).toHaveLength(2);
 
-    const arg = spy.mock.calls[1][0];
-
-    expect(arg.usedFragments).toHaveLength(2);
-
-    expect(arg).toMatchObject({
+    expect(queries[0]).toMatchObject({
         queryName: "FooQuery",
         query: gql`
             query FooQuery {
@@ -559,11 +481,7 @@ test("change to nested fragment triggers update", async () => {
 });
 
 test("no export if fragment does not actually change", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         fragment Fragment1 on Foo {
@@ -581,9 +499,7 @@ test("no export if fragment does not actually change", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(qm.popDirtyQueries()).toHaveLength(1);
 
     qm.parseGraphQL(gql`
         fragment Fragment1 on Foo {
@@ -591,17 +507,11 @@ test("no export if fragment does not actually change", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(qm.popDirtyQueries()).toHaveLength(0);
 });
 
 test("can define query before fragment it uses", async () => {
-    const spy = jest.fn();
-
-    const qm = new QueryManager({
-        onExportQuery: spy,
-    });
+    const qm = new QueryManager();
 
     qm.parseGraphQL(gql`
         query FooQuery {
@@ -610,9 +520,7 @@ test("can define query before fragment it uses", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(0);
+    expect(qm.popDirtyQueries()).toHaveLength(0);
 
     qm.parseGraphQL(gql`
         fragment Fragment on Foo {
@@ -620,7 +528,5 @@ test("can define query before fragment it uses", async () => {
         }
     `);
 
-    qm.exportDirtyQueries("");
-
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(qm.popDirtyQueries()).toHaveLength(1);
 });
