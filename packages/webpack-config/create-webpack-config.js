@@ -306,6 +306,10 @@ function createWebpackConfig(options = {}, customize) {
             compileNodeModules: options.compileNodeModules,
         });
 
+        if (options.webpackPlugins) {
+            config.plugins.push(...options.webpackPlugins);
+        }
+
         config.module.rules.push(babelLoader);
 
         if (!hasBabelrc(process.cwd())) {

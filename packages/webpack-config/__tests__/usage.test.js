@@ -29,4 +29,10 @@ test("can render template", () => {
 
     expect(out).toMatch(`<?php define( 'JS', 'main.js?v=`);
     expect(out).toMatch(`' );`);
+
+    const mainOut = fs
+        .readFileSync(__dirname + "/fixtures/template/dist/main.js")
+        .toString();
+
+    expect(mainOut).toContain("CHANGED_WITH_DEFINE_PLUGIN");
 });

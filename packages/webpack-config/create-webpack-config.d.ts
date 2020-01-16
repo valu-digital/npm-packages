@@ -82,6 +82,11 @@ interface Options {
     babelPlugins?: (string | [string, any] | Function)[];
 
     /**
+     * Enable custom Webpack plugins
+     */
+    webpackPlugins?: any[];
+
+    /**
      * Array of node_module to compile with Babel
      */
     compileNodeModules?: string[];

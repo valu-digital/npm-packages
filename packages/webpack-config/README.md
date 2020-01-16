@@ -100,6 +100,24 @@ module.exports = createWebpackConfig({
 });
 ```
 
+## `webpackPlugins: any[]`
+
+List of custom Webpack plugins to enable.
+
+Ex.
+
+```js
+module.exports = createWebpackConfig({
+    webpackPlugins: [
+        new webpack.DefinePlugin({
+            CHANGE_ME_WITH_DEFINE_PLUGIN: JSON.stringify(
+                "CHANGED_WITH_DEFINE_PLUGIN"
+            ),
+        }),
+    ],
+});
+```
+
 ## `template: string`
 
 This is the most custom part of this lib. It takes a path to a template file
