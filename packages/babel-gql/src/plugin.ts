@@ -1,6 +1,11 @@
 import * as BabelTypes from "@babel/types";
 import { Visitor, NodePath } from "@babel/traverse";
-import { QueryManager, BabelGQLWebpackPlugin, debug } from "./query-manager";
+import {
+    QueryManager,
+    BabelGQLWebpackPlugin,
+    debug,
+    BABEL_GQL_GLOBAL,
+} from "./query-manager";
 
 export { QueryManager, BabelGQLWebpackPlugin };
 
@@ -336,6 +341,19 @@ export default function babelGQLPlugin(
     babel: Babel,
 ): BabelPlugin<BabelGQLOptions> {
     debug("initializing babel plugin");
+
+    // prettier-ignore
+    if (!BABEL_GQL_GLOBAL.babelGQLWebpackPlugin) {
+        console.error();
+        console.error("############################################################");
+        console.error("#                                                          #");
+        console.error("#  ERROR: BabelGQLWebpackPlugin is not configured!         #");
+        console.error("#  See https://github.com/valu-digital/babel-gql#install   #");
+        console.error("#                                                          #");
+        console.error("############################################################");
+        console.error();
+    }
+
     const qm = new QueryManager();
     qm.registerAsGlobal();
 

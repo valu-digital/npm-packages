@@ -11,6 +11,11 @@ import {
 } from "graphql";
 import { ParsedGQLTag, combinedIds } from "./shared";
 
+export const BABEL_GQL_GLOBAL = (global as any) as {
+    babelGQLQueryManager: QueryManager;
+    babelGQLWebpackPlugin?: boolean;
+};
+
 export function debug(...args: any[]) {
     if (process.env.BABEL_GQL_DEBUG) {
         console.log("[babel-gql]", ...args);
@@ -78,6 +83,8 @@ export class BabelGQLWebpackPlugin {
 
     apply(compiler: any) {
         debug("Applying Webpack compiler");
+        BABEL_GQL_GLOBAL.babelGQLWebpackPlugin = true;
+
         compiler.hooks.afterCompile.tapPromise(
             "BabelGQLWebpackPlugin",
             async () => {
@@ -140,23 +147,23 @@ export class QueryManager {
     dirtyQueries = new Set<string>();
 
     static getRegisteredGlobal(): QueryManager {
-        const anyGlobal = global as any;
-
-        if (!anyGlobal.QueryManagerGlobal) {
-            throw new Error("No global QueryManager registered (babel-gql)");
+        if (!BABEL_GQL_GLOBAL.babelGQLQueryManager) {
+            throw new Error(
+                "[babel-gql] No global QueryManager registered. The Babel plugin is not properly configured? See https://github.com/valu-digital/babel-gql#install",
+            );
         }
 
-        return anyGlobal.QueryManagerGlobal;
+        return BABEL_GQL_GLOBAL.babelGQLQueryManager;
     }
 
     registerAsGlobal() {
-        const anyGlobal = global as any;
-        if (anyGlobal.QueryManagerGlobal) {
+        if (BABEL_GQL_GLOBAL.babelGQLQueryManager) {
             throw new Error(
-                "There's already a global QueryManager defined (babel-gql)",
+                "[babel-gql] There's already a global QueryManager defined",
             );
         }
-        anyGlobal.QueryManagerGlobal = this;
+
+        BABEL_GQL_GLOBAL.babelGQLQueryManager = this;
     }
 
     parseGraphQL(graphql: string): ParsedGQLTag {
