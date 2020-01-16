@@ -40,6 +40,7 @@ If you use [@valu/webpack-config][]:
 [@valu/webpack-config]: https://github.com/valu-digital/webpack-config
 
 ```js
+// v0.12.0 or later
 const { createWebpackConfig } = require("@valu/webpack-config");
 const { BabelGQLWebpackPlugin } = require("babel-gql/plugin");
 
