@@ -1,6 +1,8 @@
 # babel-gql
 
-Persisted GraphQL Query Compiler for Babel and a tiny GraphQL client.
+Persisted GraphQL Query Compiler / Generator for Babel and Webpack and a tiny
+GraphQL client. It generates persisted query files automatically within your
+Babel/Webpack compilation without any extra watchers.
 
 ## Install
 
@@ -15,6 +17,41 @@ module.exports = {
     presets: ["@babel/preset-env"],
     plugins: ["babel-gql/plugin"], // <-- add this
 };
+```
+
+Add `BabelGQLWebpackPlugin` to `webpack.config.js`
+
+```js
+const { BabelGQLWebpackPlugin } = require("babel-gql/plugin");
+
+module.exports = {
+    // ...
+    plugins: [
+        new BabelGQLWebpackPlugin({
+            // the directory where persisted query files will be written to
+            target: ".queries",
+        }),
+    ],
+    // ...
+};
+```
+
+If you use [@valu/webpack-config][]:
+
+[@valu/webpack-config]: https://github.com/valu-digital/webpack-config
+
+```js
+const { createWebpackConfig } = require("@valu/webpack-config");
+const { BabelGQLWebpackPlugin } = require("babel-gql/plugin");
+
+module.exports = createWebpackConfig({
+    babelPlugins: ["babel-gql/plugin"],
+    webpackPlugins: [
+        new BabelGQLWebpackPlugin({
+            target: ".queries",
+        }),
+    ],
+});
 ```
 
 ## Usage
