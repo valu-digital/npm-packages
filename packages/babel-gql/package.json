@@ -16,17 +16,17 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@babel/core": "^7.7.4",
+        "@babel/core": "^7.8.3",
         "@types/dedent": "^0.7.0",
-        "@types/jest": "^24.0.23",
+        "@types/jest": "^24.9.0",
         "@types/node": "^12.12.14",
         "dedent": "^0.7.0",
         "jest": "^24.9.0",
         "nock": "^11.7.2",
         "node-fetch": "^2.6.0",
         "prettier": "^1.19.1",
-        "ts-jest": "^24.2.0",
-        "typescript": "^3.7.2"
+        "ts-jest": "^24.3.0",
+        "typescript": "^3.7.5"
     },
     "dependencies": {
         "graphql": "^14.5.8"
