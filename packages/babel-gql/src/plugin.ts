@@ -9,6 +9,13 @@ import {
 
 export { QueryManager, BabelGQLWebpackPlugin };
 
+/**
+ * https://stackoverflow.com/a/52231746/153718
+ */
+function areWeTestingWithJest() {
+    return process.env.JEST_WORKER_ID !== undefined;
+}
+
 export interface Babel {
     types: typeof BabelTypes;
 }
@@ -343,7 +350,7 @@ export default function babelGQLPlugin(
     debug("initializing babel plugin");
 
     // prettier-ignore
-    if (!BABEL_GQL_GLOBAL.babelGQLWebpackPlugin) {
+    if (!BABEL_GQL_GLOBAL.babelGQLWebpackPlugin && !areWeTestingWithJest()) {
         console.error();
         console.error("############################################################");
         console.error("#                                                          #");

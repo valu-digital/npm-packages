@@ -1,6 +1,6 @@
 import { transform } from "@babel/core";
 import dedent from "dedent";
-import { BabelGQLOptions } from "../src/plugin";
+import { BabelGQLOptions, QueryManager } from "../src/plugin";
 
 function lines(...args: string[]) {
     return args.join("\n");
@@ -21,6 +21,10 @@ function runPlugin(code: string, options?: BabelGQLOptions) {
 
     return res;
 }
+
+beforeEach(() => {
+    QueryManager.clearGlobal();
+});
 
 test("simple transformation", () => {
     const code = dedent`

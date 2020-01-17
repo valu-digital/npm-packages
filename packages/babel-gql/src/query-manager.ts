@@ -156,6 +156,10 @@ export class QueryManager {
         return BABEL_GQL_GLOBAL.babelGQLQueryManager;
     }
 
+    static clearGlobal() {
+        delete BABEL_GQL_GLOBAL.babelGQLQueryManager;
+    }
+
     registerAsGlobal() {
         if (BABEL_GQL_GLOBAL.babelGQLQueryManager) {
             throw new Error(
