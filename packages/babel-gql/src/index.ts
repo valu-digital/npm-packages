@@ -1,5 +1,7 @@
 import { ParsedGQLTag, combinedIds } from "./shared";
 
+export { ParsedGQLTag };
+
 interface TagListener {
     (tag: ParsedGQLTag): any;
 }
