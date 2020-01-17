@@ -11,7 +11,8 @@
     },
     "files": [
         "dist",
-        "plugin.js"
+        "plugin.js",
+        "plugin.d.ts"
     ],
     "author": "",
     "license": "ISC",
