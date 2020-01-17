@@ -72,6 +72,12 @@ export function createRuntimeGQL() {
         gql,
         runtimeGQL,
         registerGQLListener,
+        getQueries() {
+            return queries;
+        },
+        getFragments() {
+            return fragments;
+        },
         getQuery(queryName: string) {
             const query = queries[queryName];
 
@@ -239,3 +245,5 @@ const babelqgl = createRuntimeGQL();
 export const gql = babelqgl.gql;
 export const getQuery = babelqgl.getQuery;
 export const registerGQLListener = babelqgl.registerGQLListener;
+export const getQueries = babelqgl.getQueries;
+export const getFragments = babelqgl.getFragments;
