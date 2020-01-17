@@ -1,6 +1,6 @@
 {
     "extends": "./tsconfig.json",
-    "exclude": ["__tests__", "dist"],
+    "exclude": ["__tests__", "dist", "plugin.d.ts"],
     "compilerOptions": {
         "sourceMap": true,
         "target": "es6",
