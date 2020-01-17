@@ -122,13 +122,16 @@ function doRequest(
             query: string;
         };
         variables?: object;
+        fetch?: typeof fetch;
         fetchOptions?: RequestInit;
     },
 ) {
+    const ourFetch = options.fetch ?? fetch;
+
     if (process.env.NODE_ENV !== "production") {
         const { headers, ...otherOptions } = options.fetchOptions ?? {};
 
-        return fetch(endpoint, {
+        return ourFetch(endpoint, {
             method: "POST",
             headers: {
                 "content-type": "application/json",
@@ -160,7 +163,7 @@ function doRequest(
     );
 
     // XXX turn to POST if mutation
-    return fetch(endpoint + "?" + params.toString(), options.fetchOptions);
+    return ourFetch(endpoint + "?" + params.toString(), options.fetchOptions);
 }
 
 export function request<ResponseType = any>(
@@ -168,6 +171,7 @@ export function request<ResponseType = any>(
     options: {
         query: string | ParsedGQLTag;
         variables?: object;
+        fetch?: typeof fetch;
         fetchOptions?: RequestInit;
     },
 ): Promise<{
@@ -196,6 +200,7 @@ export function request<ResponseType = any>(
         promise = doRequest(endpoint, {
             query: getQuery(query),
             variables: options.variables,
+            fetch: options.fetch,
             fetchOptions: options.fetchOptions,
         });
     } else {
@@ -203,6 +208,7 @@ export function request<ResponseType = any>(
         promise = doRequest(endpoint, {
             query: getQuery(queryOb.queryName),
             variables: options.variables,
+            fetch: options.fetch,
             fetchOptions: options.fetchOptions,
         });
     }

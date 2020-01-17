@@ -64,3 +64,29 @@ test("can pass custom headers", async () => {
 
     expect(res.data).toEqual({ ding: 1234 });
 });
+
+test("can use custom fetch", async () => {
+    const spy = jest.fn();
+
+    const customFetch: typeof fetch = (...args) => {
+        spy();
+        return fetch(...args);
+    };
+
+    nock("http://test.invalid")
+        .post("/graphql")
+        .reply(200, JSON.stringify({ data: { ding: 1234 } }), {
+            "content-type": "application/json",
+        });
+
+    const res = await request("http://test.invalid/graphql", {
+        query: getPostsQuery,
+        variables: {
+            first: 10,
+        },
+        fetch: customFetch,
+    });
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(res.data).toEqual({ ding: 1234 });
+});
