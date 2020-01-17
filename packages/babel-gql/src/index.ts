@@ -1,11 +1,21 @@
 import { ParsedGQLTag, combinedIds } from "./shared";
 
+interface TagListener {
+    (tag: ParsedGQLTag): any;
+}
+
 export function createRuntimeGQL() {
     const queries: Record<string, ParsedGQLTag["queries"][0] | undefined> = {};
     const fragments: Record<
         string,
         ParsedGQLTag["fragments"][0] | undefined
     > = {};
+
+    const listeners: TagListener[] = [];
+
+    function registerGQLListener(fn: TagListener) {
+        listeners.push(fn);
+    }
 
     function gql(
         literals: TemplateStringsArray,
@@ -20,6 +30,8 @@ export function createRuntimeGQL() {
     }
 
     function runtimeGQL(parsed: ParsedGQLTag) {
+        listeners.forEach(fn => fn(parsed));
+
         parsed.queries.forEach(query => {
             queries[query.queryName] = query;
         });
@@ -57,6 +69,7 @@ export function createRuntimeGQL() {
     return {
         gql,
         runtimeGQL,
+        registerGQLListener,
         getQuery(queryName: string) {
             const query = queries[queryName];
 
@@ -217,3 +230,4 @@ const babelqgl = createRuntimeGQL();
 
 export const gql = babelqgl.gql;
 export const getQuery = babelqgl.getQuery;
+export const registerGQLListener = babelqgl.registerGQLListener;

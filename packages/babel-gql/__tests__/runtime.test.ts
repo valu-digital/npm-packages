@@ -29,6 +29,40 @@ test("runtime return value with babel", () => {
     });
 });
 
+test("can register query callbacks", () => {
+    const spy = jest.fn();
+    const { runtimeGQL, registerGQLListener } = createRuntimeGQL();
+
+    registerGQLListener(q => {
+        spy(q);
+    });
+
+    runtimeGQL({
+        queries: [
+            {
+                query: "",
+                queryId: "123",
+                queryName: "getTest",
+                usedFragments: [],
+            },
+        ],
+        fragments: [],
+    });
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenLastCalledWith({
+        fragments: [],
+        queries: [
+            {
+                query: "",
+                queryId: "123",
+                queryName: "getTest",
+                usedFragments: [],
+            },
+        ],
+    });
+});
+
 test("can get query", () => {
     const { runtimeGQL, getQuery } = createRuntimeGQL();
 
