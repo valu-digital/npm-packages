@@ -204,9 +204,12 @@ export class QueryManager {
                 queries.push(queryName);
 
                 if (this.knownQueries.get(queryName) === query) {
+                    debug("No changes to " + query);
                     // no changes
                     return;
                 }
+
+                debug("Found changes to query " + query);
 
                 this.dirtyQueries.add(queryName);
                 this.knownQueries.set(queryName, query);
