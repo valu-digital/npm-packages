@@ -347,7 +347,7 @@ export class TransformGQLTags {
 export default function babelGQLPlugin(
     babel: Babel,
 ): BabelPlugin<BabelGQLOptions> {
-    debug("initializing babel plugin");
+    debug("Initializing Babel plugin");
 
     // prettier-ignore
     if (!BABEL_GQL_GLOBAL.babelGQLWebpackPlugin && !areWeTestingWithJest()) {

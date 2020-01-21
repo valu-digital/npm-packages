@@ -82,24 +82,35 @@ export class BabelGQLWebpackPlugin {
     }
 
     apply(compiler: any) {
-        debug("Applying Webpack compiler");
         BABEL_GQL_GLOBAL.babelGQLWebpackPlugin = true;
 
-        compiler.hooks.afterCompile.tapPromise(
-            "BabelGQLWebpackPlugin",
-            async () => {
-                debug("Webpack 'afterCompile'");
-                await this.handleDone();
-            },
-        );
+        compiler.hooks.done.tapPromise("BabelGQLWebpackPlugin", async () => {
+            await this.handleDone().catch(error => {
+                console.error("[babel-gql] Webpack plugin failed", error);
+            });
+        });
     }
 
     async handleDone() {
+        if (!QueryManager.hasRegisterdGlobal()) {
+            return;
+        }
+
         const qm = QueryManager.getRegisteredGlobal();
 
         await fs.mkdir(this.target, { recursive: true });
 
+        const allQueries = qm.getQueries();
+
         const dirtyQueries = qm.popDirtyQueries();
+
+        debug(
+            `Found ${dirtyQueries.length}/${allQueries.length} dirty queries`,
+        );
+
+        if (dirtyQueries.length === 0) {
+            return;
+        }
 
         await Promise.all(
             dirtyQueries.map(async query => {
@@ -108,9 +119,8 @@ export class BabelGQLWebpackPlugin {
                     `${query.queryName}-${query.fullQueryId}.graphql`,
                 );
 
+                debug("Writing ", path);
                 await fs.writeFile(path, query.fullQuery);
-
-                debug(`Wrote ${path}`);
             }),
         );
 
@@ -154,6 +164,10 @@ export class QueryManager {
         }
 
         return BABEL_GQL_GLOBAL.babelGQLQueryManager;
+    }
+
+    static hasRegisterdGlobal() {
+        return Boolean(BABEL_GQL_GLOBAL.babelGQLQueryManager);
     }
 
     static clearGlobal() {
