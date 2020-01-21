@@ -70,8 +70,13 @@ interface OnDone {
 export class BabelGQLWebpackPlugin {
     target: string;
     onDone?: OnDone;
+    active?: boolean;
 
-    constructor(options: { target: string; onDone?: OnDone }) {
+    constructor(options: {
+        target: string;
+        onDone?: OnDone;
+        active?: boolean;
+    }) {
         debug("Initializing Webpack plugin");
         if (!options.target) {
             throw new Error("No target passed to QueryManagerWebpackPlugin");
@@ -79,6 +84,12 @@ export class BabelGQLWebpackPlugin {
 
         this.target = options.target;
         this.onDone = options.onDone;
+
+        if (typeof this.active === "undefined") {
+            this.active = true;
+        } else {
+            this.active = options.active;
+        }
     }
 
     apply(compiler: any) {
@@ -112,17 +123,19 @@ export class BabelGQLWebpackPlugin {
             return;
         }
 
-        await Promise.all(
-            dirtyQueries.map(async query => {
-                const path = PathUtils.join(
-                    this.target,
-                    `${query.queryName}-${query.fullQueryId}.graphql`,
-                );
+        if (this.active) {
+            await Promise.all(
+                dirtyQueries.map(async query => {
+                    const path = PathUtils.join(
+                        this.target,
+                        `${query.queryName}-${query.fullQueryId}.graphql`,
+                    );
 
-                debug("Writing ", path);
-                await fs.writeFile(path, query.fullQuery);
-            }),
-        );
+                    debug("Writing ", path);
+                    await fs.writeFile(path, query.fullQuery);
+                }),
+            );
+        }
 
         if (this.onDone) {
             await this.onDone(qm, dirtyQueries.length);
