@@ -131,7 +131,7 @@ export class BabelGQLWebpackPlugin {
                         `${query.queryName}-${query.fullQueryId}.graphql`,
                     );
 
-                    debug("Writing ", path);
+                    console.log("[babel-gql] Writing ", path);
                     await fs.writeFile(path, query.fullQuery);
                 }),
             );
@@ -217,12 +217,12 @@ export class QueryManager {
                 queries.push(queryName);
 
                 if (this.knownQueries.get(queryName) === query) {
-                    debug("No changes to " + query);
+                    debug("No changes to " + queryName);
                     // no changes
                     return;
                 }
 
-                debug("Found changes to query " + query);
+                debug("Found changes to query " + queryName);
 
                 this.dirtyQueries.add(queryName);
                 this.knownQueries.set(queryName, query);
