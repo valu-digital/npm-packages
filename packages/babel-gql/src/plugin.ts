@@ -268,10 +268,15 @@ export class TransformGQLTags {
                 ImportDeclaration: (path, state) => {
                     const opts = state.opts || {};
 
-                    const target = opts?.ownModuleName ?? "babel-gql";
+                    const targets = new Set(
+                        ["babel-gql", "@headup/wp", opts?.ownModuleName].filter(
+                            Boolean,
+                        ),
+                    );
+
                     const importName = path.node.source.value;
 
-                    if (importName === target) {
+                    if (targets.has(importName)) {
                         for (const s of path.node.specifiers) {
                             if (!t.isImportSpecifier(s)) {
                                 continue;

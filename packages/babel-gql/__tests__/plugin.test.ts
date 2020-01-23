@@ -260,3 +260,31 @@ test("can keep the query", () => {
 
     expect(res.code).toMatchSnapshot();
 });
+
+test("has build-in headup support", () => {
+    const code = dedent`
+    import { gql } from "@headup/wp";
+    const query = gql\`
+        query Foo {
+            bar
+        }
+    \`
+    `;
+
+    const res = runPlugin(code);
+
+    expect(res.code).toEqual(
+        dedent`
+        import { gql } from "@headup/wp";
+        const query = gql({
+          fragments: [],
+          queries: [{
+            query: "",
+            queryId: "5430c050ffd840248a6724bb3a674ffb347dce047429ba5bf61a9edee3d8d699",
+            queryName: "Foo",
+            usedFragments: []
+          }]
+        });
+    `.trim(),
+    );
+});
