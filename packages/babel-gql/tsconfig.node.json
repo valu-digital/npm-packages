@@ -3,10 +3,10 @@
     "exclude": ["__tests__", "dist", "plugin.d.ts"],
     "compilerOptions": {
         "sourceMap": true,
-        "target": "es6",
+        "target": "ES2020",
         "noEmit": false,
-        "outDir": "./dist",
+        "outDir": "./dist/node",
         "declaration": true,
-        "declarationDir": "./dist"
+        "declarationDir": "./dist/node"
     }
 }
