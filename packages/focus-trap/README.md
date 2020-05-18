@@ -79,6 +79,10 @@ interface FocusTrapOptions {
     /**
      * Filter out tabbables from containers
      */
-    filterTabbables?(tabbables: HTMLElement[], trap: FocusTrap): HTMLElement[];
+    filterTabbables?(
+        tabbables: HTMLElement[],
+        container: HTMLElement,
+        trap: FocusTrap,
+    ): HTMLElement[];
 }
 ```
