@@ -3,11 +3,10 @@ import tabbable, { isTabbable } from "tabbable";
 function getTabbables(el: HTMLElement) {
     const tabbables = tabbable(el);
 
-    if (tabbables.length === 0) {
-        if (isTabbable(el)) {
-            return [el];
-        }
-        return null;
+    // Return the container as the only tappable if it does not itself contain
+    // any tabbables
+    if (tabbables.length === 0 && isTabbable(el)) {
+        return [el];
     }
 
     return tabbables;
@@ -230,10 +229,6 @@ export class FocusTrap {
     getTabbables(container: HTMLElement) {
         const tabbables = getTabbables(container);
 
-        if (!tabbables) {
-            return null;
-        }
-
         if (this.options.filterTabbables) {
             return this.options.filterTabbables(tabbables, this);
         }
@@ -328,12 +323,12 @@ export class FocusTrap {
             // If going backwards select last tabbable from the new container
             if (this.state.shifKeyDown) {
                 const tabbables = this.getTabbables(nextContainer);
-                if (tabbables) {
+                if (tabbables.length > 0) {
                     tabbables[tabbables.length - 1].focus();
                 }
             } else {
                 const tabbables = this.getTabbables(nextContainer);
-                if (tabbables) {
+                if (tabbables.length > 0) {
                     tabbables[0].focus();
                 }
             }
