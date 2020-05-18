@@ -51,7 +51,11 @@ interface FocusTrapOptions {
     /**
      * Filter out tabbables from containers
      */
-    filterTabbables?(tabbables: HTMLElement[], trap: FocusTrap): HTMLElement[];
+    filterTabbables?(
+        tabbables: HTMLElement[],
+        container: HTMLElement,
+        trap: FocusTrap,
+    ): HTMLElement[];
 }
 
 export class FocusTrap {
@@ -230,7 +234,7 @@ export class FocusTrap {
         const tabbables = getTabbables(container);
 
         if (this.options.filterTabbables) {
-            return this.options.filterTabbables(tabbables, this);
+            return this.options.filterTabbables(tabbables, container, this);
         }
 
         return tabbables;
