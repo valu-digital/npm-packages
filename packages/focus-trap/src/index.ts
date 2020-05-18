@@ -274,6 +274,7 @@ export class FocusTrap {
                 this.state.shifKeyDown = false;
             }
         },
+
         focusIn: (e: Event) => {
             if (!(e.target instanceof HTMLElement)) {
                 return;
