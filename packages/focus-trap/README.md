@@ -75,5 +75,10 @@ interface FocusTrapOptions {
      * This hook can used to focus some other element manually.
      */
     onAfterDisable?(trap: FocusTrap): void;
+
+    /**
+     * Filter out tabbables from containers
+     */
+    filterTabbables?(tabbables: HTMLElement[], trap: FocusTrap): HTMLElement[];
 }
 ```

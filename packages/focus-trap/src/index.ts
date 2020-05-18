@@ -48,6 +48,11 @@ interface FocusTrapOptions {
      * This hook can used to focus some other element manually.
      */
     onAfterDisable?(trap: FocusTrap): void;
+
+    /**
+     * Filter out tabbables from containers
+     */
+    filterTabbables?(tabbables: HTMLElement[], trap: FocusTrap): HTMLElement[];
 }
 
 export class FocusTrap {
@@ -191,7 +196,7 @@ export class FocusTrap {
      */
     focusFirst() {
         const container = this.containers[0];
-        const tabbables = getTabbables(container);
+        const tabbables = this.getTabbables(container);
         if (tabbables) {
             tabbables[0].focus();
         }
@@ -220,6 +225,20 @@ export class FocusTrap {
         }
 
         return false;
+    }
+
+    getTabbables(container: HTMLElement) {
+        const tabbables = getTabbables(container);
+
+        if (!tabbables) {
+            return null;
+        }
+
+        if (this.options.filterTabbables) {
+            return this.options.filterTabbables(tabbables, this);
+        }
+
+        return tabbables;
     }
 
     handlers = {
@@ -307,12 +326,12 @@ export class FocusTrap {
 
             // If going backwards select last tabbable from the new container
             if (this.state.shifKeyDown) {
-                const tabbables = getTabbables(nextContainer);
+                const tabbables = this.getTabbables(nextContainer);
                 if (tabbables) {
                     tabbables[tabbables.length - 1].focus();
                 }
             } else {
-                const tabbables = getTabbables(nextContainer);
+                const tabbables = this.getTabbables(nextContainer);
                 if (tabbables) {
                     tabbables[0].focus();
                 }
