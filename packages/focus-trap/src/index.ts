@@ -276,12 +276,16 @@ export class FocusTrap {
             }
         }
 
+        if (!inContainer) {
+            return false;
+        }
+
         const containerIndex = this.state.currentContainerIndex || 0;
         if (!this.isValidTabbable(el, this.containers[containerIndex])) {
             return false;
         }
 
-        return inContainer;
+        return true;
     }
 
     getTabbables(container: HTMLElement) {
