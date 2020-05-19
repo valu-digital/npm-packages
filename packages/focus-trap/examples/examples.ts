@@ -70,6 +70,19 @@ const examples = {
         });
     },
 
+    "/empty-container"() {
+        const trap = new FocusTrap({
+            ...toggleActiveClass,
+            containers: document.querySelectorAll(".container"),
+            validateTabbable(tabbable) {
+                return !tabbable.dataset.skip;
+            },
+        });
+        onClick("focus", () => {
+            trap.enable();
+        });
+    },
+
     "/tabbable-container"() {
         const trap = new FocusTrap({
             ...toggleActiveClass,

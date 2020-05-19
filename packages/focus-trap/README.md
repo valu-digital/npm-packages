@@ -77,12 +77,12 @@ interface FocusTrapOptions {
     onAfterDisable?(trap: FocusTrap): void;
 
     /**
-     * Filter out tabbables from containers
+     * Skip focusing given tabbable when returning false
      */
-    filterTabbables?(
-        tabbables: HTMLElement[],
+    validateTabbable?(
+        tabbable: HTMLElement,
         container: HTMLElement,
         trap: FocusTrap,
-    ): HTMLElement[];
+    ): boolean;
 }
 ```

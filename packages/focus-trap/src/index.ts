@@ -49,13 +49,13 @@ interface FocusTrapOptions {
     onAfterDisable?(trap: FocusTrap): void;
 
     /**
-     * Filter out tabbables from containers
+     * Skip focusing given tabbable when returning false
      */
-    filterTabbables?(
-        tabbables: HTMLElement[],
+    validateTabbable?(
+        tabbable: HTMLElement,
         container: HTMLElement,
         trap: FocusTrap,
-    ): HTMLElement[];
+    ): boolean;
 }
 
 export class FocusTrap {
@@ -147,7 +147,8 @@ export class FocusTrap {
         if (this.lastFocusedElement) {
             this.lastFocusedElement.focus();
         } else {
-            this.focusFirst();
+            // Move focus to the first tabbable element of the first container
+            this.moveFocus();
         }
 
         if (this.options.onAfterEnable) {
@@ -197,11 +198,56 @@ export class FocusTrap {
     /**
      * Focus first tabbable element from the first container
      */
-    focusFirst() {
-        const container = this.containers[0];
-        const tabbables = this.getTabbables(container);
-        if (tabbables) {
-            tabbables[0].focus();
+    moveFocus(attempts = 0) {
+        // Avoid infinite recursion
+        if (attempts > this.containers.length) {
+            console.warn("Failed to find focusable containers");
+            return;
+        }
+
+        // Shift+tab moves focus backwards
+        const direction = this.state.shifKeyDown ? -1 : 1;
+
+        let nextContainerIndex = 0;
+
+        if (this.state.currentContainerIndex == null) {
+            // on initial activation move focus to the first one when we have no
+            // active containers yet
+            this.state.currentContainerIndex = 0;
+        } else {
+            // On subsequent calls move the next (or previous) containers
+            nextContainerIndex =
+                (this.state.currentContainerIndex + direction) %
+                this.containers.length;
+
+            // Going backwards to last container
+            if (nextContainerIndex === -1) {
+                nextContainerIndex = this.containers.length - 1;
+            }
+        }
+
+        const nextContainer = this.containers[nextContainerIndex];
+
+        // If going backwards select last tabbable from the new container
+        if (this.state.shifKeyDown) {
+            const tabbables = this.getTabbables(nextContainer);
+            if (tabbables.length > 0) {
+                tabbables[tabbables.length - 1].focus();
+            } else {
+                // The container had no tabbable items update the current
+                // container and restart focus moving attempt
+                this.state.currentContainerIndex = nextContainerIndex;
+                this.moveFocus(attempts + 1);
+            }
+        } else {
+            const tabbables = this.getTabbables(nextContainer);
+            if (tabbables.length > 0) {
+                tabbables[0].focus();
+            } else {
+                // The container had no tabbable items...
+                this.state.currentContainerIndex = nextContainerIndex;
+                this.moveFocus(attempts + 1);
+            }
         }
     }
 
@@ -221,23 +267,39 @@ export class FocusTrap {
      * Is element inside one of the containers
      */
     isInContainers(el: HTMLElement) {
+        let inContainer = false;
+
         for (const container of this.containers) {
             if (container.contains(el)) {
-                return true;
+                inContainer = true;
+                break;
             }
         }
 
-        return false;
+        const containerIndex = this.state.currentContainerIndex || 0;
+        if (!this.isValidTabbable(el, this.containers[containerIndex])) {
+            return false;
+        }
+
+        return inContainer;
     }
 
     getTabbables(container: HTMLElement) {
-        const tabbables = getTabbables(container);
-
-        if (this.options.filterTabbables) {
-            return this.options.filterTabbables(tabbables, container, this);
+        if (!container) {
+            throw new Error("Cannot pass undefined to getTabbables");
         }
 
-        return tabbables;
+        return getTabbables(container).filter(tabbable => {
+            return this.isValidTabbable(tabbable, container);
+        });
+    }
+
+    isValidTabbable(tabbable: HTMLElement, container: HTMLElement) {
+        if (!this.options.validateTabbable) {
+            return true;
+        }
+
+        return this.options.validateTabbable(tabbable, container, this);
     }
 
     handlers = {
@@ -305,37 +367,7 @@ export class FocusTrap {
 
             e.stopImmediatePropagation();
 
-            let nextContainerIndex = 1;
-
-            // Shift+tab moves focus backwards
-            const direction = this.state.shifKeyDown ? -1 : 1;
-
-            if (this.state.currentContainerIndex !== null) {
-                nextContainerIndex =
-                    (this.state.currentContainerIndex + direction) %
-                    this.containers.length;
-            }
-
-            // When backwards from first container
-            if (nextContainerIndex === -1) {
-                // last container index
-                nextContainerIndex = this.containers.length - 1;
-            }
-
-            const nextContainer = this.containers[nextContainerIndex];
-
-            // If going backwards select last tabbable from the new container
-            if (this.state.shifKeyDown) {
-                const tabbables = this.getTabbables(nextContainer);
-                if (tabbables.length > 0) {
-                    tabbables[tabbables.length - 1].focus();
-                }
-            } else {
-                const tabbables = this.getTabbables(nextContainer);
-                if (tabbables.length > 0) {
-                    tabbables[0].focus();
-                }
-            }
+            this.moveFocus();
         },
     };
 }
