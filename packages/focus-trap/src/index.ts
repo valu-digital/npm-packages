@@ -148,7 +148,7 @@ export class FocusTrap {
             this.lastFocusedElement.focus();
         } else {
             // Move focus to the first tabbable element of the first container
-            this.moveFocus();
+            this.fixFocus();
         }
 
         if (this.options.onAfterEnable) {
@@ -196,9 +196,10 @@ export class FocusTrap {
     }
 
     /**
-     * Focus first tabbable element from the first container
+     * Fix focus back to an element inside a container when we detect focus is
+     * being moved to an illegal element.
      */
-    moveFocus(attempts = 0) {
+    fixFocus(attempts = 0) {
         // Avoid infinite recursion
         if (attempts > this.containers.length) {
             console.warn("Failed to find focusable containers");
@@ -208,6 +209,8 @@ export class FocusTrap {
         // Shift+tab moves focus backwards
         const direction = this.state.shifKeyDown ? -1 : 1;
 
+        // Focus is now in an illegal element but user wants to move the focus.
+        // Let's find the next legal container the focus can actually move to
         let nextContainerIndex = 0;
 
         if (this.state.currentContainerIndex == null) {
@@ -237,7 +240,7 @@ export class FocusTrap {
                 // The container had no tabbable items update the current
                 // container and restart focus moving attempt
                 this.state.currentContainerIndex = nextContainerIndex;
-                this.moveFocus(attempts + 1);
+                this.fixFocus(attempts + 1);
             }
         } else {
             const tabbables = this.getTabbables(nextContainer);
@@ -246,7 +249,7 @@ export class FocusTrap {
             } else {
                 // The container had no tabbable items...
                 this.state.currentContainerIndex = nextContainerIndex;
-                this.moveFocus(attempts + 1);
+                this.fixFocus(attempts + 1);
             }
         }
     }
@@ -355,23 +358,29 @@ export class FocusTrap {
                 this.lastFocusedElement = document.activeElement;
             }
 
+            // Keep track of the container we're in
             this.updateContainerIndex(e.target);
 
-            // Focus still inside our containers. Nothing to do.
+            // Focus still inside our containers. Focus can move freely here. Nothing to do.
             if (this.isInContainers(e.target)) {
                 return;
             }
 
-            // If focus change was done using mouse revert back to the previous element
+            // If focus was moved to a illegal element by mouse just revert the
+            // focus back to the previous element
             if (this.state.usingMouse && prev) {
                 this.lastFocusedElement = prev;
                 prev.focus();
                 return;
             }
 
+            // !!! Focus is moving to an element outside of the containers!
+
+            // Prevent other focusIn handlers from executing
             e.stopImmediatePropagation();
 
-            this.moveFocus();
+            // Fix focus back to a legal element inside the containers
+            this.fixFocus();
         },
     };
 }
