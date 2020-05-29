@@ -26,7 +26,7 @@ function removeExtension(filename) {
 function autoloadEntries(dir) {
     const entryFiles = fs
         .readdirSync(dir)
-        .filter(fileName => EXTENSIONS.some(ext => fileName.endsWith(ext)));
+        .filter((fileName) => EXTENSIONS.some((ext) => fileName.endsWith(ext)));
 
     return entryFiles.reduce((entry, file) => {
         entry[removeExtension(file)] = join(dir, file);
@@ -39,14 +39,14 @@ function autoloadEntries(dir) {
  */
 function hasBabelrc(dir) {
     const rcFiles = ["babel.config.js", ".babelrc", ".babelrc.js"];
-    return fs.readdirSync(dir).some(file => rcFiles.includes(file));
+    return fs.readdirSync(dir).some((file) => rcFiles.includes(file));
 }
 
 /**
  * @param {string} dir
  */
 function hasPostCSSConfig(dir) {
-    return fs.readdirSync(dir).some(file => file === "postcss.config.js");
+    return fs.readdirSync(dir).some((file) => file === "postcss.config.js");
 }
 
 function getDefaultConfig() {
@@ -94,7 +94,7 @@ function getDefaultConfig() {
 }
 
 function getBabelLoaderConfig(options = {}) {
-    const pathMatchers = (options.compileNodeModules || []).map(include => {
+    const pathMatchers = (options.compileNodeModules || []).map((include) => {
         return `/node_modules/${include}/`;
     });
 
@@ -107,7 +107,7 @@ function getBabelLoaderConfig(options = {}) {
             loader: "babel-loader",
         },
         exclude(modulePath) {
-            const nodeModuleToCompile = pathMatchers.some(includeModule =>
+            const nodeModuleToCompile = pathMatchers.some((includeModule) =>
                 modulePath.includes(includeModule)
             );
 
@@ -205,7 +205,12 @@ function htmlWebpackPlugin(options) {
                     /**
                      * @param {string} chunkName
                      */
-                    const assertChunk = chunkName => {
+                    const assertChunk = (chunkName) => {
+                        console.log(
+                            "###############",
+                            chunkName,
+                            assets.chunks
+                        );
                         const chunk = assets.chunks[chunkName];
                         if (!chunk) {
                             // prettier-ignore
@@ -328,7 +333,7 @@ function createWebpackConfig(options = {}, customize) {
             }
 
             if (options.babelPlugins) {
-                options.babelPlugins.forEach(plugin => {
+                options.babelPlugins.forEach((plugin) => {
                     if (typeof plugin === "function") {
                         babelConfig.plugins.push(plugin(args));
                     } else {
