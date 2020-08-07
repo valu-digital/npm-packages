@@ -85,7 +85,7 @@ export class BabelGQLWebpackPlugin {
         this.target = options.target;
         this.onDone = options.onDone;
 
-        if (typeof this.active === "undefined") {
+        if (typeof options.active === "undefined") {
             this.active = true;
         } else {
             this.active = options.active;
