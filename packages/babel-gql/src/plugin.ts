@@ -63,7 +63,7 @@ function parseTag(
     removeQuery: boolean,
 ) {
     const gqlString = path.node.quasi.quasis
-        .map(q => q.value.cooked)
+        .map((q) => q.value.cooked)
         .join("")
         .trim();
 
@@ -78,13 +78,13 @@ function parseTag(
     }
 
     return recursiveObjectExpression(t, {
-        queries: parsed.queries.map(query => ({
+        queries: parsed.queries.map((query) => ({
             query: removeQuery ? "" : query.query,
             queryName: query.queryName,
             queryId: query.queryId,
             usedFragments: query.usedFragments,
         })),
-        fragments: parsed.fragments.map(fragment => ({
+        fragments: parsed.fragments.map((fragment) => ({
             fragment: removeQuery ? "" : fragment.fragment,
             fragmentName: fragment.fragmentName,
             fragmentId: fragment.fragmentId,
@@ -160,7 +160,7 @@ const externalModules: {
 ];
 
 function findIdentifier(importName: string) {
-    return externalModules.find(m => m.name === importName);
+    return externalModules.find((m) => m.name === importName);
 }
 
 function recursiveObjectExpression(t: typeof BabelTypes, ob: any): any {
@@ -178,7 +178,7 @@ function recursiveObjectExpression(t: typeof BabelTypes, ob: any): any {
 
     if (Array.isArray(ob)) {
         return t.arrayExpression(
-            ob.map(item => recursiveObjectExpression(t, item)),
+            ob.map((item) => recursiveObjectExpression(t, item)),
         );
     }
 
@@ -193,7 +193,7 @@ function recursiveObjectExpression(t: typeof BabelTypes, ob: any): any {
     return t.objectExpression(
         Object.keys(ob)
             .sort()
-            .map(key => {
+            .map((key) => {
                 return t.objectProperty(
                     t.identifier(key),
                     recursiveObjectExpression(t, ob[key]),
@@ -243,7 +243,7 @@ export class TransformGQLTags {
         return {
             visitor: {
                 Program: {
-                    enter: path => {
+                    enter: (path) => {
                         // Reset import name state when entering a new file
                         this.resetFileState();
                     },

@@ -26,7 +26,7 @@ export function combinedIds(ids: string[]) {
         first.slice(0, chunkSize) +
         rest
             .sort()
-            .map(id => id.slice(0, chunkSize))
+            .map((id) => id.slice(0, chunkSize))
             .join("")
     );
 }

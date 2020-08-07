@@ -96,7 +96,7 @@ export class BabelGQLWebpackPlugin {
         BABEL_GQL_GLOBAL.babelGQLWebpackPlugin = true;
 
         compiler.hooks.done.tapPromise("BabelGQLWebpackPlugin", async () => {
-            await this.handleDone().catch(error => {
+            await this.handleDone().catch((error) => {
                 console.error("[babel-gql] Webpack plugin failed", error);
             });
         });
@@ -125,7 +125,7 @@ export class BabelGQLWebpackPlugin {
 
         if (this.active) {
             await Promise.all(
-                dirtyQueries.map(async query => {
+                dirtyQueries.map(async (query) => {
                     const path = PathUtils.join(
                         this.target,
                         `${query.queryName}-${query.fullQueryId}.graphql`,
@@ -205,7 +205,7 @@ export class QueryManager {
         const fragments = [] as string[];
 
         visit(doc, {
-            OperationDefinition: def => {
+            OperationDefinition: (def) => {
                 if (!def.name) {
                     throw new Error("OperationDefinition missing name");
                 }
@@ -228,7 +228,7 @@ export class QueryManager {
                 this.knownQueries.set(queryName, query);
                 this.fragmentsUsedByQuery.set(queryName, new Set());
             },
-            FragmentDefinition: def => {
+            FragmentDefinition: (def) => {
                 const fragmentName = def.name.value;
                 const fragment = print(def).trim();
 
@@ -315,7 +315,7 @@ export class QueryManager {
         });
 
         return {
-            queries: queries.map(queryName => {
+            queries: queries.map((queryName) => {
                 const query = this.knownQueries.get(queryName)!;
 
                 return {
@@ -327,7 +327,7 @@ export class QueryManager {
                     ),
                 };
             }),
-            fragments: fragments.map(fragmentName => {
+            fragments: fragments.map((fragmentName) => {
                 const fragment = this.knownFragments.get(fragmentName)!;
 
                 return {
@@ -371,7 +371,7 @@ export class QueryManager {
         }
 
         return Array.from(popQueries)
-            .map(queryName => {
+            .map((queryName) => {
                 return this.exportQuery(queryName);
             })
             .filter(Boolean);
@@ -379,8 +379,8 @@ export class QueryManager {
 
     getQueries() {
         return Array.from(this.knownQueries.keys())
-            .filter(queryName => this.queryHasRequiredFragments(queryName))
-            .map(queryName => {
+            .filter((queryName) => this.queryHasRequiredFragments(queryName))
+            .map((queryName) => {
                 return this.exportQuery(queryName);
             });
     }
@@ -434,7 +434,7 @@ export class QueryManager {
         const fragments = Array.from(
             this.getUsedFragmentNamesForQuery(queryName),
         )
-            .map(fragmentName => {
+            .map((fragmentName) => {
                 const fragment = this.knownFragments.get(fragmentName)!;
 
                 return {
@@ -447,9 +447,9 @@ export class QueryManager {
                 return a.fragmentName.localeCompare(b.fragmentName);
             });
 
-        const fragmentIds = fragments.map(f => f.fragmentId);
+        const fragmentIds = fragments.map((f) => f.fragmentId);
 
-        const fragmentsString = fragments.map(f => f.fragment).join("\n");
+        const fragmentsString = fragments.map((f) => f.fragment).join("\n");
 
         const fullQuery = (fragmentsString + "\n" + query).trim();
 

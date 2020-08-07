@@ -33,7 +33,7 @@ test("can register query callbacks", () => {
     const spy = jest.fn();
     const { runtimeGQL, registerGQLListener } = createRuntimeGQL();
 
-    registerGQLListener(q => {
+    registerGQLListener((q) => {
         spy(q);
     });
 

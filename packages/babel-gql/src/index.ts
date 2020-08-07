@@ -32,12 +32,12 @@ export function createRuntimeGQL() {
     }
 
     function runtimeGQL(parsed: ParsedGQLTag) {
-        listeners.forEach(fn => fn(parsed));
+        listeners.forEach((fn) => fn(parsed));
 
-        parsed.queries.forEach(query => {
+        parsed.queries.forEach((query) => {
             queries[query.queryName] = query;
         });
-        parsed.fragments.forEach(fragment => {
+        parsed.fragments.forEach((fragment) => {
             fragments[fragment.fragmentName] = fragment;
         });
 
@@ -60,7 +60,7 @@ export function createRuntimeGQL() {
 
         _frags[fragmentName] = true;
 
-        fragment.usedFragments.forEach(fragmenName => {
+        fragment.usedFragments.forEach((fragmenName) => {
             _frags[fragmenName] = true;
             findFragmentsOfFragments(fragmenName, _frags);
         });
@@ -87,11 +87,11 @@ export function createRuntimeGQL() {
 
             const frags: Record<string, boolean> = {};
 
-            query.usedFragments.forEach(fragmentName => {
+            query.usedFragments.forEach((fragmentName) => {
                 findFragmentsOfFragments(fragmentName, frags);
             });
 
-            const usedFragments = Object.keys(frags).map(fragmentName => {
+            const usedFragments = Object.keys(frags).map((fragmentName) => {
                 const fragment = fragments[fragmentName];
 
                 if (!fragment) {
@@ -105,14 +105,14 @@ export function createRuntimeGQL() {
 
             return {
                 query: (
-                    usedFragments.map(f => f.fragment).join("\n") +
+                    usedFragments.map((f) => f.fragment).join("\n") +
                     "\n" +
                     query.query
                 ).trim(),
                 queryName: queryName,
                 queryId: combinedIds([
                     query.queryId,
-                    ...usedFragments.map(f => f.fragmentId),
+                    ...usedFragments.map((f) => f.fragmentId),
                 ]),
             };
         },
@@ -195,7 +195,7 @@ export function request<ResponseType = any>(
         if (query.queries.length > 1) {
             console.warn(
                 "Multiple queries defined in request query " +
-                    query.queries.map(q => q.queryName).join(", "),
+                    query.queries.map((q) => q.queryName).join(", "),
             );
         }
     }
@@ -221,11 +221,11 @@ export function request<ResponseType = any>(
 
     let response: Response;
     return promise
-        .then(res => {
+        .then((res) => {
             response = res;
             return res.json();
         })
-        .then(data => {
+        .then((data) => {
             if (data.errors?.length ?? 0 > 0) {
                 data.errors.forEach((error: any) => {
                     console.error(
