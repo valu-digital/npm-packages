@@ -206,11 +206,6 @@ function htmlWebpackPlugin(options) {
                      * @param {string} chunkName
                      */
                     const assertChunk = (chunkName) => {
-                        console.log(
-                            "###############",
-                            chunkName,
-                            assets.chunks
-                        );
                         const chunk = assets.chunks[chunkName];
                         if (!chunk) {
                             // prettier-ignore
