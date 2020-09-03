@@ -97,6 +97,11 @@ interface Options {
     customizeBabel?: (config: {plugings: any[]; presets: any[]}) => any;
 
     /**
+     * Toggle manifest creation. Defaults to true
+     */
+    manifest?: boolean;
+
+    /**
      * Manual cusomization of the generated config
      */
     customize?: (config: WebpackConfig) => any;

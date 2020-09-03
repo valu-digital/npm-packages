@@ -426,11 +426,13 @@ function createWebpackConfig(options = {}, customize) {
             );
         }
 
-        config.plugins.push(
-            new WebpackAssetsManifest({
-                writeToDisk: true,
-            })
-        );
+        if (options.manifest !== false) {
+            config.plugins.push(
+                new WebpackAssetsManifest({
+                    writeToDisk: true,
+                })
+            );
+        }
 
         if (typeof customize === "function") {
             return customize(config, _, args) || config;
