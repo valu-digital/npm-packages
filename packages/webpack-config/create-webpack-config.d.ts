@@ -102,6 +102,11 @@ interface Options {
     manifest?: boolean;
 
     /**
+     * Toggle minimization optimization. Defaults to true.
+     */
+    minimize?: boolean;
+
+    /**
      * Manual cusomization of the generated config
      */
     customize?: (config: WebpackConfig) => any;

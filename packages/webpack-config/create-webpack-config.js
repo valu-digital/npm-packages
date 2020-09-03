@@ -429,6 +429,10 @@ function createWebpackConfig(options = {}, customize) {
             );
         }
 
+        if (options.minimize === false) {
+            Object.assign(config.optimization, {minimize: false});
+        }
+
         if (typeof customize === "function") {
             return customize(config, _, args) || config;
         }
