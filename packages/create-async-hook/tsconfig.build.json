@@ -3,7 +3,7 @@
     "exclude": ["__tests__", "dist"],
     "compilerOptions": {
         "sourceMap": true,
-        "target": "es6",
+        "target": "es5",
         "noEmit": false,
         "outDir": "./dist",
         "declaration": true,
