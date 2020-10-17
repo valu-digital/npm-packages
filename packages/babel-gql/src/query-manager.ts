@@ -11,6 +11,13 @@ import {
 } from "graphql";
 import { ParsedGQLTag, combinedIds } from "./shared";
 
+async function isFile(path: string) {
+    return fs.stat(path).then(
+        (s) => s.isFile(),
+        () => false,
+    );
+}
+
 export const BABEL_GQL_GLOBAL = (global as any) as {
     babelGQLQueryManager: QueryManager;
     babelGQLWebpackPlugin?: boolean;
@@ -102,6 +109,13 @@ export class BabelGQLWebpackPlugin {
         });
     }
 
+    getGraphQLFilePath(query: { queryName: string; fullQueryId: string }) {
+        return PathUtils.join(
+            this.target,
+            `${query.queryName}-${query.fullQueryId}.graphql`,
+        );
+    }
+
     async handleDone() {
         if (!QueryManager.hasRegisterdGlobal()) {
             return;
@@ -115,22 +129,23 @@ export class BabelGQLWebpackPlugin {
 
         const dirtyQueries = qm.popDirtyQueries();
 
-        debug(
-            `Found ${dirtyQueries.length}/${allQueries.length} dirty queries`,
+        const newQueries = dirtyQueries.slice(0, 0); // get empty array with the same type
+
+        await Promise.all(
+            dirtyQueries.map(async (query) => {
+                const path = this.getGraphQLFilePath(query);
+                if (await isFile(path)) {
+                    newQueries.push(query);
+                }
+            }),
         );
 
-        if (dirtyQueries.length === 0) {
-            return;
-        }
+        debug(`Found ${newQueries.length}/${allQueries.length} new queries`);
 
         if (this.active) {
             await Promise.all(
-                dirtyQueries.map(async (query) => {
-                    const path = PathUtils.join(
-                        this.target,
-                        `${query.queryName}-${query.fullQueryId}.graphql`,
-                    );
-
+                newQueries.map(async (query) => {
+                    const path = this.getGraphQLFilePath(query);
                     console.log("[babel-gql] Writing ", path);
                     await fs.writeFile(path, query.fullQuery);
                 }),
@@ -138,7 +153,7 @@ export class BabelGQLWebpackPlugin {
         }
 
         if (this.onDone) {
-            await this.onDone(qm, dirtyQueries.length);
+            await this.onDone(qm, newQueries.length);
         }
     }
 }
