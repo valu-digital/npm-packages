@@ -134,19 +134,20 @@ export class BabelGQLWebpackPlugin {
         await Promise.all(
             dirtyQueries.map(async (query) => {
                 const path = this.getGraphQLFilePath(query);
-                if (await isFile(path)) {
+                if (!(await isFile(path))) {
                     newQueries.push(query);
                 }
             }),
         );
 
-        debug(`Found ${newQueries.length}/${allQueries.length} new queries`);
-
         if (this.active) {
+            debug(
+                `[babel-gql] Found ${newQueries.length}/${allQueries.length} new queries`,
+            );
+
             await Promise.all(
                 newQueries.map(async (query) => {
                     const path = this.getGraphQLFilePath(query);
-                    console.log("[babel-gql] Writing ", path);
                     await fs.writeFile(path, query.fullQuery);
                 }),
             );
