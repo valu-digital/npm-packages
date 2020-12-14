@@ -1,6 +1,8 @@
 # Lazy Load 3rd Party Scripts
 
-Install
+The smart way.
+
+## Install
 
 ```
 npm install @valu/lazy-script
