@@ -9,7 +9,7 @@ export function loadScript(url: string) {
 }
 
 export class LazyScript<T = any> {
-    resolve = () => {};
+    private resolve = (arg?: unknown) => {};
 
     private readonly promise: Promise<T>;
 
