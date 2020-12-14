@@ -50,8 +50,13 @@ document.querySelector("button").addEventListener("click", () => {
 });
 ```
 
-Calling `.now()` triggers all previous and future `.lazy()` bindings. Calling
-`.lazy()` alone does not do anything.
+Things to note:
+
+-   Calling `.now()` triggers all previous and future `.lazy()` bindings
+-   Calling `.lazy()` alone does not do anything
+-   Calling `.now()` multiple times is ok. The script will be loaded only once and the initialization script is executed only once too
+    -   But the callbacks will be called
+-   The callbacks will get the return value of the `initialize` function
 
 ## Events
 
