@@ -33,7 +33,7 @@ const SCRIPT = new LazyScript({
 Lazily bind event handlers:
 
 ```tsx
-SCRIPT.lazy().then((chatPanel) => {
+SCRIPT.lazy((chatPanel) => {
     chatPanel.addEventListener("chatPanelClosed", () => {
         alert("Chat closed");
     });
@@ -44,7 +44,7 @@ Load the code immediately on click:
 
 ```tsx
 document.querySelector("button").addEventListener("click", () => {
-    SCRIPT.now().then((chatPanel) => {
+    SCRIPT.now((chatPanel) => {
         chatPanel.show();
     });
 });

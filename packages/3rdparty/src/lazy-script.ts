@@ -42,21 +42,23 @@ export class LazyScript<T = any> {
         };
     }
 
-    lazy = () => {
-        return this.promise;
+    lazy = (cb?: (arg: T) => any): void => {
+        this.promise.then(cb);
     };
 
-    now = () => {
+    now = (cb?: (arg: T) => any): void => {
         if (this.state !== "pending") {
-            return this.promise;
+            this.promise.then(cb);
+            return;
         }
 
         this.state = "loading";
         this.listeners.forEach((fn) => fn("loading"));
 
-        return loadScript(this.scriptURL).then(() => {
+        loadScript(this.scriptURL).then(() => {
             this.resolve();
-            return this.promise;
+            this.promise.then(cb);
+            return;
         });
     };
 }
