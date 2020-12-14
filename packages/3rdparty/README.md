@@ -67,7 +67,7 @@ This can be used to implement loading indicators.
 
 ## React
 
-There's a React hook for easy access to the script state:
+There's a React hook for easy access to the script state from render:
 
 ```tsx
 import { useLazyScript } from "@valu/lazy-script/react";
