@@ -44,7 +44,9 @@ Load the code immediately on click:
 
 ```tsx
 document.querySelector("button").addEventListener("click", () => {
-    SCRIPT.now();
+    SCRIPT.now().then((chatPanel) => {
+        chatPanel.show();
+    });
 });
 ```
 
