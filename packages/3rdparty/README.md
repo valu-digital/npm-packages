@@ -10,6 +10,8 @@ npm install @valu/lazy-script
 
 ## Usage
 
+Learn by example:
+
 ```tsx
 import { LazyScript } from "@valu/lazy-script";
 
@@ -42,7 +44,7 @@ SCRIPT.lazy((chatPanel) => {
 });
 ```
 
-Load the code immediately on click:
+Load the code immediately:
 
 ```tsx
 document.querySelector("button").addEventListener("click", () => {
