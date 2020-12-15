@@ -1,6 +1,6 @@
 {
     "name": "@valu/lazy-script",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Lazy load 3rd party scripts",
     "main": "dist/lazy-script.js",
     "homepage": "https://github.com/valu-digital/lazy-script",
