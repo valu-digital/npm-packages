@@ -17,7 +17,7 @@ import { LazyScript } from "@valu/lazy-script";
 
 const SCRIPT = new LazyScript({
     // URL to the script to be loaded
-    url: "https://finmun.boost.ai/chatPanel/chatPanel.js",
+    src: "https://finmun.boost.ai/chatPanel/chatPanel.js",
 
     // Initialization code to be executed only once when the script was loaded
     initialize: () => {

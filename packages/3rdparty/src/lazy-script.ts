@@ -15,14 +15,14 @@ export class LazyScript<T = any> {
 
     state: "pending" | "loading" | "ready";
 
-    scriptURL: string;
+    src: string;
 
     listeners: ((state: "loading" | "ready") => any)[];
 
-    constructor(options: { url: string; initialize: () => Promise<T> | T }) {
+    constructor(options: { src: string; initialize: () => Promise<T> | T }) {
         this.state = "pending";
         this.listeners = [];
-        this.scriptURL = options.url;
+        this.src = options.src;
         this.promise = new Promise((resolve) => {
             this.resolve = resolve;
         })
@@ -55,7 +55,7 @@ export class LazyScript<T = any> {
         this.state = "loading";
         this.listeners.forEach((fn) => fn("loading"));
 
-        loadScript(this.scriptURL).then(() => {
+        loadScript(this.src).then(() => {
             this.resolve();
             this.promise.then(cb);
             return;
