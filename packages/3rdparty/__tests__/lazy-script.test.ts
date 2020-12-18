@@ -39,7 +39,7 @@ test("test basic script loading states", async () => {
         src: "http://test.invalid/foo.js",
     });
 
-    expect(script.state).toBe("pending");
+    expect(script.state).toBe("idle");
 
     script.now();
 
@@ -244,7 +244,7 @@ test("can unblock using predefined global", async () => {
         src: "http://test.invalid/foo.js",
         blocked: true,
     });
-    expect(script.state).toBe("pending");
+    expect(script.state).toBe("idle");
 
     script.now();
 
