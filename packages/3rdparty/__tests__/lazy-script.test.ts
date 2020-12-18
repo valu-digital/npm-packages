@@ -48,7 +48,7 @@ test("test basic script loading states", async () => {
 
     // const el = Array.from(document.getElementsByTagName("script"));
 
-    await script.wait();
+    await script.promise();
 
     expect(script.state).toBe("ready");
 });
@@ -71,7 +71,7 @@ test("can initialize when script has been loaded", async () => {
     expect(initSpy).toHaveBeenCalledTimes(0);
     expect(cbSpy).toHaveBeenCalledTimes(0);
 
-    await script.wait();
+    await script.promise();
 
     expect(cbSpy).toHaveBeenCalledWith({ initObject: true });
 
@@ -116,7 +116,7 @@ test("lazy() is called after now()", async () => {
 
     script.now();
 
-    await script.wait();
+    await script.promise();
 
     expect(cbSpy).toHaveBeenCalledWith({ initObject: true });
     expect(cbSpy).toHaveBeenCalledTimes(1);
@@ -145,7 +145,7 @@ test("blocked script is not called on now() until unblock()", async () => {
 
     script.unblock();
 
-    await script.wait();
+    await script.promise();
 
     expect(cbSpy).toHaveBeenCalledWith({ initObject: true });
     expect(cbSpy).toHaveBeenCalledTimes(1);
@@ -175,7 +175,7 @@ test("unblocking does not execute lazy() calls until now()", async () => {
     expect(initSpy).toHaveBeenCalledTimes(0);
 
     script.now();
-    await script.wait();
+    await script.promise();
 
     expect(cbSpy).toHaveBeenCalledWith({ initObject: true });
     expect(cbSpy).toHaveBeenCalledTimes(1);
@@ -191,7 +191,7 @@ test(".el is created after now()", async () => {
 
     script.now();
     expect(script.el).toBeInstanceOf(HTMLScriptElement);
-    await script.wait();
+    await script.promise();
 });
 
 test("script element can be muated", async () => {
@@ -209,7 +209,7 @@ test("script element can be muated", async () => {
 
     expect(script.el?.dataset.testChange).toEqual("yes");
 
-    await script.wait();
+    await script.promise();
 });
 
 test("callbacks are are called only once", async () => {
@@ -224,14 +224,14 @@ test("callbacks are are called only once", async () => {
     script.lazy(lazySpy);
     script.now(nowSpy);
 
-    await script.wait();
+    await script.promise();
 
     expect(nowSpy).toHaveBeenCalledTimes(1);
     expect(lazySpy).toHaveBeenCalledTimes(1);
 
     script.now();
 
-    await script.wait();
+    await script.promise();
 
     expect(nowSpy).toHaveBeenCalledTimes(1);
     expect(lazySpy).toHaveBeenCalledTimes(1);
@@ -249,7 +249,7 @@ test("can unblock using predefined global", async () => {
 
     script.now();
 
-    await script.wait();
+    await script.promise();
 });
 
 test("can unblock using predefined global lazily", async () => {
@@ -266,7 +266,7 @@ test("can unblock using predefined global lazily", async () => {
     window.LazyScriptUnblock.push("test");
     expect(script.state).toBe("loading");
 
-    await script.wait();
+    await script.promise();
 });
 
 test("does not unblock from unmatching predefined globals", async () => {
@@ -318,7 +318,7 @@ test("can track state changes", async () => {
 
     expect(state).toBe("loading");
 
-    await script.wait();
+    await script.promise();
 
     expect(state).toBe("ready");
 });
@@ -340,7 +340,7 @@ test("blocking can be disabled before defining scripts", async () => {
 
     script.now(cbSpy);
 
-    await script.wait();
+    await script.promise();
 
     expect(initSpy).toHaveBeenCalledTimes(1);
     expect(cbSpy).toHaveBeenCalledTimes(1);
@@ -364,7 +364,7 @@ test("blocking can be disabled after defining scripts", async () => {
 
     script.now(cbSpy);
 
-    await script.wait();
+    await script.promise();
 
     expect(initSpy).toHaveBeenCalledTimes(1);
     expect(cbSpy).toHaveBeenCalledTimes(1);

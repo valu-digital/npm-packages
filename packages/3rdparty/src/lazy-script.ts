@@ -16,7 +16,7 @@ export interface LazyScriptOptions<T> {
 export class LazyScript<T = any> {
     private resolve = (arg?: unknown) => {};
 
-    private readonly promise: Promise<T>;
+    private readonly loadPromise: Promise<T>;
 
     state: "idle" | "blocked" | "waiting-unblock" | "loading" | "ready";
 
@@ -46,7 +46,7 @@ export class LazyScript<T = any> {
         }
 
         this.listeners = [];
-        this.promise = new Promise((resolve) => {
+        this.loadPromise = new Promise((resolve) => {
             this.resolve = resolve;
         })
             .then(options.initialize)
@@ -67,8 +67,8 @@ export class LazyScript<T = any> {
         }
     }
 
-    wait() {
-        return this.promise;
+    promise() {
+        return this.loadPromise;
     }
 
     onStateChange(cb: LazyScript["listeners"][0]) {
@@ -107,7 +107,7 @@ export class LazyScript<T = any> {
 
         // otherwise scedule the callback to be called when the script finally
         // loads
-        this.promise.then(cb);
+        this.loadPromise.then(cb);
     };
 
     now = (cb?: (arg: T) => any): void => {
