@@ -32,12 +32,14 @@ export class LazyScript<T = any> {
 
     initializedObject?: T;
 
+    static blockingEnabled = true;
+
     constructor(options: LazyScriptOptions<T>) {
         LazyScript.all.push(this);
         this.name = options.name;
         this.options = options;
 
-        if (options.blocked) {
+        if (options.blocked && LazyScript.blockingEnabled) {
             this.state = "blocked";
         } else {
             this.state = "idle";
@@ -92,7 +94,8 @@ export class LazyScript<T = any> {
         }
     }
 
-    static unblockAll() {
+    static disableAllBlocking() {
+        LazyScript.blockingEnabled = false;
         LazyScript.all.forEach((script) => script.unblock());
     }
 

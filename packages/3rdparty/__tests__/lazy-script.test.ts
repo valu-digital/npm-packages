@@ -6,6 +6,7 @@ const wait = (t: number) => new Promise((r) => setTimeout(r, t));
 
 // Clear the added scripts for each test
 beforeEach(() => {
+    LazyScript.blockingEnabled = true;
     // This might be brittle.
     // See: https://github.com/facebook/jest/issues/1224
     document.body.innerHTML = "";
@@ -320,4 +321,51 @@ test("can track state changes", async () => {
     await script.wait();
 
     expect(state).toBe("ready");
+});
+
+test("blocking can be disabled before defining scripts", async () => {
+    const initSpy = jest.fn();
+    const cbSpy = jest.fn();
+    LazyScript.disableAllBlocking();
+
+    const script = new LazyScript({
+        name: "test",
+        src: "http://test.invalid/foo.js",
+        blocked: true,
+        initialize: async () => {
+            initSpy();
+            return { initObject: true };
+        },
+    });
+
+    script.now(cbSpy);
+
+    await script.wait();
+
+    expect(initSpy).toHaveBeenCalledTimes(1);
+    expect(cbSpy).toHaveBeenCalledTimes(1);
+});
+
+test("blocking can be disabled after defining scripts", async () => {
+    const initSpy = jest.fn();
+    const cbSpy = jest.fn();
+
+    const script = new LazyScript({
+        name: "test",
+        src: "http://test.invalid/foo.js",
+        blocked: true,
+        initialize: async () => {
+            initSpy();
+            return { initObject: true };
+        },
+    });
+
+    LazyScript.disableAllBlocking();
+
+    script.now(cbSpy);
+
+    await script.wait();
+
+    expect(initSpy).toHaveBeenCalledTimes(1);
+    expect(cbSpy).toHaveBeenCalledTimes(1);
 });
