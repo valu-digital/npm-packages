@@ -6,6 +6,7 @@
         "target": "es5",
         "noEmit": false,
         "outDir": "./dist",
+        "rootDir": "./src",
         "declaration": true,
         "declarationDir": "./dist"
     }

@@ -1,6 +1,6 @@
 declare global {
     interface Window {
-        LazyScriptUnblock: string[];
+        LazyScriptUnblock?: string[] & { lazyScriptTracked?: true };
     }
 }
 
@@ -18,7 +18,7 @@ export class LazyScript<T = any> {
 
     private readonly promise: Promise<T>;
 
-    state: "pending" | "blocked" | "waiting-unblock" | "loading" | "ready";
+    state: "idle" | "blocked" | "waiting-unblock" | "loading" | "ready";
 
     name: string;
 
@@ -30,6 +30,8 @@ export class LazyScript<T = any> {
 
     el?: HTMLScriptElement;
 
+    initializedObject?: T;
+
     constructor(options: LazyScriptOptions<T>) {
         LazyScript.all.push(this);
         this.name = options.name;
@@ -38,7 +40,7 @@ export class LazyScript<T = any> {
         if (options.blocked) {
             this.state = "blocked";
         } else {
-            this.state = "pending";
+            this.state = "idle";
         }
 
         this.listeners = [];
@@ -46,11 +48,13 @@ export class LazyScript<T = any> {
             this.resolve = resolve;
         })
             .then(options.initialize)
-            .then((res) => {
+            .then((obj) => {
+                this.initializedObject = obj;
                 this.setState("ready");
-                return res;
+                return obj;
             });
 
+        trackGlobal();
         this.unblockFromGlobal();
     }
 
@@ -73,18 +77,16 @@ export class LazyScript<T = any> {
         };
     }
 
-    lazy = (cb?: (arg: T) => any): void => {
-        this.promise.then(cb);
-    };
-
     unblock() {
         if (this.state === "blocked") {
-            this.setState("pending");
+            this.setState("idle");
             return;
         }
 
+        // .now() was called earlier but it failed because the script was
+        // blocked. Turn it to idle and retry .now()
         if (this.state === "waiting-unblock") {
-            this.setState("pending");
+            this.setState("idle");
             this.now();
             return;
         }
@@ -94,20 +96,31 @@ export class LazyScript<T = any> {
         LazyScript.all.forEach((script) => script.unblock());
     }
 
+    lazy = (cb: (arg: T) => any): void => {
+        // Call syncronously if the script has been loaded earlier
+        if (this.initializedObject && this.state === "ready") {
+            return cb(this.initializedObject);
+        }
+
+        // otherwise scedule the callback to be called when the script finally
+        // loads
+        this.promise.then(cb);
+    };
+
     now = (cb?: (arg: T) => any): void => {
         if (cb) {
-            this.promise.then(cb);
+            this.lazy(cb);
         }
 
         if (this.state === "blocked") {
+            // Must call .unblock() to continue...
             this.setState("waiting-unblock");
             return;
         }
 
-        if (this.state !== "pending") {
-            // eg. is "loading" or "ready" meaning .now() has been called
-            // earlier and this.promise will resolve without doing anything
-            // anymore
+        if (this.state !== "idle") {
+            // We can start loading only from the idle state. In idle it's not
+            // blocked or already started loading
             return;
         }
 
@@ -146,13 +159,7 @@ export class LazyScript<T = any> {
             return;
         }
 
-        if (!window.LazyScriptUnblock) {
-            window.LazyScriptUnblock = [];
-        }
-
-        trackGlobal(window.LazyScriptUnblock);
-
-        window.LazyScriptUnblock.forEach((name) => {
+        window.LazyScriptUnblock?.forEach((name) => {
             if (this.name === name) {
                 this.unblock();
             }
@@ -160,24 +167,33 @@ export class LazyScript<T = any> {
     }
 }
 
-function trackGlobal(arr: string[] & { lazyScriptTracked?: true }) {
-    if (arr.lazyScriptTracked) {
+function trackGlobal() {
+    if (typeof window === "undefined") {
         return;
     }
+
+    if (window.LazyScriptUnblock?.lazyScriptTracked) {
+        return;
+    }
+
+    if (!window.LazyScriptUnblock) {
+        window.LazyScriptUnblock = [];
+    }
+
+    const arr = window.LazyScriptUnblock;
 
     arr.lazyScriptTracked = true;
 
     const origPush = arr.push;
 
     arr.push = (...names: string[]) => {
+        const ret = origPush.apply(arr, names);
+
+        // Unblock all matching scripts when new global unblock has been added
         LazyScript.all.forEach((script) => {
-            names.forEach((name) => {
-                if (script.name === name) {
-                    script.unblock();
-                }
-            });
+            script.unblockFromGlobal();
         });
 
-        return origPush.apply(arr, names);
+        return ret;
     };
 }

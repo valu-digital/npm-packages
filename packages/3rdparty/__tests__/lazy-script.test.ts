@@ -1,4 +1,3 @@
-import { LazyScriptOptions } from "../dist/lazy-script";
 import { LazyScript } from "../src/lazy-script";
 
 jest.setTimeout(200);
