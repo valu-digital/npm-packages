@@ -1,6 +1,8 @@
 export interface LazyScriptOptions<T> {
+    name: string;
     src: string;
-    initialize: () => Promise<T> | T;
+    blocked?: boolean;
+    initialize?: () => Promise<T> | T;
     mutateScript?: (script: HTMLScriptElement) => any;
     onScriptAdded?: (script: HTMLScriptElement) => any;
 }
@@ -10,15 +12,29 @@ export class LazyScript<T = any> {
 
     private readonly promise: Promise<T>;
 
-    state: "pending" | "loading" | "ready";
+    state: "pending" | "blocked" | "waiting-unblock" | "loading" | "ready";
+
+    name: string;
 
     options: LazyScriptOptions<T>;
 
     listeners: ((state: "loading" | "ready") => any)[];
 
+    static all = [] as LazyScript[];
+
+    el?: HTMLScriptElement;
+
     constructor(options: LazyScriptOptions<T>) {
+        LazyScript.all.push(this);
+        this.name = options.name;
         this.options = options;
-        this.state = "pending";
+
+        if (options.blocked) {
+            this.state = "blocked";
+        } else {
+            this.state = "pending";
+        }
+
         this.listeners = [];
         this.promise = new Promise((resolve) => {
             this.resolve = resolve;
@@ -29,6 +45,10 @@ export class LazyScript<T = any> {
                 this.listeners.forEach((fn) => fn("ready"));
                 return res;
             });
+    }
+
+    wait() {
+        return this.promise;
     }
 
     onStateChange(cb: LazyScript["listeners"][0]) {
@@ -43,8 +63,32 @@ export class LazyScript<T = any> {
         this.promise.then(cb);
     };
 
+    unblock() {
+        if (this.state === "blocked") {
+            this.state = "pending";
+            return;
+        }
+
+        if (this.state === "waiting-unblock") {
+            this.state = "pending";
+            this.now();
+            return;
+        }
+    }
+
+    static unblockAll() {
+        LazyScript.all.forEach((script) => script.unblock());
+    }
+
     now = (cb?: (arg: T) => any): void => {
-        this.promise.then(cb);
+        if (cb) {
+            this.promise.then(cb);
+        }
+
+        if (this.state === "blocked") {
+            this.state = "waiting-unblock";
+            return;
+        }
 
         if (this.state !== "pending") {
             // eg. is "loading" or "ready" meaning .now() has been called
@@ -62,19 +106,22 @@ export class LazyScript<T = any> {
     };
 
     private loadScript() {
+        let el = document.createElement("script");
+        el.async = true;
+        el.dataset.lazyScript = this.options.name;
+        el.src = this.options.src;
+        const newScript = this.options.mutateScript?.(el);
+
+        if (newScript instanceof HTMLScriptElement) {
+            el = newScript;
+        }
+
+        this.el = el;
+
         return new Promise((resolve) => {
-            let script = document.createElement("script");
-            script.onload = resolve;
-            script.async = true;
-            script.src = this.options.src;
-            const newScript = this.options.mutateScript?.(script);
-
-            if (newScript instanceof HTMLScriptElement) {
-                script = newScript;
-            }
-
-            document.head.appendChild(script);
-            this.options.onScriptAdded?.(script);
+            el.onload = resolve;
+            document.head.appendChild(el);
+            this.options.onScriptAdded?.(el);
         });
     }
 }
