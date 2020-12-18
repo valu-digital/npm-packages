@@ -10,7 +10,6 @@ export interface LazyScriptOptions<T> {
     blocked?: boolean;
     initialize?: () => Promise<T> | T;
     mutateScript?: (script: HTMLScriptElement) => any;
-    onScriptAdded?: (script: HTMLScriptElement) => any;
 }
 
 export class LazyScript<T = any> {
@@ -149,7 +148,6 @@ export class LazyScript<T = any> {
         return new Promise((resolve) => {
             el.onload = resolve;
             document.head.appendChild(el);
-            this.options.onScriptAdded?.(el);
         });
     }
 
