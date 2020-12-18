@@ -1,3 +1,9 @@
+declare global {
+    interface Window {
+        LazyScriptUnblock: string[];
+    }
+}
+
 export interface LazyScriptOptions<T> {
     name: string;
     src: string;
@@ -18,7 +24,7 @@ export class LazyScript<T = any> {
 
     options: LazyScriptOptions<T>;
 
-    listeners: ((state: "loading" | "ready") => any)[];
+    listeners: ((state: LazyScript["state"]) => any)[];
 
     static all = [] as LazyScript[];
 
@@ -41,10 +47,18 @@ export class LazyScript<T = any> {
         })
             .then(options.initialize)
             .then((res) => {
-                this.state = "ready";
-                this.listeners.forEach((fn) => fn("ready"));
+                this.setState("ready");
                 return res;
             });
+
+        this.unblockFromGlobal();
+    }
+
+    private setState(state: LazyScript["state"]) {
+        if (this.state !== state) {
+            this.state = state;
+            this.listeners.forEach((fn) => fn(state));
+        }
     }
 
     wait() {
@@ -65,12 +79,12 @@ export class LazyScript<T = any> {
 
     unblock() {
         if (this.state === "blocked") {
-            this.state = "pending";
+            this.setState("pending");
             return;
         }
 
         if (this.state === "waiting-unblock") {
-            this.state = "pending";
+            this.setState("pending");
             this.now();
             return;
         }
@@ -86,7 +100,7 @@ export class LazyScript<T = any> {
         }
 
         if (this.state === "blocked") {
-            this.state = "waiting-unblock";
+            this.setState("waiting-unblock");
             return;
         }
 
@@ -97,9 +111,7 @@ export class LazyScript<T = any> {
             return;
         }
 
-        this.state = "loading";
-        this.listeners.forEach((fn) => fn("loading"));
-
+        this.setState("loading");
         this.loadScript().then(() => {
             this.resolve();
         });
@@ -124,4 +136,48 @@ export class LazyScript<T = any> {
             this.options.onScriptAdded?.(el);
         });
     }
+
+    unblockFromGlobal() {
+        if (!this.options.blocked) {
+            return;
+        }
+
+        if (typeof window === "undefined") {
+            return;
+        }
+
+        if (!window.LazyScriptUnblock) {
+            window.LazyScriptUnblock = [];
+        }
+
+        trackGlobal(window.LazyScriptUnblock);
+
+        window.LazyScriptUnblock.forEach((name) => {
+            if (this.name === name) {
+                this.unblock();
+            }
+        });
+    }
+}
+
+function trackGlobal(arr: string[] & { lazyScriptTracked?: true }) {
+    if (arr.lazyScriptTracked) {
+        return;
+    }
+
+    arr.lazyScriptTracked = true;
+
+    const origPush = arr.push;
+
+    arr.push = (...names: string[]) => {
+        LazyScript.all.forEach((script) => {
+            names.forEach((name) => {
+                if (script.name === name) {
+                    script.unblock();
+                }
+            });
+        });
+
+        return origPush.apply(arr, names);
+    };
 }

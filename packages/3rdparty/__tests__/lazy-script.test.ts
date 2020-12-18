@@ -11,6 +11,9 @@ beforeEach(() => {
     // See: https://github.com/facebook/jest/issues/1224
     document.body.innerHTML = "";
     document.head.innerHTML = "";
+
+    // @ts-ignore
+    delete window.LazyScriptUnblock;
 });
 
 // Simulate loads events to all added script tags
@@ -134,6 +137,7 @@ test("blocked script is not called on now() until unblock()", async () => {
     });
 
     script.now(cbSpy);
+    expect(script.state).toBe("waiting-unblock");
 
     await wait(10);
 
@@ -231,4 +235,90 @@ test("callbacks are are called only once", async () => {
 
     expect(nowSpy).toHaveBeenCalledTimes(1);
     expect(lazySpy).toHaveBeenCalledTimes(1);
+});
+
+test("can unblock using predefined global", async () => {
+    window.LazyScriptUnblock = ["test"];
+
+    const script = new LazyScript({
+        name: "test",
+        src: "http://test.invalid/foo.js",
+        blocked: true,
+    });
+    expect(script.state).toBe("pending");
+
+    script.now();
+
+    await script.wait();
+});
+
+test("can unblock using predefined global lazily", async () => {
+    window.LazyScriptUnblock = [];
+
+    const script = new LazyScript({
+        name: "test",
+        src: "http://test.invalid/foo.js",
+        blocked: true,
+    });
+
+    script.now();
+
+    window.LazyScriptUnblock.push("test");
+    expect(script.state).toBe("loading");
+
+    await script.wait();
+});
+
+test("does not unblock from unmatching predefined globals", async () => {
+    window.LazyScriptUnblock = ["other"];
+
+    const script = new LazyScript({
+        name: "test",
+        src: "http://test.invalid/foo.js",
+        blocked: true,
+    });
+    expect(script.state).toBe("blocked");
+
+    script.now();
+    expect(script.state).toBe("waiting-unblock");
+});
+
+test("does not unblock from unmatching global push", async () => {
+    window.LazyScriptUnblock = [];
+
+    const script = new LazyScript({
+        name: "test",
+        src: "http://test.invalid/foo.js",
+        blocked: true,
+    });
+
+    script.now();
+    window.LazyScriptUnblock.push("other");
+    expect(script.state).toBe("waiting-unblock");
+});
+
+test("can track state changes", async () => {
+    let state = "";
+
+    const script = new LazyScript({
+        name: "test",
+        src: "http://test.invalid/foo.js",
+        blocked: true,
+    });
+
+    script.onStateChange(() => {
+        state = script.state;
+    });
+
+    script.now();
+
+    expect(state).toBe("waiting-unblock");
+
+    script.unblock();
+
+    expect(state).toBe("loading");
+
+    await script.wait();
+
+    expect(state).toBe("ready");
 });
