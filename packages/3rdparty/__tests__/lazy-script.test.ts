@@ -198,7 +198,7 @@ test("script element can be muated", async () => {
     const script = new LazyScript({
         name: "test",
         src: "http://test.invalid/foo.js",
-        mutateScript: (el) => {
+        mutate: (el) => {
             el.dataset.testChange = "yes";
         },
     });

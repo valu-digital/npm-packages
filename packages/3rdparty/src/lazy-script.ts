@@ -9,7 +9,7 @@ export interface LazyScriptOptions<T> {
     src: string;
     blocked?: boolean;
     initialize?: () => Promise<T> | T;
-    mutateScript?: (script: HTMLScriptElement) => any;
+    mutate?: (script: HTMLScriptElement) => any;
 }
 
 export class LazyScript<T = any> {
@@ -21,7 +21,7 @@ export class LazyScript<T = any> {
 
     name: string;
 
-    options: LazyScriptOptions<T>;
+    private options: LazyScriptOptions<T>;
 
     listeners: ((state: LazyScript["state"]) => any)[];
 
@@ -76,6 +76,14 @@ export class LazyScript<T = any> {
             const index = this.listeners.indexOf(cb);
             this.listeners.splice(index, 1);
         };
+    }
+
+    isBlocked() {
+        if (!LazyScript.blockingEnabled) {
+            return false;
+        }
+
+        return this.state === "blocked" || this.state === "waiting-unblock";
     }
 
     unblock() {
@@ -137,7 +145,7 @@ export class LazyScript<T = any> {
         el.async = true;
         el.dataset.lazyScript = this.options.name;
         el.src = this.options.src;
-        const newScript = this.options.mutateScript?.(el);
+        const newScript = this.options.mutate?.(el);
 
         if (newScript instanceof HTMLScriptElement) {
             el = newScript;
@@ -152,7 +160,7 @@ export class LazyScript<T = any> {
     }
 
     unblockFromGlobal() {
-        if (!this.options.blocked) {
+        if (!this.isBlocked()) {
             return;
         }
 
