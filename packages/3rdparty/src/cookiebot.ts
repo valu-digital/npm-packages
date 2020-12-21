@@ -117,7 +117,6 @@ export function connectCookieBot(
                  */
                 if (/cookiebot/i.test(window.navigator.userAgent)) {
                     trackingConsent.consent();
-                    LazyScript.disableAllBlocking();
                     CookiebotScript.now();
                 }
                 return;
