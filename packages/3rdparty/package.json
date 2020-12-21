@@ -8,8 +8,7 @@
         "url": "https://github.com/valu-digital/3rdparty"
     },
     "scripts": {
-        "build": "rm -rf dist && tsc --project tsconfig.build.json",
-        "watch": "tsc --watch --project tsconfig.build.json",
+        "build": "jake build",
         "prepublishOnly": "npm test && npm run build",
         "test": "jest"
     },
