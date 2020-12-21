@@ -1,8 +1,8 @@
-import { Iframes } from "./iframes";
+import { IFrames } from "./iframes";
 
 declare global {
     interface Window {
-        ValuIframes?: Iframes;
+        ValuIFrames?: IFrames;
     }
 }
 
@@ -13,7 +13,7 @@ if (typeof window !== "undefined") {
         options = JSON.parse(optionsEl.innerHTML);
     }
 
-    const ValuIframes = new Iframes(options);
-    ValuIframes.blockAll();
-    window.ValuIframes = ValuIframes;
+    const ValuIFrames = new IFrames(options);
+    ValuIFrames.blockAll();
+    window.ValuIFrames = ValuIFrames;
 }

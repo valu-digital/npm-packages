@@ -9,11 +9,11 @@ function forEach<
     }
 }
 
-function forEachIframe(fn: (item: HTMLIFrameElement) => void) {
+function forEachIFrame(fn: (item: HTMLIFrameElement) => void) {
     forEach(document.getElementsByTagName("iframe") as any, fn);
 }
 
-export interface IframesOptions {
+export interface IFramesOptions {
     placeholderSrc?: string;
     placeholderHtml?: string;
     placeholderScript?: string;
@@ -42,13 +42,13 @@ function createScriptApi(options: { src: string }) {
     `;
 }
 
-export class Iframes {
-    options: IframesOptions;
+export class IFrames {
+    options: IFramesOptions;
 
     monitoring = false;
     observer: MutationObserver | undefined;
 
-    constructor(options?: IframesOptions) {
+    constructor(options?: IFramesOptions) {
         this.options = options || {};
     }
 
@@ -76,16 +76,16 @@ export class Iframes {
 
     unblock = unblock;
     isBlocked = isBlocked;
-    forEachIframe = forEachIframe;
+    forEachIframe = forEachIFrame;
 
     unblockAll() {
         this.stopMonitoring();
-        forEachIframe(unblock);
+        forEachIFrame(unblock);
     }
 
     blockAll() {
         this.startMonitoring();
-        forEachIframe((node) => this.block(node));
+        forEachIFrame((node) => this.block(node));
     }
 
     startMonitoring() {

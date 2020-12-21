@@ -1,7 +1,7 @@
 import fs from "fs";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
-import type { IframesOptions } from "./iframes";
+import type { IFramesOptions } from "./iframes";
 
 const inlineScript = fs
     .readFileSync(__dirname + "/iframes-head.min.js")
@@ -23,7 +23,7 @@ function browserExec(fn: (...args: any[]) => any): string {
     `;
 }
 
-export function BlockIframes(props: BlockIframesProps) {
+export function BlockIFrames(props: BlockIframesProps) {
     let code = "";
 
     let placeholder = "";
@@ -34,7 +34,7 @@ export function BlockIframes(props: BlockIframesProps) {
         placeholder += ReactDOMServer.renderToStaticMarkup(props.placeholder);
     }
 
-    let options: IframesOptions = {
+    let options: IFramesOptions = {
         placeholderHtml: placeholder,
     };
 

@@ -1,8 +1,8 @@
-import type { Iframes } from "./iframes";
+import type { IFrames } from "./iframes";
 
 declare global {
     interface Window {
-        ValuIframes?: Iframes;
+        ValuIFrames?: IFrames;
     }
 }
 
@@ -11,11 +11,11 @@ export function getIframesGlobal() {
         throw new Error("Cannot be called in during SSR");
     }
 
-    if (!window.ValuIframes) {
+    if (!window.ValuIFrames) {
         throw new Error(
             "ValuIframes script is not properly configured to the <head>.",
         );
     }
 
-    return window.ValuIframes;
+    return window.ValuIFrames;
 }
