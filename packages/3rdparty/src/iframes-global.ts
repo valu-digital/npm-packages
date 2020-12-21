@@ -6,7 +6,7 @@ declare global {
     }
 }
 
-export function getIframesGlobal() {
+export function getIFramesGlobal() {
     if (typeof window === "undefined") {
         throw new Error("Cannot be called in during SSR");
     }
