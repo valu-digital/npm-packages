@@ -172,4 +172,14 @@ export class TrackingConsent {
             JSON.stringify(this.response),
         );
     }
+
+    static instance: TrackingConsent | undefined;
+
+    static getSingleton() {
+        if (!TrackingConsent.instance) {
+            TrackingConsent.instance = new TrackingConsent();
+        }
+
+        return TrackingConsent.instance;
+    }
 }
