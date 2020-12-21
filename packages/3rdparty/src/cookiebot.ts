@@ -77,25 +77,6 @@ export function connectCookieBot(
         },
     });
 
-    /**
-     * Disable all blocking for the cookiebot crawler so it can see the trackers
-     *
-     * https://support.cookiebot.com/hc/en-us/community/posts/360010100774-UserAgent-Need-to-know-its-CookieBot-to-avoid-Blocking-unknown-Scanner
-     *
-     *    'Yes. Since the last update, you could now identify Cookiebot through
-     *    the user agent string and it will contain "Cookiebot".'
-     *
-     * User agent seems to be like this:
-     *
-     *  Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko; compatible; Cookiebot/1.0; +http://cookiebot.com/) Chrome/86.0.4240.183 Safari/537.36
-     *
-     */
-    if (/cookiebot/i.test(window.navigator.userAgent)) {
-        trackingConsent.consent();
-        LazyScript.disableAllBlocking();
-        CookiebotScript.now();
-    }
-
     window.addEventListener(
         "CookiebotOnAccept",
         () => {
@@ -118,10 +99,27 @@ export function connectCookieBot(
 
     trackingConsent.onEvent((event) => {
         switch (event) {
-            // No need to handle these beacuse this is just a one away binding.
-            // Eg. we only sync the state from the cookiebot to TrackingConsent
-            case "consented":
-            case "declined": {
+            case "init": {
+                /**
+                 * Disable all blocking for the cookiebot crawler so it can see
+                 * the trackers
+                 *
+                 * https://support.cookiebot.com/hc/en-us/community/posts/360010100774-UserAgent-Need-to-know-its-CookieBot-to-avoid-Blocking-unknown-Scanner
+                 *
+                 *    'Yes. Since the last update, you could now identify
+                 *    Cookiebot through the user agent string and it will contain
+                 *    "Cookiebot".'
+                 *
+                 * User agent seems to be like this:
+                 *
+                 *  Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko; compatible; Cookiebot/1.0; +http://cookiebot.com/) Chrome/86.0.4240.183 Safari/537.36
+                 *
+                 */
+                if (/cookiebot/i.test(window.navigator.userAgent)) {
+                    trackingConsent.consent();
+                    LazyScript.disableAllBlocking();
+                    CookiebotScript.now();
+                }
                 return;
             }
 
@@ -142,6 +140,13 @@ export function connectCookieBot(
                         cb.show();
                     }
                 });
+                return;
+            }
+
+            // No need to handle these beacuse this is just a one away binding.
+            // Eg. we only sync the state from the cookiebot to TrackingConsent
+            case "consented":
+            case "declined": {
                 return;
             }
         }

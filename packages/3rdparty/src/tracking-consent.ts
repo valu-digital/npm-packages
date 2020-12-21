@@ -13,7 +13,8 @@ type TrackingConsentEvent =
     | "request-prompt"
     | "consented"
     | "declined"
-    | "forget";
+    | "forget"
+    | "init";
 
 export interface TrackingConsentEventHandler {
     (event: TrackingConsentEvent): undefined | void | Promise<any>;
@@ -45,6 +46,13 @@ export class TrackingConsent {
         if (this.response.status === "not-given") {
             this.showPrompt();
         }
+
+        if (this.response.status === "consented") {
+            this.emit("consented");
+        } else if (this.response.status === "declined") {
+            this.emit("declined");
+        }
+
         this.sendGTMDatalayerEvent();
     }
 

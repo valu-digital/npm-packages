@@ -9,6 +9,7 @@
     },
     "scripts": {
         "build": "jake build",
+        "build-pack": "jake build-pack",
         "prepublishOnly": "npm test && npm run build",
         "test": "jest"
     },
