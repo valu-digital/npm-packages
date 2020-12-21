@@ -44,10 +44,12 @@ export class Iframes {
     forEachIframe = forEachIframe;
 
     unblockAll() {
+        this.stopMonitoring();
         forEachIframe(unblock);
     }
 
     blockAll() {
+        this.startMonitoring();
         forEachIframe((node) => this.block(node));
     }
 
