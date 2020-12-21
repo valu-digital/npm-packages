@@ -13,7 +13,7 @@ function forEachIframe(fn: (item: HTMLIFrameElement) => void) {
     forEach(document.getElementsByTagName("iframe") as any, fn);
 }
 
-interface IframeBlockOptions {
+export interface IframesOptions {
     placeholderSrc?: string;
 }
 
@@ -30,13 +30,13 @@ export function isBlocked(node: HTMLIFrameElement) {
 }
 
 export class Iframes {
-    options: IframeBlockOptions;
+    options: IframesOptions;
 
     monitoring = false;
     observer: MutationObserver | undefined;
 
-    constructor(options: IframeBlockOptions) {
-        this.options = options;
+    constructor(options?: IframesOptions) {
+        this.options = options || {};
     }
 
     unblock = unblock;

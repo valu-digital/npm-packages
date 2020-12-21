@@ -6,6 +6,7 @@
         "lib": ["esnext", "dom"],
         "jsx": "react",
         "moduleResolution": "node",
+        "noUncheckedIndexedAccess": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true,
         "esModuleInterop": true
