@@ -13,7 +13,7 @@ export function getIframesGlobal() {
 
     if (!window.ValuIframes) {
         throw new Error(
-            "ValuIframes script is not properly configure to the <head>",
+            "ValuIframes script is not properly configured to the <head>.",
         );
     }
 
