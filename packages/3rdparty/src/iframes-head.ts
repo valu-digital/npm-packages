@@ -1,14 +1,19 @@
-import { Iframes, IframesOptions } from "./iframes";
+import { Iframes } from "./iframes";
 
 declare global {
     interface Window {
-        ValuIframesOptions?: IframesOptions;
         ValuIframes?: Iframes;
     }
 }
 
 if (typeof window !== "undefined") {
-    const ValuIframes = new Iframes(window.ValuIframesOptions);
+    const optionsEl = document.getElementById("valu-iframes-options");
+    let options = {};
+    if (optionsEl) {
+        options = JSON.parse(optionsEl.innerHTML);
+    }
+
+    const ValuIframes = new Iframes(options);
     ValuIframes.blockAll();
     window.ValuIframes = ValuIframes;
 }

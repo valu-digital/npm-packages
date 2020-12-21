@@ -7,37 +7,57 @@ const inlineScript = fs
     .readFileSync(__dirname + "/iframes-head.min.js")
     .toString();
 
-function defineGlobal(name: string, value: any) {
-    return `window.${name} = ${JSON.stringify(value)};\n`;
+export interface ScriptAPI {
+    unblock(): void;
+    src: string;
 }
 
-interface BlockIframesProps extends IframesOptions {
+interface BlockIframesProps {
     placeholder?: any;
+    script?: (api: ScriptAPI) => any;
+}
+
+function browserExec(fn: (...args: any[]) => any): string {
+    return `
+        (${fn.toString()}).call(null, scriptApi);
+    `;
 }
 
 export function BlockIframes(props: BlockIframesProps) {
     let code = "";
 
-    let options: IframesOptions = {
-        placeholderSrc: props.placeholderSrc,
-    };
+    let placeholder = "";
 
     if (typeof props.placeholder === "string") {
-        options.placeholderSrc = "data:text/html," + props.placeholder;
+        placeholder += props.placeholder;
     } else if (props.placeholder) {
-        options.placeholderSrc =
-            "data:text/html," +
-            ReactDOMServer.renderToStaticMarkup(props.placeholder);
+        placeholder += ReactDOMServer.renderToStaticMarkup(props.placeholder);
     }
 
-    code += defineGlobal("ValuIframesOptions", options);
+    let options: IframesOptions = {
+        placeholderHtml: placeholder,
+    };
+
+    if (props.script) {
+        options.placeholderScript = browserExec(props.script);
+    }
+
     code += inlineScript;
 
     return (
-        <script
-            dangerouslySetInnerHTML={{
-                __html: code,
-            }}
-        ></script>
+        <>
+            <script
+                type="application/json"
+                id="valu-iframes-options"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(options),
+                }}
+            ></script>
+            <script
+                dangerouslySetInnerHTML={{
+                    __html: code,
+                }}
+            ></script>
+        </>
     );
 }

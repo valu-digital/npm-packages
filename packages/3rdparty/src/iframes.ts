@@ -15,6 +15,8 @@ function forEachIframe(fn: (item: HTMLIFrameElement) => void) {
 
 export interface IframesOptions {
     placeholderSrc?: string;
+    placeholderHtml?: string;
+    placeholderScript?: string;
 }
 
 export function unblock(node: HTMLIFrameElement) {
@@ -29,6 +31,17 @@ export function isBlocked(node: HTMLIFrameElement) {
     return node.hasAttribute("data-blocked");
 }
 
+function createScriptApi(options: { src: string }) {
+    return `
+    scriptApi = {
+        src:  ${JSON.stringify(options.src)},
+        unblock: function unblock() {
+            window.location = scriptApi.src;
+        }
+    };
+    `;
+}
+
 export class Iframes {
     options: IframesOptions;
 
@@ -37,6 +50,28 @@ export class Iframes {
 
     constructor(options?: IframesOptions) {
         this.options = options || {};
+    }
+
+    createPlaceholder(src: string) {
+        if (this.options.placeholderSrc) {
+            return this.options.placeholderSrc;
+        }
+
+        if (this.options.placeholderHtml) {
+            let html = this.options.placeholderHtml;
+
+            if (this.options.placeholderScript) {
+                html += `
+                <script>
+                    ${createScriptApi({ src: src })}
+                    ${this.options.placeholderScript}
+                </script>`;
+            }
+
+            return "data:text/html," + encodeURI(html);
+        }
+
+        return "data:text/html,<h1>Blocked</h1>";
     }
 
     unblock = unblock;
@@ -96,8 +131,8 @@ export class Iframes {
         }
 
         node.setAttribute("data-blocked", node.src);
-        const src = this.options.placeholderSrc ?? "about:blank";
-        node.src = src;
-        node.setAttribute("src", src);
+        const placeholderSrc = this.createPlaceholder(node.src);
+        node.src = placeholderSrc;
+        node.setAttribute("src", placeholderSrc);
     }
 }
