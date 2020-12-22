@@ -30,6 +30,8 @@
         "react-ssr.js",
         "tracking-consent.d.ts",
         "tracking-consent.js",
+        "react-tracking-consent.d.ts",
+        "react-tracking-consent.js",
         "dist"
     ],
     "author": "",
