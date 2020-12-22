@@ -63,7 +63,8 @@ Things to note:
 
 ## Promise API
 
-Lazy binding which must be combined with `SCRIPT.now()` call
+The promise is a lazy binding which must be combined with `SCRIPT.now()` call
+for it resolve.
 
 ```tsx
 const chatPanel = await SCRIPT.promise();
