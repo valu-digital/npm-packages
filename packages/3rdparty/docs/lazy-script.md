@@ -139,6 +139,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 ```
 <!-- prettier-ignore-end -->
 
+This works well with the [TrackingConsent GTM Events](tracking-consent.md#google-tag-manager-events).
+
 ## React
 
 There's a React hook for easy access to the script state from render:

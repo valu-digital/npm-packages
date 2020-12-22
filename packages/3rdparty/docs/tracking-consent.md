@@ -48,7 +48,7 @@ interface ConsentResponse {
 
 -   `.consent()`: Give tracking consent
 -   `.decline()`: Decline tracking consent
--   `.forget()`: Forget previously given conset
+-   `.forget()`: Forget previously given consent
     -   NOTE: You should reload the tab after this to unload the trackers
 
 ## React Hook
@@ -92,3 +92,8 @@ TrackingConsent emits following GTM events:
     -   Is also emitted on `tc.init()`
 -   `valu-tracking-response-not-given`: Emitted on page load when no response has been given
     -   Is also emitted on `tc.forget()`
+
+You can bind external scripts like Google Analtics to these but you can also manage:
+
+-   [LazyScript unblocking](lazy-script.md#unblocking) via the `LSU` global.
+-   [IFrames unblocking]()
