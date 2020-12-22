@@ -1,6 +1,6 @@
 # TrackingConsent
 
-A class for manager "cookie consent".
+A class for managing "cookie consent".
 
 ## Usage
 

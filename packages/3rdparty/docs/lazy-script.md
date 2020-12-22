@@ -1,5 +1,7 @@
 # LazyScript
 
+A class for safely loading external scripts.
+
 ## Usage
 
 Learn by example:
