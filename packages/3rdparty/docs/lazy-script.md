@@ -115,6 +115,8 @@ If the array does not exists you must create it first.
 
 "LSU" stands for "Lazy Script Unblock".
 
+### Google Tag Manager
+
 This is mainly for unblocking scripts from Google Tag Manager.
 
 Example setup:
