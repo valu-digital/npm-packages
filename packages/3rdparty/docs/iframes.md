@@ -118,8 +118,8 @@ function IframePlaceholder() {
 ```
 
 NOTE: The component is SSR rendered with React into the iframe `src`
-attribute so it cannot contain any interactivity. No event handlers or react
-state.
+attribute as a Data URL string so it cannot contain any interactivity. No
+event handlers or react state.
 
 But there's a small scripting API if you want to make an unblock button inside the iframe:
 
