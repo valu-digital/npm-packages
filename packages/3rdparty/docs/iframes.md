@@ -47,6 +47,8 @@ const iframes = getIFramesGlobal();
 
 ## API
 
+Instance
+
 -   `.unblockAll()`: Unblock all existing and future iframes
 -   `.unblock(node)`: Unblock single iframe node
 -   `.isBlocked(node)`: Returns true if the given node is blocked
@@ -57,7 +59,7 @@ const iframes = getIFramesGlobal();
 When unblocking iframes from GTM you must render the `<BlockIframe>`
 component before the GTM script tag so GTM can see the global.
 
-In a "Custom HTML" tag you can access the iframe api via `ValuIFrames`
+In a "Custom HTML" tag you can access the iframe api via the `ValuIFrames`
 global.
 
 Example

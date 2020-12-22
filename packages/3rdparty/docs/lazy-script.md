@@ -63,34 +63,6 @@ Things to note:
 -   The callbacks will get the return value of the `initialize` function
 -   Both `now()` and `lazy()` will execute the given callback only once
 
-## Promise API
-
-The promise is a lazy binding which must be combined with `SCRIPT.now()` call
-for it resolve.
-
-```tsx
-const chatPanel = await SCRIPT.promise();
-```
-
-Or trigger the loading immediately with `{ now: true }`:
-
-```tsx
-const chatPanel = await SCRIPT.promise({ now: true });
-```
-
-## Events
-
-Listen to script load events with
-
-```tsx
-const unbind = SCRIPT.onStateChange(() => {
-    //  "idle" | "blocked" | "waiting-unblock" | "loading" | "ready"
-    console.log(SCRIPT.state);
-});
-```
-
-This can be used to implement loading indicators.
-
 ## Unblocking
 
 If the script is blocked with `blocked: true` it must be unblocked.
@@ -141,6 +113,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- prettier-ignore-end -->
 
 This works well with the [TrackingConsent GTM Events](tracking-consent.md#google-tag-manager-events).
+
+## API
+
+Instance:
+
+-   `.promise()`: Return a lazy promise which resolves when `.now()` is called
+    -   The promise resolves to the return value of the `initialize()` callback
+    -   Or resolve it immediately with `.promise({now: true})`
+-   `.onStateChange(cb: (state: string) => void)`: Called when the state of the script changes
+    -   `"idle" | "blocked" | "waiting-unblock" | "loading" | "ready"`
+    -   This can be used to implement loading indicators.
+-   `.unblock()`: Unblock the given script if it was created with `blocked: true`
+
+Class:
+
+-   `LazyScript.disableAllBlocking()` : Disable blocking from all current and future scripts
 
 ## React
 

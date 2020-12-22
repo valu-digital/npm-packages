@@ -23,9 +23,6 @@ import { getIFramesGlobal } from "@valu/3rdparty/iframes-global";
 const tc = TrackingConsent.getSingleton();
 
 tc.onEvent((event) => {
-    // the event is one of:
-    // "request-prompt" | "consented" | "declined" | "forget" | "init";
-
     if (event === "consented") {
         getIFramesGlobal().unblockAll();
         LazyScript.disableAllBlocking();
@@ -46,10 +43,15 @@ interface ConsentResponse {
 
 ## API
 
+Instance:
+
+-   `.init()`: Initialize the object. This should be called on page load after setting the event handlers
 -   `.consent()`: Give tracking consent
 -   `.decline()`: Decline tracking consent
 -   `.forget()`: Forget previously given consent
     -   NOTE: You should reload the tab after this to unload the trackers
+-   `.onEvent(cb: (event: string) => void)`: The callback will be called on various events
+    -   Possible events are: `"request-prompt" | "consented" | "declined" | "forget" | "init"`
 
 ## React Hook
 
