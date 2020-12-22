@@ -17,3 +17,5 @@ The tools
 -   [TrackingConsent](tracking-consent.md): A class managing tracking consents
 -   [LazyScript](lazy-script.md): A class for safely lazy loading external scripts
 -   [IFrames](iframes.md): A tool for blocking and unblocking iframes
+
+All of these can be used as standalone tool or together.
