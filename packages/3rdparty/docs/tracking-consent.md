@@ -8,7 +8,7 @@ A class for managing "cookie consent".
 import { TrackingConsent } from "@valu/3rdparty/tracking-consent";
 const tc = TrackingConsent.getSingleton();
 
-// All event handler must be added to tc instance before calling .init()
+// All event handlers must be added to the tc instance before calling .init()
 tc.init();
 ```
 
@@ -35,7 +35,7 @@ tc.onEvent((event) => {
 tc.init();
 ```
 
-The response status is available in `tc.response` which has type of
+The response status is available in `tc.response` which has the type of
 
 ```tsx
 interface ConsentResponse {
