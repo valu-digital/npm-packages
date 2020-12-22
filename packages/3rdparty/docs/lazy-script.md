@@ -130,6 +130,8 @@ Instance:
 -   `.unblock()`: Unblock the given script if it was created with `blocked: true`
 -   `.state`: The current state of the script
     -   `"idle" | "blocked" | "waiting-unblock" | "loading" | "ready"`
+-   `.mutate(node: HTMLScriptElement)`: Mutate the script node before it is added to the DOM tree.
+    -   Some external scripts might require some additional attributes like `id` and data attributes
 
 Class:
 
