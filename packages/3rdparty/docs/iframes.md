@@ -35,7 +35,7 @@ class MyDocument extends Document {
 export default MyDocument;
 ```
 
-The `BlockIFrames` component will render the blocking code which as minimized
+The `BlockIFrames` component will render the blocking code as minimized
 inline script so it won't cause any render blocking requests and it can block
 any server rendered iframes. It will expose the instance as a global which
 can be accessed in the browser code with:
