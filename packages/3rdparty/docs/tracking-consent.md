@@ -32,15 +32,6 @@ tc.onEvent((event) => {
 tc.init();
 ```
 
-The response status is available in `tc.response` which has the type of
-
-```tsx
-interface ConsentResponse {
-    status: "not-given" | "declined" | "consented";
-    date: string | undefined;
-}
-```
-
 ## API
 
 Instance:
@@ -52,6 +43,8 @@ Instance:
     -   NOTE: You should reload the tab after this to unload the trackers
 -   `.onEvent(cb: (event: string) => void)`: The callback will be called on various events
     -   Possible events are: `"request-prompt" | "consented" | "declined" | "forget" | "init"`
+-   `.response` The response status object
+    -   `{ status: "not-given" | "declined" | "consented"; date: string | undefined; }`
 
 ## React Hook
 

@@ -125,6 +125,8 @@ Instance:
     -   `"idle" | "blocked" | "waiting-unblock" | "loading" | "ready"`
     -   This can be used to implement loading indicators.
 -   `.unblock()`: Unblock the given script if it was created with `blocked: true`
+-   `.state`: The current state of the script
+    -   `"idle" | "blocked" | "waiting-unblock" | "loading" | "ready"`
 
 Class:
 
@@ -138,7 +140,6 @@ There's a React hook for easy access to the script state from render:
 import { useLazyScript } from "@valu/lazy-script/react";
 
 function Component() {
-    //  "idle" | "blocked" | "waiting-unblock" | "loading" | "ready"
     const state = useLazyScript(SCRIPT);
 }
 ```
