@@ -145,6 +145,7 @@ There's a React hook for easy access to the script state from render:
 import { useLazyScript } from "@valu/lazy-script/react";
 
 function Component() {
+    //  "idle" | "blocked" | "waiting-unblock" | "loading" | "ready"
     const state = useLazyScript(SCRIPT);
 }
 ```
