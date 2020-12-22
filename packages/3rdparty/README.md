@@ -5,4 +5,5 @@ prompts).
 
 The tools
 
--   [LazyScript](docs/lazy-script.md) Class for safely lazy loading external scripts
+-   [LazyScript](docs/lazy-script.md): A class for safely lazy loading external scripts
+-   [TrackingConsent](docs/tracking-consent.md): A class managing tracking consents
