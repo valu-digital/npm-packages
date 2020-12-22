@@ -61,11 +61,16 @@ Things to note:
 
 ## Promise API
 
-```tsx
-// trigger loading, you can do this later as well and leave the promise hanging
-SCRIPT.now();
+Lazy binding which must be combined with `SCRIPT.now()` call
 
+```tsx
 const chatPanel = await SCRIPT.promise();
+```
+
+Or trigger the loading immediately with `{ now: true }`:
+
+```tsx
+const chatPanel = await SCRIPT.promise({ now: true });
 ```
 
 ## Events

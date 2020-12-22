@@ -66,7 +66,16 @@ export class LazyScript<T = any> {
         }
     }
 
-    promise() {
+    /**
+     * Return promise which resolves when the script loads.
+     *
+     * Lazy by default but can trigger immediately with {now: true}
+     */
+    promise(options?: { now?: boolean }) {
+        if (options?.now === true) {
+            this.now();
+        }
+
         return this.loadPromise;
     }
 
