@@ -44,6 +44,13 @@ interface ConsentResponse {
 }
 ```
 
+## API
+
+-   `.consent()`: Give tracking consent
+-   `.decline()`: Decline tracking consent
+-   `.forget()`: Forget previously given conset
+    -   NOTE: You should reload the tab after this to unload the trackers
+
 ## React Hook
 
 ```tsx
@@ -71,3 +78,17 @@ connectCookieBot(tc, "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx);
 
 tc.init();
 ```
+
+## Google Tag Manager Events
+
+Instead of hard coding unblocking logic to the application code you can
+delegate it to Google Tag Manager.
+
+TrackingConsent emits following GTM events:
+
+-   `valu-tracking-response-consented`: Emited when user gives the tracking consent
+    -   Is also emitted on `tc.init()` (page load) when response has been given previously
+-   `valu-tracking-response-declined`: Emited when user declines the tracking consent
+    -   Is also emitted on `tc.init()`
+-   `valu-tracking-response-not-given`: Emitted on page load when no response has been given
+    -   Is also emitted on `tc.forget()`
