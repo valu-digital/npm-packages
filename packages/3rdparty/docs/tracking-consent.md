@@ -93,7 +93,11 @@ TrackingConsent emits following GTM events:
 -   `valu-tracking-response-not-given`: Emitted on page load when no response has been given
     -   Is also emitted on `tc.forget()`
 
-You can bind external scripts like Google Analtics to these but you can also manage:
+You can bind external scripts like Google Analytics to these but you can also manage:
 
 -   [LazyScript unblocking](lazy-script.md#unblocking) via the `LSU` global.
 -   [IFrames unblocking]()
+
+The event trigger in GTM looks like this:
+
+![image](https://user-images.githubusercontent.com/225712/102896488-25baf480-446f-11eb-93a9-4e21309d8d7b.png)
