@@ -41,6 +41,8 @@ Instance:
 -   `.decline()`: Decline tracking consent
 -   `.forget()`: Forget previously given consent
     -   NOTE: You should reload the tab after this to unload the trackers
+-   `.showPrompt()`: Show the consent form
+    -   This basically just emits the `"request-prompt"` event which is listened by the Cookiebot integration
 -   `.onEvent(cb: (event: string) => void)`: The callback will be called on various events
     -   Possible events are: `"request-prompt" | "consented" | "declined" | "forget" | "init"`
 -   `.response` The response status object
