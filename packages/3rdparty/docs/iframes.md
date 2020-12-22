@@ -137,8 +137,9 @@ But there's a small scripting API if you want to make an unblock button inside t
 ```
 
 The will unblock the single iframe when a button with class name of "unblock"
-in clicked inside the placeholder.
+is clicked inside the placeholder.
 
 ## Usage without React
 
-This can be used in a tradional website too without React. Ask for the docs if you need them.
+This can be used in a tradional websites too without React. Ask for the docs
+if you need them.
