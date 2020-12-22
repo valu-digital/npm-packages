@@ -118,9 +118,12 @@ This works well with the [TrackingConsent GTM Events](tracking-consent.md#google
 
 Instance:
 
+-   `.now(cb)`: Call the given callback ASAP with `initialize` value
+    -   Without the callback it can be used to just trigger the `.lazy()` bindings
+-   `.lazy(cb)`: Call the given callback with `initialize` value when `.now()` is first called
 -   `.promise()`: Return a lazy promise which resolves when `.now()` is called
-    -   The promise resolves to the return value of the `initialize()` callback
-    -   Or resolve it immediately with `.promise({now: true})`
+    -   The promise resolves to the `initialize` value
+    -   Can be resolved immediately with `.promise({now: true})`
 -   `.onStateChange(cb: (state: string) => void)`: Called when the state of the script changes
     -   `"idle" | "blocked" | "waiting-unblock" | "loading" | "ready"`
     -   This can be used to implement loading indicators.
