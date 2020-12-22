@@ -18,4 +18,4 @@ The tools
 -   [LazyScript](lazy-script.md): A class for safely lazy loading external scripts
 -   [IFrames](iframes.md): A tool for blocking and unblocking iframes
 
-All of these can be used as standalone tool or together.
+All of these can be used as standalone tools or together.
