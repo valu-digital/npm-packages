@@ -1,6 +1,6 @@
 declare global {
     interface Window {
-        LazyScriptUnblock?: string[] & { lazyScriptTracked?: true };
+        LSU?: string[] & { lazyScriptTracked?: true };
     }
 }
 
@@ -177,7 +177,7 @@ export class LazyScript<T = any> {
             return;
         }
 
-        window.LazyScriptUnblock?.forEach((name) => {
+        window.LSU?.forEach((name) => {
             if (this.name === name) {
                 this.unblock();
             }
@@ -190,15 +190,15 @@ function trackGlobal() {
         return;
     }
 
-    if (window.LazyScriptUnblock?.lazyScriptTracked) {
+    if (window.LSU?.lazyScriptTracked) {
         return;
     }
 
-    if (!window.LazyScriptUnblock) {
-        window.LazyScriptUnblock = [];
+    if (!window.LSU) {
+        window.LSU = [];
     }
 
-    const arr = window.LazyScriptUnblock;
+    const arr = window.LSU;
 
     arr.lazyScriptTracked = true;
 

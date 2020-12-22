@@ -8,12 +8,14 @@ Learn by example:
 import { LazyScript } from "@valu/3rdparty/lazy-script";
 
 const SCRIPT = new LazyScript({
+    // Idendifier for the the global array unblocking
     name: "chatpanel",
 
     // URL to the script to be loaded
     src: "https://finmun.boost.ai/chatPanel/chatPanel.js",
 
-    // Set to true to prevent script from loading until it is unblocked
+    // Set to true to prevent script from loading until it is unblocked.
+    // Defaults to false.
     blocked: false,
 
     // Initialization code to be executed only once when the script was loaded
@@ -79,7 +81,8 @@ Listen to script load events with
 
 ```tsx
 const unbind = SCRIPT.onStateChange(() => {
-    console.log(SCRIPT.state); // "pending" | "loading"  | "ready"
+    //  "idle" | "blocked" | "waiting-unblock" | "loading" | "ready"
+    console.log(SCRIPT.state);
 });
 ```
 
@@ -101,16 +104,35 @@ All at once
 LazyScript.disableAllBlocking();
 ```
 
-Using global array:
+Using global `LSU` array:
 
 ```tsx
-window.LazyScriptUnblock.push("chatpanel");
+LSU.push("chatpanel");
 ```
 
 The `"chatpanel"` must match with the `name` constructor option.
 If the array does not exists you must create it first.
 
+"LSU" stands for "Lazy Script Unblock".
+
 This is mainly for unblocking scripts from Google Tag Manager.
+
+Example setup:
+
+<!-- prettier-ignore-start -->
+```html
+<!-- Define global LSU array before GTM so it is visible for it -->
+<script>if(!window.LSU){window.LSU=[]}</script>
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-xxxxxxx');</script>
+<!-- End Google Tag Manager -->
+```
+<!-- prettier-ignore-end -->
 
 ## React
 

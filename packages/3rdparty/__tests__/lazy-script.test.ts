@@ -13,7 +13,7 @@ beforeEach(() => {
     document.head.innerHTML = "";
 
     // @ts-ignore
-    delete window.LazyScriptUnblock;
+    delete window.LSU;
 });
 
 // Simulate loads events to all added script tags
@@ -238,7 +238,7 @@ test("callbacks are are called only once", async () => {
 });
 
 test("can unblock using predefined global", async () => {
-    window.LazyScriptUnblock = ["test"];
+    window.LSU = ["test"];
 
     const script = new LazyScript({
         name: "test",
@@ -253,7 +253,7 @@ test("can unblock using predefined global", async () => {
 });
 
 test("can unblock using predefined global lazily", async () => {
-    window.LazyScriptUnblock = [];
+    window.LSU = [];
 
     const script = new LazyScript({
         name: "test",
@@ -263,14 +263,14 @@ test("can unblock using predefined global lazily", async () => {
 
     script.now();
 
-    window.LazyScriptUnblock.push("test");
+    window.LSU.push("test");
     expect(script.state).toBe("loading");
 
     await script.promise();
 });
 
 test("does not unblock from unmatching predefined globals", async () => {
-    window.LazyScriptUnblock = ["other"];
+    window.LSU = ["other"];
 
     const script = new LazyScript({
         name: "test",
@@ -284,7 +284,7 @@ test("does not unblock from unmatching predefined globals", async () => {
 });
 
 test("does not unblock from unmatching global push", async () => {
-    window.LazyScriptUnblock = [];
+    window.LSU = [];
 
     const script = new LazyScript({
         name: "test",
@@ -293,7 +293,7 @@ test("does not unblock from unmatching global push", async () => {
     });
 
     script.now();
-    window.LazyScriptUnblock.push("other");
+    window.LSU.push("other");
     expect(script.state).toBe("waiting-unblock");
 });
 
