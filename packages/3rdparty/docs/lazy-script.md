@@ -117,7 +117,7 @@ If the array does not exists you must create it first.
 
 ### Google Tag Manager
 
-This is mainly for unblocking scripts from Google Tag Manager.
+The global is mainly for unblocking scripts using Google Tag Manager.
 
 Example setup:
 
