@@ -102,3 +102,43 @@ class MyDocument extends Document {
     }
 }
 ```
+
+## Placeholders
+
+When the iframes are blocked you can render a placeholder for it:
+
+```tsx
+function IframePlaceholder() {
+    return <h1>Blocked.</h1>;
+}
+
+// ...
+
+<BlockIFrames placeholder={<IframePlaceholder />} />;
+```
+
+NOTE: The component is SSR rendered with React into the iframe `src`
+attribute so it cannot contain any interactivity. No event handler or react
+state.
+
+But there's a small scripting API if you want to make an unblock button inside the iframe:
+
+```tsx
+<BlockIFrames
+    placeholder={<IframePlaceholder />}
+    script={(api) => {
+        document
+            .querySelector("button.unblock")
+            .addEventListener("click", () => {
+                api.unblock();
+            });
+    }}
+/>
+```
+
+The will unblock the single iframe when a button with class name of "unblock"
+in clicked inside the placeholder.
+
+## Usage without React
+
+This can be used in a tradional website too without React. Ask for the docs if you need them.
