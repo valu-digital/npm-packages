@@ -5,4 +5,4 @@ prompts).
 
 The tools
 
-    - [LazyScript](docs/lazy-script.md) Class for safely lazy loading external scripts
+-   [LazyScript](docs/lazy-script.md) Class for safely lazy loading external scripts
