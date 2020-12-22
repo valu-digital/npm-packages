@@ -6,7 +6,7 @@ It must be initialized in the `<head>` before you have created any iframes.
 
 ## Next.js and Headup
 
-This can be adapted to any React SSR frameworks.
+This can be adapted to other React SSR frameworks too.
 
 In `_document.tsx`
 
@@ -51,3 +51,22 @@ const iframes = getIFramesGlobal();
 -   `.unblock(node)`: Unblock single iframe node
 -   `.isBlocked(node)`: Returns true if the given node is blocked
 -   `.forEachIFrame(callback)`: Iterate through all iframe nodes
+
+## Google Tag Manager
+
+When unblocking iframes from GTM you must render the `<BlockIframe>`
+component before the GTM script tag so GTM can see the global.
+
+In a "Custom HTML" tag you can access the iframe api via `ValuIFrames`
+global.
+
+Example
+
+```html
+<script>
+    ValuIFrames.unblockAll();
+</script>
+```
+
+This works well with the [TrackingConsent GTM
+Events](tracking-consent.md#google-tag-manager-events).

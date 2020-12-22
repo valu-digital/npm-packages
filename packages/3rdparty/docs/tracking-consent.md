@@ -95,8 +95,8 @@ TrackingConsent emits following GTM events:
 
 You can bind external scripts like Google Analytics to these but you can also manage:
 
--   [LazyScript unblocking](lazy-script.md#unblocking) via the `LSU` global.
--   [IFrames unblocking]()
+-   [LazyScript unblocking](lazy-script.md#unblocking) via the `LSU` global
+-   [IFrames unblocking](iframes.md#google-tag-manager) via the `ValuIFrames` global
 
 The event trigger in GTM looks like this:
 
