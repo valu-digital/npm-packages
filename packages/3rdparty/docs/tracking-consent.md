@@ -130,4 +130,7 @@ can subsequently be used to add conditions to Tag Manager Triggers.
 
 ### Trigger conditioning
 
+This triggers fires when the url changes in the address bar but only when the
+tracking consent has been given.
+
 ![image](https://user-images.githubusercontent.com/225712/102990297-cc5ece00-451f-11eb-8003-f1631f082aed.png)
