@@ -117,3 +117,17 @@ You can bind external scripts like Google Analytics to these but you can also ma
 The event trigger in GTM looks like this:
 
 ![image](https://user-images.githubusercontent.com/225712/102896488-25baf480-446f-11eb-93a9-4e21309d8d7b.png)
+
+## Google Tag Manager Data Layer Variable
+
+TrackingConsent also sets dataLayer variable named `valuTrackingResponse` to
+the response value. It can be used to create "Tag Manager "Variables" which
+can subsequently be used to add conditions to Tag Manager Triggers.
+
+Variable definition
+
+![image](https://user-images.githubusercontent.com/225712/102990122-83a71500-451f-11eb-9804-12552ddbc72c.png)
+
+Trigger conditioning
+
+![image](https://user-images.githubusercontent.com/225712/102990297-cc5ece00-451f-11eb-8003-f1631f082aed.png)
