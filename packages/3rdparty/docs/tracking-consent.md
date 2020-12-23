@@ -124,10 +124,10 @@ TrackingConsent also sets dataLayer variable named `valuTrackingResponse` to
 the response value. It can be used to create "Tag Manager "Variables" which
 can subsequently be used to add conditions to Tag Manager Triggers.
 
-Variable definition
+### Variable definition
 
 ![image](https://user-images.githubusercontent.com/225712/102990122-83a71500-451f-11eb-9804-12552ddbc72c.png)
 
-Trigger conditioning
+### Trigger conditioning
 
 ![image](https://user-images.githubusercontent.com/225712/102990297-cc5ece00-451f-11eb-8003-f1631f082aed.png)
