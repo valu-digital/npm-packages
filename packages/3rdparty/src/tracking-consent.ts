@@ -62,10 +62,12 @@ export class TrackingConsent {
         }
         const anyWindow = window as any;
 
-        const dl: { event: string }[] = anyWindow.dataLayer ?? [];
+        const dl: { event?: string; valuTrackingResponse?: string }[] =
+            anyWindow.dataLayer ?? [];
         // create one if it did not exists
         anyWindow.dataLayer = dl;
 
+        dl.push({ valuTrackingResponse: this.response.status });
         dl.push({ event: "valu-tracking-response-" + this.response.status });
     }
 
