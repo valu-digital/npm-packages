@@ -148,3 +148,41 @@ function Component() {
     const state = useLazyScript(SCRIPT);
 }
 ```
+
+## TypeScript
+
+Usually 3rd party scripts will assign some global variable which you are
+supposed to access. But this is an issue for TypeScript since the type system
+does not know anything about it.
+
+The recommendation is that you'll write the type interface(s) manually
+
+```tsx
+interface ChatPanel {
+    addEventListener(event: string, cb: Function): void;
+    removeEventListener(event: string, cb: Function): void;
+    show(): void;
+}
+
+interface ChatPanelBoost {
+    (options: {
+        apiUrlBase: string;
+        filterValues: string[];
+        botIconUrl: string;
+    }): ChatPanel;
+}
+```
+
+And extend the global Window:
+
+```tsx
+declare global {
+    interface Window {
+        boostChatPanel?: ChatPanel;
+    }
+}
+```
+
+This allows you to reference `window.boostChatPanel(...)` like in the first
+example. The optional (`?`) is used to correctly model that the script is not
+initially loaded and thus the global is missing.
