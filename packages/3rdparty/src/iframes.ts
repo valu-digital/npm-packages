@@ -68,7 +68,9 @@ export class IFrames {
                 </script>`;
             }
 
-            return "data:text/html," + encodeURI(html);
+            return `data:text/html,<html><head><meta charset="UTF-8"></head><body>${encodeURI(
+                html,
+            )}</body></html>`;
         }
 
         return "data:text/html,<h1>Blocked</h1>";
