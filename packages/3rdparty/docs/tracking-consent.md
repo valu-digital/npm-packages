@@ -40,13 +40,32 @@ Instance:
 -   `.consent()`: Give tracking consent
 -   `.decline()`: Decline tracking consent
 -   `.forget()`: Forget previously given consent
-    -   NOTE: You should reload the tab after this to unload the trackers
 -   `.showPrompt()`: Show the consent form
     -   This basically just emits the `"request-prompt"` event which is listened by the Cookiebot integration
 -   `.onEvent(cb: (event: string) => void)`: The callback will be called on various events
     -   Possible events are: `"request-prompt" | "consented" | "declined" | "forget" | "init"`
 -   `.response` The response status object
     -   `{ status: "not-given" | "declined" | "consented"; date: string | undefined; }`
+
+## Discarding the consent
+
+When discarding the tracking consent with `.forget()` you must reload the
+page for the trackers to properly unload. The forget method returns an promise when
+then consent has been revoked.
+
+Example:
+
+```tsx
+function discardCookieConsent() {
+    if (confirm("This will reload the page, OK?")) {
+        TrackingConsent.getSingleton()
+            .forget()
+            .finally(() => {
+                window.location.reload();
+            });
+    }
+}
+```
 
 ## React Hook
 
