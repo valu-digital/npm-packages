@@ -116,7 +116,7 @@ You can bind external scripts like Google Analytics to these but you can also ma
 
 The event trigger in GTM looks like this:
 
-![image](https://user-images.githubusercontent.com/225712/102896488-25baf480-446f-11eb-93a9-4e21309d8d7b.png)
+![image](https://user-images.githubusercontent.com/225712/102990490-1fd11c00-4520-11eb-81af-cfe6f0c40ec0.png)
 
 ## Google Tag Manager Data Layer Variable
 
