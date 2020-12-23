@@ -178,7 +178,7 @@ And extend the global Window:
 ```tsx
 declare global {
     interface Window {
-        boostChatPanel?: ChatPanel;
+        boostChatPanel?: ChatPanelBoost;
     }
 }
 ```
