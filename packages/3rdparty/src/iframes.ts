@@ -1,3 +1,11 @@
+let debug = (..._args: any[]) => {};
+
+if (typeof window !== "undefined" && window.localStorage.valuIFramesDebug) {
+    debug = (...args: any[]) => {
+        console.log("[ValuIFrames]", ...args);
+    };
+}
+
 /**
  * For IE support
  */
@@ -22,7 +30,10 @@ export interface IFramesOptions {
 export function unblock(node: HTMLIFrameElement) {
     const src = node.getAttribute("data-blocked");
     if (src) {
+        debug("Unblocking iframe " + src, node);
         node.setAttribute("src", src);
+    } else {
+        debug("No data-blocked present, nothing to unblock.", node);
     }
     node.removeAttribute("data-blocked");
 }
@@ -85,17 +96,48 @@ export class IFrames {
         forEachIFrame(unblock);
     }
 
+    disableKey = "valuIFramesDisableBlockAll";
+
+    isBlockAllDisabled() {
+        return Boolean(window.localStorage[this.disableKey]);
+    }
+
+    /**
+     * Persistently disable .blockAll()
+     */
+    disableBlockAll() {
+        window.localStorage[this.disableKey] = "1";
+    }
+
+    enableBlockAll() {
+        delete window.localStorage[this.disableKey];
+    }
+
     blockAll() {
+        if (this.isBlockAllDisabled()) {
+            debug(
+                "Ingoring blockAll() because localStorage.valuIFramesDisableBlockAll is set",
+            );
+            return;
+        }
+
         this.startMonitoring();
         forEachIFrame((node) => this.block(node));
     }
 
     startMonitoring() {
-        this.monitoring = true;
+        if (this.isBlockAllDisabled()) {
+            debug(
+                "Ingoring startMonitoring() because localStorage.valuIFramesDisableBlockAll is set",
+            );
+            return;
+        }
 
         if (this.observer) {
             return;
         }
+
+        this.monitoring = true;
 
         this.observer = new MutationObserver((mutations) => {
             if (!this.monitoring) {
@@ -105,6 +147,10 @@ export class IFrames {
             forEach(mutations, (mut) => {
                 forEach(mut.addedNodes, (node) => {
                     if (node instanceof HTMLIFrameElement) {
+                        debug(
+                            "Found new iframe from mutation observer",
+                            node.src || node,
+                        );
                         this.block(node);
                     }
                 });
@@ -126,9 +172,20 @@ export class IFrames {
      */
     block(node: HTMLIFrameElement) {
         // get out if already blocked
-        if (node.getAttribute("data-blocked")) {
+        const blocked = node.getAttribute("data-blocked");
+        if (blocked) {
+            debug("Already blocked", blocked, node);
             return;
         }
+
+        const origSrc = node.src;
+
+        if (!origSrc) {
+            debug("No src attribute. Nothing to block", node);
+            return;
+        }
+
+        debug("Blocking " + origSrc, node);
 
         if (typeof node.contentWindow?.stop === "function") {
             node.contentWindow.stop();
@@ -137,8 +194,8 @@ export class IFrames {
             node.contentWindow?.document.execCommand("Stop");
         }
 
-        node.setAttribute("data-blocked", node.src);
-        const placeholderSrc = this.createPlaceholder(node.src);
+        node.setAttribute("data-blocked", origSrc);
+        const placeholderSrc = this.createPlaceholder(origSrc);
         node.src = placeholderSrc;
         node.setAttribute("src", placeholderSrc);
     }

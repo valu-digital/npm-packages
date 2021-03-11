@@ -50,6 +50,10 @@ const iframes = getIFramesGlobal();
 Instance
 
 -   `.unblockAll()`: Unblock all existing and future iframes
+-   `.blockAll()`: Block all current and future iframes from the page
+-   `.disableBlockAll()`: Persistently disable `.blockAll()` calls using local
+    storage. Can be used to disable the call from `iframes-head`.
+-   `.enableBlockAll()`: Restore `.blockAll()`
 -   `.unblock(node)`: Unblock single iframe node
 -   `.isBlocked(node)`: Returns true if the given node is blocked
 -   `.forEachIFrame(callback)`: Iterate through all iframe nodes

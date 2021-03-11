@@ -25,7 +25,19 @@ const tc = TrackingConsent.getSingleton();
 tc.onEvent((event) => {
     if (event === "consented") {
         getIFramesGlobal().unblockAll();
+
+        // Prevent the head script from blocking iframes on the next page load
+        // if using the head script
+        getIFramesGlobal().disableBlockAll();
+
         LazyScript.disableAllBlocking();
+    }
+
+    if (event === "forget") {
+        getIFramesGlobal().blockAll();
+
+        // Restore iframe blocking in the head script
+        getIFramesGlobal().enableBlockAll();
     }
 });
 
