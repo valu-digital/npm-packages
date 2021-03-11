@@ -125,6 +125,11 @@ export class IFrames {
      * Block the given iframe from loading
      */
     block(node: HTMLIFrameElement) {
+        // get out if already blocked
+        if (node.getAttribute("data-blocked")) {
+            return;
+        }
+
         if (typeof node.contentWindow?.stop === "function") {
             node.contentWindow.stop();
         } else {
