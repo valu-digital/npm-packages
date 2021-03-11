@@ -34,10 +34,10 @@ tc.onEvent((event) => {
     }
 
     if (event === "forget") {
-        getIFramesGlobal().blockAll();
-
         // Restore iframe blocking in the head script
         getIFramesGlobal().enableBlockAll();
+
+        getIFramesGlobal().blockAll();
     }
 });
 
