@@ -187,11 +187,19 @@ export class IFrames {
 
         debug("Blocking " + origSrc, node);
 
-        if (typeof node.contentWindow?.stop === "function") {
-            node.contentWindow.stop();
-        } else {
-            // IE
-            node.contentWindow?.document.execCommand("Stop");
+        try {
+            if (typeof node.contentWindow?.stop === "function") {
+                node.contentWindow.stop();
+            } else {
+                // IE
+                node.contentWindow?.document.execCommand("Stop");
+            }
+        } catch (error) {
+            console.error(
+                "[ValuIFrames] Failed to stop iframe for " + origSrc,
+                error,
+                node,
+            );
         }
 
         node.setAttribute("data-blocked", origSrc);
