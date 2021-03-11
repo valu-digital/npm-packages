@@ -206,5 +206,14 @@ export class IFrames {
         const placeholderSrc = this.createPlaceholder(origSrc);
         node.src = placeholderSrc;
         node.setAttribute("src", placeholderSrc);
+
+        // Workaround for some Safari versions that do not detect the src update
+        // inside the mutation observer
+        if (typeof setImmediate === "function") {
+            setImmediate(() => {
+                // Trigger refresh by updating the src
+                node.src += "";
+            });
+        }
     }
 }
