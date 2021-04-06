@@ -20,8 +20,15 @@ export interface TrackingConsentEventHandler {
     (event: TrackingConsentEvent): undefined | void | Promise<any>;
 }
 
-function debug(...args: any[]) {
-    console.log(...args);
+let debug = (..._args: any[]) => {};
+
+if (
+    typeof window !== "undefined" &&
+    window.localStorage.valuTrackingConsentDebug
+) {
+    debug = (...args: any[]) => {
+        console.log("[ValuTrackingConsent]", ...args);
+    };
 }
 
 export class TrackingConsent {
