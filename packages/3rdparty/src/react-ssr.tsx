@@ -61,3 +61,13 @@ export function BlockIFrames(props: BlockIframesProps) {
         </>
     );
 }
+
+export function LazyScriptGlobal() {
+    return (
+        <script
+            dangerouslySetInnerHTML={{
+                __html: `if(!window.LSU){window.LSU=[]}`,
+            }}
+        ></script>
+    );
+}

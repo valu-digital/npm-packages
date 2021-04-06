@@ -90,6 +90,36 @@ If the array does not exists you must create it first.
 
 "LSU" stands for "Lazy Script Unblock".
 
+This global must be defined manually
+
+<!-- prettier-ignore-start -->
+```html
+<script>if (!window.LSU) { window.LSU = []; }</script>
+```
+<!-- prettier-ignore-end -->
+
+Or if you are using SSRed React like Next.js:
+
+```tsx
+import { LazyScriptGlobal } from "@valu/3rdparty/react-ssr";
+
+class MyDocument extends Document {
+    render() {
+        return (
+            <Html>
+                <Head>
+                    <LazyScriptGlobal />
+                </Head>
+                <body>
+                    <Main />
+                    <NextScript />
+                </body>
+            </Html>
+        );
+    }
+}
+```
+
 ### Google Tag Manager
 
 The global is mainly for unblocking scripts using Google Tag Manager with
