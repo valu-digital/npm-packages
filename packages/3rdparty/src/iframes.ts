@@ -27,8 +27,8 @@ function forEachIFrame(fn: (item: HTMLIFrameElement) => void) {
  */
 function setImmediate(fn: Function) {
     const key = String(Math.random());
-    const cb = (e: { data: any }) => {
-        if (e.data.valuSetImmediate === key) {
+    const cb = (e: { data?: { valuSetImmediate?: string } }) => {
+        if (e.data?.valuSetImmediate === key) {
             window.removeEventListener("message", cb);
             fn();
         }
