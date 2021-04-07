@@ -40,8 +40,6 @@ function setImmediate(fn: Function) {
 
 export interface IFramesOptions {
     placeholderSrc?: string;
-    placeholderHtml?: string;
-    placeholderScript?: string;
 }
 
 export function unblock(node: HTMLIFrameElement) {
@@ -59,17 +57,6 @@ export function isBlocked(node: HTMLIFrameElement) {
     return node.hasAttribute("data-blocked");
 }
 
-function createScriptApi(options: { src: string }) {
-    return `
-    scriptApi = {
-        src:  ${JSON.stringify(options.src)},
-        unblock: function unblock() {
-            window.location = scriptApi.src;
-        }
-    };
-    `;
-}
-
 export class IFrames {
     options: IFramesOptions;
 
@@ -85,23 +72,9 @@ export class IFrames {
             return this.options.placeholderSrc;
         }
 
-        if (this.options.placeholderHtml) {
-            let html = this.options.placeholderHtml;
-
-            if (this.options.placeholderScript) {
-                html += `
-                <script>
-                    ${createScriptApi({ src: src })}
-                    ${this.options.placeholderScript}
-                </script>`;
-            }
-
-            return `data:text/html,<html><head><meta charset="UTF-8"></head><body>${encodeURI(
-                html,
-            )}</body></html>`;
-        }
-
-        return "data:text/html,<h1>Blocked</h1>";
+        // Encode using base64 as raw html causes some issues with Facebook og-meta tags
+        // return "data:text/html,<h1>Blocked</h1>";
+        return "data:text/plain;base64,PGgxPkJsb2NrZWQ8L2gxPgo=";
     }
 
     unblock = unblock;
@@ -218,6 +191,15 @@ export class IFrames {
                 node,
             );
         }
+
+        node.addEventListener("load", () => {
+            if (isBlocked(node) && node.contentWindow) {
+                node.contentWindow.postMessage(
+                    { valuOriginalSrc: origSrc },
+                    "*",
+                );
+            }
+        });
 
         node.setAttribute("data-blocked", origSrc);
         const placeholderSrc = this.createPlaceholder(origSrc);

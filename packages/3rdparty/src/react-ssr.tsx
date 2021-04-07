@@ -10,6 +10,8 @@ const inlineScript = fs
 export interface ScriptAPI {
     unblock(): void;
     src: string;
+    /** Called with the original iframe source */
+    onOriginalSrc(cb: (src: string) => any): void;
 }
 
 interface BlockIframesProps {
@@ -17,30 +19,81 @@ interface BlockIframesProps {
     script?: (api: ScriptAPI) => any;
 }
 
-function browserExec(fn: (...args: any[]) => any): string {
+function asBase64DataURL(options: {
+    html: string | any;
+    script: string | ((api: ScriptAPI) => any) | undefined;
+}) {
+    let script = "";
+    let html = "";
+
+    if (typeof options.html !== "string") {
+        html = ReactDOMServer.renderToStaticMarkup(options.html);
+    } else {
+        html = options.html;
+    }
+
+    console.log("HTML", html);
+
+    if (options.script) {
+        let code = "";
+        if (typeof options.script === "function") {
+            code = browserExec(options.script);
+        } else {
+            code = options.script;
+        }
+
+        script = `<script>
+        ${createScriptApi()}
+        ${code}
+        </script>`;
+    }
+
+    const base64 = Buffer.from(
+        `<html><head><meta charset="UTF-8"></head><body>${html}${script}</body></html>`,
+    ).toString("base64");
+
+    return `data:text/html;base64,${base64}`;
+}
+
+function createScriptApi() {
+    return `
+        window.addEventListener("message", function (event) {
+            if (event.data.valuOriginalSrc) {
+                scriptApi.src = event.data.valuOriginalSrc;
+                if (scriptApi.cb) {
+                    scriptApi.cb(scriptApi.src)
+                }
+            }
+        });
+
+        scriptApi = {
+            unblock: function unblock() {
+                window.location = scriptApi.src;
+            },
+            onOriginalSrc: function(cb) {
+                scriptApi.cb = cb;
+            }
+        };
+    `;
+}
+
+function browserExec(fn: (...args: any[]) => any) {
     return `
         (${fn.toString()}).call(null, scriptApi);
-    `;
+    `.trim();
 }
 
 export function BlockIFrames(props: BlockIframesProps) {
     let code = "";
 
-    let placeholder = "";
-
-    if (typeof props.placeholder === "string") {
-        placeholder += props.placeholder;
-    } else if (props.placeholder) {
-        placeholder += ReactDOMServer.renderToStaticMarkup(props.placeholder);
-    }
+    const placeholder = asBase64DataURL({
+        html: props.placeholder,
+        script: props.script,
+    });
 
     let options: IFramesOptions = {
-        placeholderHtml: placeholder,
+        placeholderSrc: placeholder,
     };
-
-    if (props.script) {
-        options.placeholderScript = browserExec(props.script);
-    }
 
     code += inlineScript;
 
