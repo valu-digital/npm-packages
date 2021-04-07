@@ -21,6 +21,23 @@ function forEachIFrame(fn: (item: HTMLIFrameElement) => void) {
     forEach(document.getElementsByTagName("iframe") as any, fn);
 }
 
+/**
+ * setImmediate "ponyfill"
+ * https://developer.mozilla.org/en-US/docs/Web/API/Window/setImmediate
+ */
+function setImmediate(fn: Function) {
+    const key = String(Math.random());
+    const cb = (e: { data: any }) => {
+        if (e.data.valuSetImmediate === key) {
+            window.removeEventListener("message", cb);
+            fn();
+        }
+    };
+
+    window.addEventListener("message", cb);
+    window.postMessage({ valuSetImmediate: key }, "*");
+}
+
 export interface IFramesOptions {
     placeholderSrc?: string;
     placeholderHtml?: string;
@@ -209,11 +226,9 @@ export class IFrames {
 
         // Workaround for some Safari versions that do not detect the src update
         // inside the mutation observer
-        if (typeof setImmediate === "function") {
-            setImmediate(() => {
-                // Trigger refresh by updating the src
-                node.src += "";
-            });
-        }
+        setImmediate(() => {
+            // Trigger refresh by updating the src
+            node.src += "";
+        });
     }
 }
