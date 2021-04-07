@@ -192,6 +192,8 @@ export class IFrames {
             );
         }
 
+        // Post the original src to the placeholder so it can unblock itself if
+        // needed
         node.addEventListener("load", () => {
             if (isBlocked(node) && node.contentWindow) {
                 node.contentWindow.postMessage(
