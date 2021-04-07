@@ -32,8 +32,6 @@ function asBase64DataURL(options: {
         html = options.html;
     }
 
-    console.log("HTML", html);
-
     if (options.script) {
         let code = "";
         if (typeof options.script === "function") {
