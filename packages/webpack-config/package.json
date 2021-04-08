@@ -18,6 +18,7 @@
         "webpack"
     ],
     "files": [
+        "babel-loader.js",
         "create-webpack-config.js",
         "create-webpack-config.d.ts"
     ],

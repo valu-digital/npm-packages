@@ -3,8 +3,14 @@
  */
 export function autoloadEntries(dir: string): {[key: string]: string};
 
-interface HtmlPluginOptions {
+export interface HtmlPluginOptions {
     template: string;
+}
+
+export interface BabelOptions {
+    presets: any[];
+    plugins: any[];
+    [key: string]: any;
 }
 
 interface Options {
@@ -94,7 +100,13 @@ interface Options {
     /**
      * Manual customization of babel config without opt-in to a babelrc file
      */
-    customizeBabel?: (config: {plugings: any[]; presets: any[]}) => any;
+    customizeBabelOptions?: (babel: {
+        defaultOptions: BabelOptions;
+        babelrcOptions: BabelOptions;
+        babelrc: string;
+        filename: string;
+        hasFilesystemConfig: boolean;
+    }) => any;
 
     /**
      * Toggle manifest creation. Defaults to true

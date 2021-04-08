@@ -1,7 +1,7 @@
 // @ts-check
 const webpack = require("webpack");
 const fs = require("fs");
-const {join} = require("path");
+const {join, resolve} = require("path");
 const {execSync} = require("child_process");
 const gitRev = execSync("git rev-parse HEAD").toString();
 const gitDate = new Date(
@@ -32,14 +32,6 @@ function autoloadEntries(dir) {
         entry[removeExtension(file)] = join(dir, file);
         return entry;
     }, {});
-}
-
-/**
- * @param {string} dir
- */
-function hasBabelrc(dir) {
-    const rcFiles = ["babel.config.js", ".babelrc", ".babelrc.js"];
-    return fs.readdirSync(dir).some((file) => rcFiles.includes(file));
 }
 
 /**
@@ -104,7 +96,7 @@ function getBabelLoaderConfig(options = {}) {
             extensions: EXTENSIONS,
         },
         use: {
-            loader: "babel-loader",
+            loader: resolve(__dirname, "babel-loader.js"),
         },
         exclude(modulePath) {
             const nodeModuleToCompile = pathMatchers.some((includeModule) =>
@@ -165,7 +157,7 @@ function getCssLoaderConfig(options = {}) {
  *
  * @param {{envConfig?: any} | undefined} options
  */
-function getBabelConfig(options) {
+function getBabelOptions(options) {
     return {
         presets: [
             "@babel/preset-typescript",
@@ -268,6 +260,12 @@ function extractCommons() {
 }
 
 function createWebpackConfig(options = {}, customize) {
+    if (options.emotion) {
+        throw new Error(
+            "Emotion option is gone. Use babelPlugins option to enable it manually"
+        );
+    }
+
     return (_, args) => {
         const isProduction = args.mode === "production";
         // For some reason --mode option does not set NODE_ENV for .babelrc.js
@@ -302,43 +300,42 @@ function createWebpackConfig(options = {}, customize) {
             config.entry = options.entry;
         }
 
-        const babelLoader = getBabelLoaderConfig({
-            compileNodeModules: options.compileNodeModules,
-        });
-
         if (options.webpackPlugins) {
             config.plugins.push(...options.webpackPlugins);
         }
 
-        config.module.rules.push(babelLoader);
+        config.module.rules.push(
+            getBabelLoaderConfig({
+                compileNodeModules: options.compileNodeModules,
+            })
+        );
 
-        if (!hasBabelrc(process.cwd())) {
-            const babelConfig = getBabelConfig({
-                envConfig: options.babelEnv,
-            });
+        const babelOptions = getBabelOptions({
+            envConfig: options.babelEnv,
+        });
 
-            if (args.hot) {
-                babelConfig.plugins.push("react-hot-loader/babel");
-            }
-
-            if (options.emotion) {
-                throw new Error(
-                    "Emotion option is gone. Use babelPlugins option to enable it manually"
-                );
-            }
-
-            if (options.babelPlugins) {
-                options.babelPlugins.forEach((plugin) => {
-                    if (typeof plugin === "function") {
-                        babelConfig.plugins.push(plugin(args));
-                    } else {
-                        babelConfig.plugins.push(plugin);
-                    }
-                });
-            }
-
-            babelLoader.use.options = babelConfig;
+        if (args.hot) {
+            babelOptions.plugins.push("react-hot-loader/babel");
         }
+
+        if (options.babelPlugins) {
+            options.babelPlugins.forEach((plugin) => {
+                if (typeof plugin === "function") {
+                    babelOptions.plugins.push(plugin(args));
+                } else {
+                    babelOptions.plugins.push(plugin);
+                }
+            });
+        }
+
+        // Global read by ./babel-loader.js
+        Object.assign(global, {
+            valuWebpackConfig: {
+                customizeBabelOptions: options.customizeBabelOptions,
+                args: args,
+                babelOptions,
+            },
+        });
 
         if (options.extractCommons && options.entry) {
             Object.assign(config.optimization, extractCommons());
@@ -443,6 +440,12 @@ function createWebpackConfig(options = {}, customize) {
 
 module.exports = {
     createWebpackConfig,
-    getBabelConfig,
+    getBabelConfig: (options) => {
+        console.warn(
+            "[@valu/webpack-config Deprecated] getBabelConfig() has been renamed to getBabelOptions()"
+        );
+        return getBabelOptions(options);
+    },
+    getBabelOptions,
     autoloadEntries,
 };
