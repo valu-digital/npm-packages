@@ -93,6 +93,10 @@ interface Options {
     webpackPlugins?: any[];
 
     /**
+     * Enable custom Webpack rules AKA loaders
+     */
+    webpackRules?: any[];
+    /**
      * Array of node_module to compile with Babel
      */
     compileNodeModules?: string[];

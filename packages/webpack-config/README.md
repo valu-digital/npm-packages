@@ -118,6 +118,11 @@ module.exports = createWebpackConfig({
 });
 ```
 
+## `webpackRules: any[]`
+
+Add custom Webpack rules AKA Loaders. These will be executed before the
+build-in Babel loader.
+
 ## `template: string`
 
 This is the most custom part of this lib. It takes a path to a template file

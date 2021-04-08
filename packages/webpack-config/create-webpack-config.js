@@ -310,6 +310,10 @@ function createWebpackConfig(options = {}, customize) {
             })
         );
 
+        if (options.webpackRules) {
+            config.module.rules.push(...options.webpackRules);
+        }
+
         const babelOptions = getBabelOptions({
             envConfig: options.babelEnv,
         });
