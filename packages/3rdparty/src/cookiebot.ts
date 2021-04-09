@@ -116,7 +116,11 @@ export function connectCookieBot(
                  *
                  */
                 if (/cookiebot/i.test(window.navigator.userAgent)) {
-                    trackingConsent.consent();
+                    console.log(
+                        "CookieBot bot detected! Consenting automatically",
+                        window.navigator.userAgent,
+                    );
+                    trackingConsent.setStatus("consented");
                     CookiebotScript.now();
                 }
                 return;

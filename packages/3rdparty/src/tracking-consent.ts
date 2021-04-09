@@ -50,6 +50,8 @@ export class TrackingConsent {
     }
 
     init() {
+        this.emit("init");
+
         if (this.response.status === "not-given") {
             this.showPrompt();
         }
@@ -78,17 +80,21 @@ export class TrackingConsent {
         dl.push({ event: "valu-tracking-response-" + this.response.status });
     }
 
+    setStatus(status: ConsentResponse["status"]) {
+        this.response = {
+            status,
+            date: new Date().toISOString(),
+        };
+        this.save();
+    }
+
     consent() {
         if (this.response.status === "consented") {
             return;
         }
 
         debug("Got tracking consent");
-        this.response = {
-            status: "consented",
-            date: new Date().toISOString(),
-        };
-        this.save();
+        this.setStatus("consented");
         this.emit("consented");
         this.sendGTMDatalayerEvent();
     }
@@ -121,6 +127,7 @@ export class TrackingConsent {
     }
 
     emit(event: TrackingConsentEvent) {
+        debug(`Event: ${event}`);
         void this.emitPromise(event);
     }
 
