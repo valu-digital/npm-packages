@@ -147,8 +147,15 @@ export class FocusTrap {
         if (this.lastFocusedElement) {
             this.lastFocusedElement.focus();
         } else {
+            const hasValidFocus =
+                document.activeElement instanceof HTMLElement &&
+                this.isValidFocus(document.activeElement);
+
             // Move focus to the first tabbable element of the first container
-            this.fixFocus();
+            // if we don't already have a valid focus
+            if (!hasValidFocus) {
+                this.fixFocus();
+            }
         }
 
         if (this.options.onAfterEnable) {
@@ -267,13 +274,13 @@ export class FocusTrap {
     }
 
     /**
-     * Is element inside one of the containers
+     * Returns true if the element is valid tabblable in our containers
      */
-    isInContainers(el: HTMLElement) {
+    isValidFocus(el: HTMLElement) {
         let inContainer = false;
 
         for (const container of this.containers) {
-            if (container.contains(el)) {
+            if (el === container || container.contains(el)) {
                 inContainer = true;
                 break;
             }
@@ -315,7 +322,7 @@ export class FocusTrap {
                 return;
             }
 
-            if (!this.isInContainers(e.target)) {
+            if (!this.isValidFocus(e.target)) {
                 this.state.usingMouse = true;
 
                 if (this.options.outsideClickDisables) {
@@ -362,7 +369,7 @@ export class FocusTrap {
             this.updateContainerIndex(e.target);
 
             // Focus still inside our containers. Focus can move freely here. Nothing to do.
-            if (this.isInContainers(e.target)) {
+            if (this.isValidFocus(e.target)) {
                 return;
             }
 
