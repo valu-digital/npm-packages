@@ -173,7 +173,7 @@ function getBabelOptions(options) {
                 ),
             ],
         ],
-        plugins: ["macros", "@babel/plugin-proposal-class-properties"],
+        plugins: ["macros"],
     };
 }
 
