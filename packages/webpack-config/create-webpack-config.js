@@ -282,7 +282,7 @@ function createWebpackConfig(options = {}, customize) {
             process.env.NODE_ENV = args.mode;
         }
 
-        const config = getDefaultConfig();
+        let config = getDefaultConfig();
 
         if (options.hashFilenames) {
             config.output.filename = "[name]-[chunkhash].js";
@@ -447,8 +447,12 @@ function createWebpackConfig(options = {}, customize) {
             Object.assign(config.optimization, {minimize: false});
         }
 
+        if (typeof options.customize === "function") {
+            config = customize(config, _, args) || config;
+        }
+
         if (typeof customize === "function") {
-            return customize(config, _, args) || config;
+            config = customize(config, _, args) || config;
         }
 
         return config;
