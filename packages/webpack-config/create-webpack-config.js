@@ -52,6 +52,10 @@ function getDefaultConfig() {
         devtool: "cheap-module-eval-source-map",
 
         output: {
+            // Add hash to the chunk filename by default. This ok since it is
+            // automatically loaded by the bundled code eg. we don't manually
+            // need to write this anywhere
+            chunkFilename: "chunk-[id]-[name]-[chunkhash].js",
             filename: "[name].js",
             path: process.cwd() + "/dist",
         },
