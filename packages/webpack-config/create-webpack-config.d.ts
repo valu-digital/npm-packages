@@ -76,6 +76,13 @@ interface Options {
     extractCss?: boolean;
 
     /**
+     * Add LimitChunkCountPlugin with given maxChunks value
+     *
+     * https://webpack.js.org/plugins/limit-chunk-count-plugin/
+     */
+    maxChunks?: number;
+
+    /**
      * Enable sass loader
      */
     sass?: boolean;

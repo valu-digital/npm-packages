@@ -40,6 +40,12 @@ This option is passed directly to the Wepback entry option.
 
 This option is passed directly to `@babel/preset-env` options
 
+## `maxChunks: number`
+
+Add LimitChunkCountPlugin with given maxChunks value
+
+https://webpack.js.org/plugins/limit-chunk-count-plugin/
+
 ## `extractCommons: boolean`
 
 If you have added multiple entry points using the `entry` option

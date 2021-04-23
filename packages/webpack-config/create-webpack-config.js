@@ -349,6 +349,14 @@ function createWebpackConfig(options = {}, customize) {
             Object.assign(config.optimization, extractCommons());
         }
 
+        if ("maxChunks" in options) {
+            config.plugins.push(
+                new webpack.optimize.LimitChunkCountPlugin({
+                    maxChunks: options.maxChunks,
+                })
+            );
+        }
+
         if (options.extractCss && isProduction) {
             const cssLoader = getCssLoaderConfig({
                 extractCss: true,
