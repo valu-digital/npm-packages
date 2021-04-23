@@ -172,6 +172,7 @@ function getBabelOptions(options) {
                     {
                         useBuiltIns: "entry",
                         corejs: 3,
+                        shippedProposals: true,
                     },
                     options && options.envConfig
                 ),
