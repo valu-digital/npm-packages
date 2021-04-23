@@ -358,6 +358,10 @@ function createWebpackConfig(options = {}, customize) {
             );
         }
 
+        if (options.env) {
+            config.plugins.push(new webpack.EnvironmentPlugin(options.env));
+        }
+
         if (options.extractCss && isProduction) {
             const cssLoader = getCssLoaderConfig({
                 extractCss: true,

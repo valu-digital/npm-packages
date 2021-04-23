@@ -46,6 +46,12 @@ Add LimitChunkCountPlugin with given maxChunks value
 
 https://webpack.js.org/plugins/limit-chunk-count-plugin/
 
+## `env: {} | string[]`
+
+And EnvironmentPlugin with given options.
+
+https://webpack.js.org/plugins/environment-plugin/
+
 ## `extractCommons: boolean`
 
 If you have added multiple entry points using the `entry` option
