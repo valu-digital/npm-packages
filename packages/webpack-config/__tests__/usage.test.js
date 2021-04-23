@@ -15,11 +15,11 @@ test("can render template", () => {
     const files = fs.readdirSync(__dirname + "/fixtures/template/dist");
 
     expect(files).toEqual([
+        "chunk-1-module-084cb809e20f451ba0d1.js",
+        "chunk-1-module-084cb809e20f451ba0d1.js.map",
         "main.js",
         "main.js.map",
         "manifest.json",
-        "module.js",
-        "module.js.map",
         "out.php",
     ]);
 
