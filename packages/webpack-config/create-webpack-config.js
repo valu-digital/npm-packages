@@ -452,7 +452,7 @@ function createWebpackConfig(options = {}, customize) {
         }
 
         if (typeof options.customize === "function") {
-            config = customize(config, _, args) || config;
+            config = options.customize(config, _, args) || config;
         }
 
         if (typeof customize === "function") {
