@@ -9,6 +9,7 @@
     ],
     "scripts": {
         "start": "tsdx watch",
+        "watch": "tsdx watch",
         "build": "tsdx build",
         "test": "echo no-op",
         "lint": "tsdx lint",
