@@ -147,13 +147,16 @@ export class FocusTrap {
         if (this.lastFocusedElement) {
             this.lastFocusedElement.focus();
         } else {
-            const hasValidFocus =
+            if (
                 document.activeElement instanceof HTMLElement &&
-                this.isValidFocus(document.activeElement);
-
-            // Move focus to the first tabbable element of the first container
-            // if we don't already have a valid focus
-            if (!hasValidFocus) {
+                this.isValidFocus(document.activeElement)
+            ) {
+                // If we have a valid focus update container index so tabbing
+                // can work correctly
+                this.updateContainerIndex(document.activeElement);
+            } else {
+                // Move focus to the first tabbable element of the first container
+                // if we don't already have a valid focus
                 this.fixFocus();
             }
         }
