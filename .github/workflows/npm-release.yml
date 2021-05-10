@@ -36,7 +36,7 @@ jobs:
                   fi
 
 
-                  tag="$pkg/v${next_version}"
+                  next_tag="$pkg/v${next_version}"
 
                   if [ "$next_version" = "prerelease" ]; then
                     next_version="${current_version}-dev.${GITHUB_SHA:0:10}"
@@ -50,7 +50,7 @@ jobs:
 
                   echo "package=$pkg" >> $GITHUB_ENV
                   echo "version=$next_version" >> $GITHUB_ENV
-                  echo "tag=$next_tag" >> $GITHUB_ENV
+                  echo "next_tag=$next_tag" >> $GITHUB_ENV
                   echo "prev_tag=$prev_tag" >> $GITHUB_ENV
                   echo "prev_version=$prev_version" >> $GITHUB_ENV
                   echo "release_mode=$prev_version" >> $GITHUB_ENV
