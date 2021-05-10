@@ -5,6 +5,7 @@ export interface SingleElementObserverOptions {
     rootMargin?: string;
     threshold?: number | number[];
     active?: boolean;
+    unsupported?: "call" | "ignore";
 }
 
 export interface OnIntersect {
@@ -19,8 +20,11 @@ class SingleElementObserver {
     observer?: IntersectionObserver;
     el?: HTMLElement;
     cb?: OnIntersect;
+    unsupported: NonNullable<SingleElementObserverOptions["unsupported"]>;
 
     constructor(options: SingleElementObserverOptions) {
+        this.unsupported = options.unsupported || "call";
+
         if (typeof IntersectionObserver === "undefined") {
             return;
         }
@@ -41,8 +45,9 @@ class SingleElementObserver {
                 }
             },
             {
-                ...options,
-                threshold: 0,
+                threshold: options.threshold,
+                root: options.root,
+                rootMargin: options.rootMargin,
             },
         );
     }
@@ -59,9 +64,18 @@ class SingleElementObserver {
         // Remove previous observed element
         this.unobserve();
 
-        if (el) {
-            this.observer?.observe(el);
-            this.el = el;
+        if (!el) {
+            return;
+        }
+
+        this.el = el;
+
+        if (this.observer) {
+            this.observer.observe(el);
+        } else {
+            if (this.unsupported === "call" && this.cb) {
+                this.cb(el);
+            }
         }
     }
 
