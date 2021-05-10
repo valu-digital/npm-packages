@@ -2,6 +2,7 @@
     "name": "@valu/create-async-hook",
     "version": "0.0.4",
     "description": "",
+    "homepage": "https://github.com/valu-digital/npm-packages/tree/master/packages/create-async-hook",
     "main": "dist/index.js",
     "scripts": {
         "build": "rm -rf dist && tsc --project tsconfig.build.json",
