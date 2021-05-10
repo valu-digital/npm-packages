@@ -14,9 +14,6 @@ jobs:
 
             - name: Set version enviroment variables
               run: |
-
-                    #   slack_message "Starting release workflow"
-
                   release_mode=stable
                   next_version=${GITHUB_REF##*/}
                   next_tag="$pkg/v${next_version}"
@@ -58,18 +55,17 @@ jobs:
 
             - name: "Build ${{ env.package }}"
               run: |
-                . .github/npm-release.sh
+                  . .github/npm-release.sh
 
-                if [ -f package-lock.json ]; then
-                    npm ci
-                else
-                    npm install
-                fi
+                  if [ -f package-lock.json ]; then
+                      npm ci
+                  else
+                      npm install
+                  fi
 
-                npm run build
+                  npm run build
 
-                npm run test
-
+                  npm run test
 
             - name: Notify stable release
               if: ${{ env.release_mode == 'stable' }}
@@ -80,7 +76,6 @@ jobs:
               if: ${{ env.release_mode == 'prerelease' }}
               run: |
                   echo "PRERELEASE"
-
 
               #   current_version="$(jq -r .version package.json)"
               #   tag="react-valu-search/v${next_version}"
