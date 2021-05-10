@@ -59,6 +59,9 @@ jobs:
                     exit 9
                   fi
 
+                  jq ".version = \"$next_version\"" package.json > tmp.json
+                  mv tmp.json package.json
+
                   set -x
                   echo "pkg=$pkg" >> $GITHUB_ENV
                   echo "npm_name=$pkg" >> $GITHUB_ENV
@@ -73,8 +76,6 @@ jobs:
               if: ${{ env.release_mode == 'stable' }}
               run: |
                   . .github/npm-release.sh
-                  jq ".version = \"$next_version\"" package.json > tmp.json
-                  mv tmp.json package.json
                   git config user.email "action@github.com"
                   git config user.name "${{ github.actor }}"
                   git add package.json
