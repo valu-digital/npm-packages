@@ -6,8 +6,9 @@ This is a mono repo of open source npm packages created by Valu Digital.
 
 Although these are open source we are not resourced enough to properly support
 "community" users. You are free to use these packages outside Valu Digital and
-even open issues here, but it is very likely that we don't have the resources to
-act on them. Same goes for outsider PRs. Feel free to hard fork the packages.
+even open issues here, but it is very likely that we don't have the time and
+resources to act on them. Same goes for outsider PRs. Feel free to hard fork the
+packages.
 
 ## Publishing
 
