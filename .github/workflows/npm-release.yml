@@ -59,8 +59,6 @@ jobs:
                     exit 9
                   fi
 
-                  jq ".version = \"$next_version\"" package.json > tmp.json
-                  mv tmp.json package.json
 
                   set -x
                   echo "pkg=$pkg" >> $GITHUB_ENV
@@ -71,6 +69,14 @@ jobs:
                   echo "prev_version=$prev_version" >> $GITHUB_ENV
                   echo "release_mode=$release_mode" >> $GITHUB_ENV
                   echo "changelog_link=$changelog_link" >> $GITHUB_ENV
+
+            - name: Set version number
+              if: ${{ env.release_mode == 'stable' }}
+              run: |
+                  . .github/npm-release.sh
+
+                  jq ".version = \"$next_version\"" package.json > tmp.json
+                  mv tmp.json package.json
 
             - name: Commit version numbers
               if: ${{ env.release_mode == 'stable' }}
