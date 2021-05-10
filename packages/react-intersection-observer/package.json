@@ -1,8 +1,10 @@
 {
     "name": "@valu/react-intersection-observer",
     "version": "0.1.0",
+    "author": "Esa-Matti Suuronen",
     "license": "MIT",
     "main": "dist/index.js",
+    "module": "dist/react-intersection-observer.esm.js",
     "typings": "dist/index.d.ts",
     "files": [
         "dist",
@@ -21,8 +23,6 @@
     "peerDependencies": {
         "react": ">=16"
     },
-    "author": "Esa-Matti Suuronen",
-    "module": "dist/react-intersection-observer.esm.js",
     "devDependencies": {
         "@types/react": "^17.0.5",
         "@types/react-dom": "^17.0.3",
