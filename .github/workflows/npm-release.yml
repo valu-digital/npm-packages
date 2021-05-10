@@ -136,4 +136,4 @@ jobs:
               run: |
                   set -eu
                   . .github/utils.sh
-                  slack_message '<!channel> '"Failed to make npm release for ${pkg:-} / ${npm_name:-}"
+                  slack_message "Failed to make npm release for ${pkg:-} / ${npm_name:-}"
