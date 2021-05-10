@@ -1,4 +1,4 @@
-# Valu Digital npm packages
+# npm packages
 
 This is a mono repo of open source npm packages created by Valu Digital.
 
