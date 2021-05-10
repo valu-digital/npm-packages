@@ -78,9 +78,19 @@ if $changelog; then
 
     echo
     echo
-    read -p "The CHANGELOG.md file was updated automatically. Please clean it up and press enter."
-    echo
-    echo
+    while true; do
+        echo "The CHANGELOG.md file was updated automatically. Type 'c' (commit) to continue or 'e' to open it in vscode"
+        echo
+        read -p "changelog> " changelog_mode
+
+        if [ "$changelog_mode" = "e" ]; then
+            code CHANGELOG.md
+        fi
+
+        if [ "$changelog_mode" = "c" ]; then
+            break
+        fi
+    done
 
     if [ "$(git status . --porcelain)" != "" ]; then
         git add CHANGELOG.md
