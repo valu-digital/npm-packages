@@ -17,6 +17,7 @@ jobs:
                   release_mode=stable
                   next_version=${GITHUB_REF##*/}
                   next_tag="$pkg/v${next_version}"
+                  set -x
                   echo "$GITHUB_REF"
 
                   pkg=$(echo "$GITHUB_REF" | cut -d / -f 4)
