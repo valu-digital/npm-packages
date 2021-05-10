@@ -17,6 +17,9 @@ jobs:
             - name: Set version enviroment variables
               run: |
                   release_mode=stable
+
+                  slack_message "New npm release from ${GITHUB_REF:-}"
+
                   next_version=${GITHUB_REF##*/}
                   next_tag="$pkg/v${next_version}"
                   set -x
