@@ -2,7 +2,7 @@
 
 Monorepo of open source npm packages by Valu Digital.
 
-## ❗️ Community Users
+## Community Users❗️ 
 
 Although these are open source we are not resourced enough to properly support
 "community users". Community users are free to use these packages and even open
