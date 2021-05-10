@@ -13,7 +13,7 @@ slack_message() {
     local workflow_url="https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
     local commit_url="https://github.com/$GITHUB_REPOSITORY/commits/$GITHUB_SHA"
     local short_commit="$(echo $GITHUB_SHA | head -c 10)"
-    local message="[<${commit_url}|\`${short_commit}($branch)\`> <${workflow_url}|log>] $plain_message"
+    local message="[<${commit_url}|\`${short_commit}($branch)\`> <${workflow_url}|log> **${GITHUB_ACTOR}**] $plain_message"
 
     if [ "${SLACK_WEBHOOK:-}" != "" ]; then
         curl -d @- -X POST -H 'Content-Type: application/json' "$SLACK_WEBHOOK" << JSON
