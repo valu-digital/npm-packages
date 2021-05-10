@@ -22,6 +22,7 @@ jobs:
 
                     #   slack_message "Starting release workflow"
                   next_version=${GITHUB_REF##*/}
+                  echo "$GITHUB_REF"
                   pkg=${echo "$GITHUB_REF" | cut -d / -f 2}
 
                   echo "version: $next_version"
