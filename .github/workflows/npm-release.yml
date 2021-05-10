@@ -18,7 +18,6 @@ jobs:
 
             - name: Set version enviroment variables
               run: |
-                  . .github/npm-release.sh
                   set -x
 
                     #   slack_message "Starting release workflow"
