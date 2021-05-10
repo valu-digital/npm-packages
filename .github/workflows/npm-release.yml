@@ -91,7 +91,7 @@ jobs:
                   . .github/npm-release.sh
                   echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > "$HOME/.npmrc"
                   npm whoami
-                  npm publish
+                  npm publish --access public
                   rm "$HOME/.npmrc"
 
                   git push origin HEAD:master
@@ -103,7 +103,7 @@ jobs:
                   . .github/npm-release.sh
                   echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > "$HOME/.npmrc"
                   npm whoami
-                  npm publish --tag dev
+                  npm publish --tag dev --access public
                   rm "$HOME/.npmrc"
 
             # - name: Notify prerelease
