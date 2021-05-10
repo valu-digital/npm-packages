@@ -49,7 +49,17 @@ jobs:
                   echo "next_tag=$next_tag" >> $GITHUB_ENV
                   echo "prev_tag=$prev_tag" >> $GITHUB_ENV
                   echo "prev_version=$prev_version" >> $GITHUB_ENV
-                  echo "release_mode=$prev_version" >> $GITHUB_ENV
+                  echo "release_mode=$release_mode" >> $GITHUB_ENV
+
+            - name: Notify stable release
+              if: ${{ env.release_mode == 'stable' }}
+              run: |
+                  echo "STABLE"
+
+            - name: Notify prerelease release
+              if: ${{ env.release_mode == 'prerelease' }}
+              run: |
+                  echo "PRERELEASE"
 
             - name: Use Node.js
               uses: actions/setup-node@v1
