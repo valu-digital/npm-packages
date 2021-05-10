@@ -2,6 +2,8 @@ on:
     push:
         branches:
             - release/*/*
+env:
+    SLACK_WEBHOOK: "${{ secrets.SLACK_WEBHOOK }}"
 
 jobs:
     release:
@@ -105,6 +107,8 @@ jobs:
                   git push origin HEAD:master
                   git push origin --tags
 
+                  slack_message "New \`/$npm_name\` stable release. \n\nInstall with \`npm install $npm_name@^${next_version}\`"
+
             - name: Make PRERELEASE release
               if: ${{ env.release_mode == 'prerelease' }}
               run: |
@@ -114,21 +118,11 @@ jobs:
                   npm publish --tag dev --access public
                   rm "$HOME/.npmrc"
 
-            # - name: Notify prerelease
-            #   if: ${{ github.ref == 'refs/heads/release/react-valu-search/prerelease' }}
-            #   run: |
-            #       . .github/npm-release.sh
-            #       slack_message "New \`@valu/react-valu-search\` prelease. \n\nInstall with \`npm install --save-exact @valu/react-valu-search@${next_version}\`"
+                  slack_message "New \`$npm_name\` prelease. \n\nInstall with \`npm install --save-exact $npm_name@${next_version}\`"
 
-            # - name: Notify stable release
-            #   if: ${{ github.ref != 'refs/heads/release/react-valu-search/prerelease' }}
-            #   run: |
-            #       . .github/npm-release.sh
-            #       slack_message "New \`@valu/react-valu-search\` stable release. \n\nInstall with \`npm install @valu/react-valu-search@^${next_version}\`"
-
-            # - name: Notify about failure
-            #   if: failure()
-            #   run: |
-            #       set -eu
-            #       . .github/utils.sh
-            #       slack_message '<!channel> '"Failed to make npm release"
+            - name: Notify about failure
+              if: failure()
+              run: |
+                  set -eu
+                  . .github/utils.sh
+                  slack_message '<!channel> '"Failed to make npm release for ${pkg:-} / ${npm_name:-}"
