@@ -10,6 +10,10 @@ fi
 
 pkg="$(basename $(pwd))"
 
+if [ "$(git rev-parse --show-toplevel)" = "$(pwd)" ]; then
+    echo "release.sh must be run from the packge dir"
+fi
+
 if [ ! -f package.json ]; then
     echo
     echo "No package.json at $(pwd)"
@@ -17,9 +21,6 @@ if [ ! -f package.json ]; then
     exit 1
 fi
 
-if [ "$(git rev-parse --show-toplevel)" = "$(pwd)" ]; then
-    echo "release.sh must be run from the packge dir"
-fi
 
 if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ]; then
     echo
