@@ -33,7 +33,7 @@ The release notifications can be found our internal `#npm-packages` channel.
 
 ### Prereleases
 
-A prerelease without changelog and tagging can be made with the `prerelease.sh`
+A prerelease without real version number, changelog and tagging can be made with the `prerelease.sh`
 script.
 
 ```
