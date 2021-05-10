@@ -78,10 +78,12 @@ if $changelog; then
 
     echo
     echo
+    echo "The CHANGELOG.md file was updated automatically."
+    echo
+    echo
     while true; do
-        echo "The CHANGELOG.md file was updated automatically. Type 'c' (commit) to continue or 'e' to open it in vscode"
-        echo
-        read -p "changelog> " changelog_mode
+        echo "Type 'c' (commit) to continue or 'e' to open it in vscode"
+        read -p "> " changelog_mode
 
         if [ "$changelog_mode" = "e" ]; then
             code CHANGELOG.md
