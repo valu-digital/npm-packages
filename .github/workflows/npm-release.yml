@@ -62,7 +62,7 @@ jobs:
 
                   set -x
                   echo "pkg=$pkg" >> $GITHUB_ENV
-                  echo "npm_name=$pkg" >> $GITHUB_ENV
+                  echo "npm_name=$npm_name" >> $GITHUB_ENV
                   echo "next_version=$next_version" >> $GITHUB_ENV
                   echo "next_tag=$next_tag" >> $GITHUB_ENV
                   echo "prev_tag=$prev_tag" >> $GITHUB_ENV
