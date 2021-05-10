@@ -1,13 +1,14 @@
 {
-  "name": "@valu/example",
-  "version": "0.0.4",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "release": "../../release.sh",
-    "build": "echo noop",
-    "test": "echo noop"
-  },
-  "author": "",
-  "license": "ISC"
+    "name": "@valu/example",
+    "version": "0.0.4",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "release": "../../release.sh",
+        "prerelease": "../../prerelease.sh",
+        "build": "echo noop",
+        "test": "echo noop"
+    },
+    "author": "",
+    "license": "ISC"
 }
