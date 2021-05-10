@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 
 export interface SingleElementObserverOptions {
-    root?: Element | Document | null;
+    root?: Element | null;
     rootMargin?: string;
     threshold?: number | number[];
     active?: boolean;
