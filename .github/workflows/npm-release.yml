@@ -71,7 +71,6 @@ jobs:
                   echo "changelog_link=$changelog_link" >> $GITHUB_ENV
 
             - name: Set version number
-              if: ${{ env.release_mode == 'stable' }}
               run: |
                   . .github/npm-release.sh
 
