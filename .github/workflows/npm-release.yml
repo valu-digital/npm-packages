@@ -64,7 +64,7 @@ jobs:
                   git config user.name "${{ github.actor }}"
                   git add package.json
                   git commit -m "$pkg: v${next_version}"
-                  git tag -a "$tag" -m "$pkg v$next_version"
+                  git tag -a "$next_tag" -m "$pkg v$next_version"
 
             - name: Use Node.js
               uses: actions/setup-node@v1
