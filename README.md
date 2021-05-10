@@ -23,9 +23,9 @@ cd packages/example
 ../../release.sh
 ```
 
-The script will generate a changelog entry and pushed code to a version branch
-from where the workflow picks it up. The workflow will tag the version, build
-the package and publishes it.
+The script will generate a changelog entry and pushes the code to a version
+branch from where the workflow picks it up. The workflow will tag the version,
+build the package and publishes it.
 
 The packages are released to the public npm registry.
 
