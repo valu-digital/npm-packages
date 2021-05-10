@@ -29,3 +29,15 @@ from where the workflow picks it up. The workflow will tag the version, build
 the package and publishes it.
 
 The packages are released to the public npm registry.
+
+The release notifications can be found our internal `#npm-packages` channel.
+
+### Prereleases
+
+A prerelease without changelog and tagging can be made with the `prerelease.sh`
+script.
+
+```
+cd packages/example
+../../prerelease.sh
+```
