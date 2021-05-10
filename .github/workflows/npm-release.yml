@@ -24,7 +24,7 @@ jobs:
                   current_version=0.0.0
 
                   if [ -f "packages/$pkg/package.json" ]; then
-                    current_version="$(jq -r .version package.json)"
+                    current_version="$(jq -r .version "packages/$pkg/package.json")"
                   fi
 
 
