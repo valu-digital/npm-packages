@@ -11,10 +11,6 @@ jobs:
               with:
                   # Fetch full history to get all tags so we can get PREV_VERSION
                   fetch-depth: 0
-            - name: Use Node.js
-              uses: actions/setup-node@v1
-              with:
-                  node-version: "14.x"
 
             - name: Set version enviroment variables
               run: |
@@ -54,6 +50,11 @@ jobs:
                   echo "prev_tag=$prev_tag" >> $GITHUB_ENV
                   echo "prev_version=$prev_version" >> $GITHUB_ENV
                   echo "release_mode=$prev_version" >> $GITHUB_ENV
+
+            - name: Use Node.js
+              uses: actions/setup-node@v1
+              with:
+                  node-version: "14.x"
 
               #   current_version="$(jq -r .version package.json)"
               #   tag="react-valu-search/v${next_version}"
