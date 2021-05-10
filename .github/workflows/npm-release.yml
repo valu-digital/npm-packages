@@ -22,29 +22,39 @@ jobs:
 
                     #   slack_message "Starting release workflow"
 
+                  release_mode=stable
                   next_version=${GITHUB_REF##*/}
                   next_tag="$pkg/v${next_version}"
                   echo "$GITHUB_REF"
 
                   pkg=$(echo "$GITHUB_REF" | cut -d / -f 4)
-                  current_version="$(jq -r .version package.json)"
+
+
+                  current_version=0.0.0
+
+                  if [ -f "packages/$pkg/package.json" ]; then
+                    current_version="$(jq -r .version package.json)"
+                  fi
+
+
                   tag="$pkg/v${next_version}"
 
                   if [ "$next_version" = "prerelease" ]; then
                     next_version="${current_version}-dev.${GITHUB_SHA:0:10}"
                     # No tag for prereleases
                     next_tag=
+                    release_mode=prerelease
                   fi
 
                   prev_tag="$(git describe --abbrev=0 --match "$pkg/v*"" || true)"
                   prev_version=$(echo "$prev_tag" | sed -E "s/.+v([0-9\.]+)\$/\1/")
 
-
-                  echo "package: $pkg"
-                  echo "version: $next_version"
-                  echo "tag: $next_tag"
-                  echo "prev_tag: $prev_tag"
-                  echo "prev_version: $prev_version"
+                  echo "package=$pkg" >> $GITHUB_ENV
+                  echo "version=$next_version" >> $GITHUB_ENV
+                  echo "tag=$next_tag" >> $GITHUB_ENV
+                  echo "prev_tag=$prev_tag" >> $GITHUB_ENV
+                  echo "prev_version=$prev_version" >> $GITHUB_ENV
+                  echo "release_mode=$prev_version" >> $GITHUB_ENV
 
               #   current_version="$(jq -r .version package.json)"
               #   tag="react-valu-search/v${next_version}"
