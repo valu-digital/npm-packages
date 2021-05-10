@@ -1,14 +1,14 @@
 {
-  "name": "@valu/example",
-  "version": "0.0.5",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "release": "../../release.sh",
-    "prerelease": "../../prerelease.sh",
-    "build": "echo noop",
-    "test": "echo noop"
-  },
-  "author": "",
-  "license": "ISC"
+    "name": "@valu/example",
+    "version": "0.0.5",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "make-release": "../../release.sh",
+        "make-prerelease": "../../prerelease.sh",
+        "build": "echo noop",
+        "test": "echo noop"
+    },
+    "author": "",
+    "license": "ISC"
 }
