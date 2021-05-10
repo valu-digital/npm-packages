@@ -14,7 +14,6 @@ jobs:
 
             - name: Set version enviroment variables
               run: |
-                  set -x
 
                     #   slack_message "Starting release workflow"
 
@@ -44,12 +43,33 @@ jobs:
                   prev_tag="$(git describe --abbrev=0 --match "$pkg/v*" || true)"
                   prev_version=$(echo "$prev_tag" | sed -E "s/.+v([0-9\.]+)\$/\1/")
 
+                  set -x
                   echo "package=$pkg" >> $GITHUB_ENV
-                  echo "version=$next_version" >> $GITHUB_ENV
+                  echo "next_version=$next_version" >> $GITHUB_ENV
                   echo "next_tag=$next_tag" >> $GITHUB_ENV
                   echo "prev_tag=$prev_tag" >> $GITHUB_ENV
                   echo "prev_version=$prev_version" >> $GITHUB_ENV
                   echo "release_mode=$release_mode" >> $GITHUB_ENV
+
+            - name: Use Node.js
+              uses: actions/setup-node@v1
+              with:
+                  node-version: "14.x"
+
+            - name: "Build ${{ env.package }}"
+              run: |
+                . .github/npm-release.sh
+
+                if [ -f package-lock.json ]; then
+                    npm ci
+                else
+                    npm install
+                fi
+
+                npm run build
+
+                npm run test
+
 
             - name: Notify stable release
               if: ${{ env.release_mode == 'stable' }}
@@ -61,10 +81,6 @@ jobs:
               run: |
                   echo "PRERELEASE"
 
-            - name: Use Node.js
-              uses: actions/setup-node@v1
-              with:
-                  node-version: "14.x"
 
               #   current_version="$(jq -r .version package.json)"
               #   tag="react-valu-search/v${next_version}"

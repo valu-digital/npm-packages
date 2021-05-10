@@ -1,0 +1,12 @@
+{
+    "name": "example",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "build": "echo noop",
+        "test": "echo noop"
+    },
+    "author": "",
+    "license": "ISC"
+}
