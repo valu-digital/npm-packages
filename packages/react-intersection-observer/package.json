@@ -14,7 +14,9 @@
     "scripts": {
         "start": "tsdx watch",
         "build": "tsdx build",
-        "test": "tsdx test --passWithNoTests"
+        "test": "tsdx test --passWithNoTests",
+        "release": "../../release.sh",
+        "prerelease": "../../prerelease.sh"
     },
     "peerDependencies": {
         "react": ">=16"
