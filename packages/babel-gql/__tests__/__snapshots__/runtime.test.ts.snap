@@ -1,0 +1,6 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`can get query with fragments 1`] = `
+"fragment NamedPars on Person { field2 }
+query getTest { field, ...NamedParts }"
+`;
