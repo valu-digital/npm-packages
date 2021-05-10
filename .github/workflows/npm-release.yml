@@ -20,11 +20,13 @@ jobs:
                   echo "$GITHUB_REF"
 
                   pkg=$(echo "$GITHUB_REF" | cut -d / -f 4)
+                  npm_name=$pkg
 
                   current_version=0.0.0
 
                   if [ -f "packages/$pkg/package.json" ]; then
                     current_version="$(jq -r .version "packages/$pkg/package.json")"
+                    npm_name="$(jq -r .name "packages/$pkg/package.json")"
                   fi
 
 
@@ -40,13 +42,29 @@ jobs:
                   prev_tag="$(git describe --abbrev=0 --match "$pkg/v*" || true)"
                   prev_version=$(echo "$prev_tag" | sed -E "s/.+v([0-9\.]+)\$/\1/")
 
+                  link_ver="$(echo $next_version | tr -cd '[:alnum:]')"
+                  changelog_link="https://github.com/valu-digital/npm-packages/blob/master/packages/$pkg/CHANGELOG.md#v${link_ver}"
+
                   set -x
-                  echo "package=$pkg" >> $GITHUB_ENV
+                  echo "pkg=$pkg" >> $GITHUB_ENV
+                  echo "npm_name=$pkg" >> $GITHUB_ENV
                   echo "next_version=$next_version" >> $GITHUB_ENV
                   echo "next_tag=$next_tag" >> $GITHUB_ENV
                   echo "prev_tag=$prev_tag" >> $GITHUB_ENV
                   echo "prev_version=$prev_version" >> $GITHUB_ENV
                   echo "release_mode=$release_mode" >> $GITHUB_ENV
+                  echo "changelog_link=$changelog_link" >> $GITHUB_ENV
+
+            - name: Commit version numbers
+              run: |
+                  . .github/npm-release.sh
+                  jq ".version = \"$next_version\"" package.json > tmp.json
+                  mv tmp.json package.json
+                  git config user.email "action@github.com"
+                  git config user.name "${{ github.actor }}"
+                  git add package.json
+                  git commit -m "$pkg: v${next_version}"
+                  git tag -a "$tag" -m "$pkg v$next_version"
 
             - name: Use Node.js
               uses: actions/setup-node@v1
@@ -67,81 +85,26 @@ jobs:
 
                   npm run test
 
-            - name: Notify stable release
+            - name: Make STABLE release
               if: ${{ env.release_mode == 'stable' }}
               run: |
-                  echo "STABLE"
+                  . .github/npm-release.sh
+                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > "$HOME/.npmrc"
+                  npm whoami
+                  npm publish
+                  rm "$HOME/.npmrc"
 
-            - name: Notify prerelease release
+                  git push origin HEAD:master
+                  git push origin --tags
+
+            - name: Make PRERELEASE release
               if: ${{ env.release_mode == 'prerelease' }}
               run: |
-                  echo "PRERELEASE"
-
-              #   current_version="$(jq -r .version package.json)"
-              #   tag="react-valu-search/v${next_version}"
-              #   link_ver="$(echo $next_version | tr -cd '[:alnum:]')"
-              #   changelog_link="https://docs.valusearch.pro/react-valu-search/changelog#v${link_ver}"
-              #   cp NPM_README.md README.md
-              #   echo "" >> README.md
-              #   echo "Updates in this version: ${changelog_link}" >> README.md
-              #   echo "" >> README.md
-              #   if [ "$next_version" = "prerelease" ]; then
-              #     next_version="${current_version}-dev.${GITHUB_SHA:0:10}"
-              #     tag="react-valu-search/v${next_version}"
-              #   else
-              #     if [ "$(git tag -l  "$tag")" != "" ]; then
-              #       slack_message "Tag $version already exists. Cannot make release using it"
-              #       exit 1
-              #     fi
-              #   fi
-              #   prev_tag="$(git describe --abbrev=0 --match 'react-valu-search/v*' || true)"
-              #   prev_version=$(echo "$prev_tag" | sed -E "s/.+v([0-9\.]+)\$/\1/")
-              #   echo "prev_version=$prev_version" >> $GITHUB_ENV
-              #   echo "next_version=$next_version" >> $GITHUB_ENV
-              #   echo "tag=$tag" >> $GITHUB_ENV
-
-            # - name: Commit version numbers
-            #   run: |
-            #       . .github/npm-release.sh
-            #       jq ".version = \"$next_version\"" package.json > tmp.json
-            #       mv tmp.json package.json
-            #       git config user.email "action@github.com"
-            #       git config user.name "${{ github.actor }}"
-            #       git add package.json
-            #       git commit -m "Update version numbers to v${next_version}"
-            #       git tag -a "$tag" -m "@valu/react-valu-search v$next_version"
-
-            # - name: Build the package
-            #   run: |
-            #       . .github/npm-release.sh
-            #       npm install
-            #       npm test
-            #       npm run build
-
-            # - name: Push commits and tags
-            #   if: ${{ github.ref != 'refs/heads/release/react-valu-search/prerelease' }}
-            #   run: |
-            #       . .github/npm-release.sh
-            #       git push origin HEAD:master
-            #       git push origin --tags
-
-            # - name: Make STABLE npm release
-            #   if: ${{ github.ref != 'refs/heads/release/react-valu-search/prerelease' }}
-            #   run: |
-            #       . .github/npm-release.sh
-            #       echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > "$HOME/.npmrc"
-            #       npm whoami
-            #       npm publish
-            #       rm "$HOME/.npmrc"
-
-            # - name: Make PRELEASE npm release
-            #   if: ${{ github.ref == 'refs/heads/release/react-valu-search/prerelease' }}
-            #   run: |
-            #       . .github/npm-release.sh
-            #       echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > "$HOME/.npmrc"
-            #       npm whoami
-            #       npm publish --tag dev
-            #       rm "$HOME/.npmrc"
+                  . .github/npm-release.sh
+                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > "$HOME/.npmrc"
+                  npm whoami
+                  npm publish --tag dev
+                  rm "$HOME/.npmrc"
 
             # - name: Notify prerelease
             #   if: ${{ github.ref == 'refs/heads/release/react-valu-search/prerelease' }}
