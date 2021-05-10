@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "release": "../../release.sh",
     "build": "echo noop",
     "test": "echo noop"
   },
