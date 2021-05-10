@@ -3,7 +3,7 @@
 A React Hook for the [Intersection Observer
 API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API).
 
-This can be used for lazy loading and rendering when something appears into to
+This can be used for lazy loading and rendering when something appears into the
 view port
 
 ## Install
