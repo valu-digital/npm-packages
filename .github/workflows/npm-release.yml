@@ -29,7 +29,6 @@ jobs:
 
                   pkg=$(echo "$GITHUB_REF" | cut -d / -f 4)
 
-
                   current_version=0.0.0
 
                   if [ -f "packages/$pkg/package.json" ]; then
@@ -46,7 +45,7 @@ jobs:
                     release_mode=prerelease
                   fi
 
-                  prev_tag="$(git describe --abbrev=0 --match "$pkg/v*"" || true)"
+                  prev_tag="$(git describe --abbrev=0 --match "$pkg/v*" || true)"
                   prev_version=$(echo "$prev_tag" | sed -E "s/.+v([0-9\.]+)\$/\1/")
 
                   echo "package=$pkg" >> $GITHUB_ENV
