@@ -47,11 +47,11 @@ cd packages/example
 ../../prerelease.sh
 ```
 
-### Hard Forking with History
+## Hard Forking with History
 
 How to hard fork single package with history
 
-Get [git-filter-repo](https://github.com/newren/git-filter-repo)
+Get [git-filter-repo](https://github.com/newren/git-filter-repo) and run
 
 ```
 git clone https://github.com/valu-digital/npm-packages.git my-fork
