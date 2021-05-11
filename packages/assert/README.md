@@ -35,7 +35,7 @@ function fn(text: string | null | undefined) {
 
 but it will allow an empty string `""` since it is not nil.
 
-But the most powerful feature is when it is used as a type predicate in `.filter()`:
+But its most powerful use case is when used as a type predicate in `.filter()`:
 
 ```tsx
 type Node = { value: number } | null | undefined;
@@ -63,7 +63,7 @@ function fn(item: { value: number } | null | undefined) {
 }
 ```
 
-**Use when in a situation where you know there cannot be a nil value**
+**Use when you know the value cannot be nil**
 
 ## `assertIs()`
 
