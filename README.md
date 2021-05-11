@@ -51,7 +51,7 @@ cd packages/example
 
 How to hard fork single package with history
 
-Get [git-filter-repo](https://github.com/newren/git-filter-repo) and run
+Get [git-filter-repo](https://github.com/newren/git-filter-repo) and run something like
 
 ```
 git clone https://github.com/valu-digital/npm-packages.git my-fork
