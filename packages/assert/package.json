@@ -1,0 +1,28 @@
+{
+    "name": "@valu/assert",
+    "version": "1.0.0",
+    "author": "Esa-Matti Suuronen",
+    "license": "MIT",
+    "main": "dist/index.js",
+    "module": "dist/assert.esm.js",
+    "typings": "dist/index.d.ts",
+    "files": [
+        "dist",
+        "src"
+    ],
+    "engines": {
+        "node": ">=10"
+    },
+    "scripts": {
+        "watch": "tsdx watch",
+        "build": "tsdx build",
+        "test": "tsdx test --passWithNoTests",
+        "make-release": "../../release.sh",
+        "make-prerelease": "../../prerelease.sh"
+    },
+    "devDependencies": {
+        "prettier": "^2.3.0",
+        "tsdx": "^0.14.1",
+        "typescript": "^4.2.4"
+    }
+}
