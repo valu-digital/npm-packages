@@ -1,3 +1,9 @@
+## v0.0.7
+
+2021-05-11
+
+-   Test change d983afe - Esa-Matti Suuronen
+
 ## v0.0.6
 
 2021-05-11
