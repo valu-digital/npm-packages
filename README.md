@@ -2,18 +2,24 @@
 
 Monorepo of open source npm packages by Valu Digital.
 
-## Community Users❗️ 
+## Community Users❗️
 
 Although these are open source we are not resourced enough to properly support
-"community users" – those not working for Valu Digital. You are free to use these packages and even open
-issues here, but it is very likely that we don't have the time and resources to
-act on them. Same goes for PRs. Feel free to hard fork the packages.
+"community users" – those not working for Valu Digital. You are free to use
+these packages and even open issues here, but it is very likely that we don't
+have the time and resources to act on them. Same goes for PRs. Feel free to hard
+fork the packages.
 
 ## Publishing
 
 The repo contains a Github Workflow which makes it very easy to create and
-update the packages. It just requires `build` and `test` package.json scripts. Do
-not use prepublish scripts. The workflow will run the build before publishing.
+update the packages. It just requires `build` and `test` package.json scripts.
+Do not use prepublish scripts. The workflow will run the build before
+publishing. There's no need for additional initialization steps for new
+packages: Just create new package directory under `packages/` and you are ready
+to go.
+
+**Use `@valu/` namespace for all new packages**
 
 When a package is ready for publishing just run the `release.sh` from the
 package directory.
