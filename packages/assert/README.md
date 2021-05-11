@@ -49,7 +49,7 @@ nodes.filter(notNil).map((node) => {
 
 **Use when mapping GraphQL node lists!**
 
-## `assertNotNil()`
+## `assertNotNil(value: any, customErrorMessage?: string)`
 
 Assertion function for removing nil values.
 
@@ -57,7 +57,7 @@ Assertion function for removing nil values.
 import { assertNotNil } from "@valu/assert";
 
 function fn(item: { value: number } | null | undefined) {
-    assertNotNil(item, "Optional custom error message");
+    assertNotNil(item);
 
     item.value; // ok!
 }
@@ -65,9 +65,9 @@ function fn(item: { value: number } | null | undefined) {
 
 **Use when you know the value cannot be nil**
 
-## `assertIs()`
+## `assertIs(target: any, value: any customErrorMessage?: string)`
 
-Assert that value is explicitly of the given type
+Assert that the target is explicitly of the given type
 
 ```tsx
 import { assertIs } from "@valu/assert";
@@ -106,17 +106,3 @@ function fn2(item: Item) {
 ```
 
 GraphQL node connections have often types like this.
-
-## `is()`
-
-Same as `assertIs()` but as type guard which does not throw
-
-```tsx
-import { is } from "@valu/assert";
-
-declare const item: { value: number } | boolean | null;
-
-if (is(item, false as const)) {
-    item; // item === false
-}
-```
