@@ -41,7 +41,7 @@ git fetch origin
 
 if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/master)" ]; then
     echo
-    echo "Repository not up to date"
+    echo "Repository not up to date. Do your git push/pull/rebase dance"
     echo
     exit 1
 fi
