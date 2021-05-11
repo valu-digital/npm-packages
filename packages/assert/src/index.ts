@@ -65,8 +65,24 @@ function _stringify(ob: any) {
     return String(ob);
 }
 
-declare const item: { value: number } | boolean | null;
+type Item =
+    | {
+          status: "post";
+          postTitle: string;
+      }
+    | {
+          status: "page";
+          pageTitle: string;
+      };
 
-assertIs(item, false as const, "Not false");
+function fn(item: Item) {
+    item.postTitle; // Error!
+    assertIs(item.status, "post" as const);
+    item.postTitle; // ok!
+}
 
-item; // item === false
+function fn2(item: Item) {
+    item.pageTitle; // Error!
+    assertIs(item.status, "page" as const);
+    item.pageTitle; // ok!
+}
