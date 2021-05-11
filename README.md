@@ -57,4 +57,5 @@ Get [git-filter-repo](https://github.com/newren/git-filter-repo) and run somethi
 git clone https://github.com/valu-digital/npm-packages.git my-fork
 cd my-fork
 git filter-repo --subdirectory-filter packages/example
+git commit --allow-empty -m "Fork from https://github.com/valu-digital/npm-packages"
 ```
