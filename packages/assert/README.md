@@ -3,11 +3,11 @@
 Small collection of [type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates)
 and [assertion functions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions).
 
-Especially when working with possibly undefined types generated from GraphQL queries.
+Helps working with possibly undefined types generated from GraphQL queries.
 
-This library has a concept called "nil" which means `null` or `undefined`.
+This library has its own concept called "nil" which means `null` or `undefined`.
 
-> Asserting means throwing and crashing if the assertion condition is not met
+> CS 101: Asserting means throwing and crashing if the assertion condition is not met
 
 ## `notNil()`
 
