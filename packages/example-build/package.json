@@ -1,0 +1,21 @@
+{
+    "name": "@valu/example-build",
+    "version": "0.0.0",
+    "description": "",
+    "scripts": {
+        "build": "rm -rf dist && microbundle --format cjs --no-compress",
+        "watch": "microbundle --format cjs --no-compress watch",
+        "test": "true"
+    },
+    "source": "src/index.js",
+    "main": "./dist/example.js",
+    "author": "Esa-Matti Suuronen",
+    "license": "ISC",
+    "files": [
+        "dist",
+        "src"
+    ],
+    "devDependencies": {
+        "microbundle": "^0.13.0"
+    }
+}
