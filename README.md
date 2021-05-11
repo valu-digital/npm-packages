@@ -19,7 +19,7 @@ publishing. There's no need for additional initialization steps for new
 packages: Just create new package directory under `packages/` and you are ready
 to go.
 
-**👆 Use `@valu/` namespace for all new packages.**
+**👆 Use the`@valu/` namespace for all new packages.**
 
 When a package is ready for publishing just run the `release.sh` from the
 package directory.
