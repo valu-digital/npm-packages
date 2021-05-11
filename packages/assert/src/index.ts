@@ -64,3 +64,9 @@ function _stringify(ob: any) {
 
     return String(ob);
 }
+
+declare const item: { value: number } | boolean | null;
+
+assertIs(item, false as const, "Not false");
+
+item; // item === false
