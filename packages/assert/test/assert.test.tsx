@@ -1,4 +1,4 @@
-import { assertNotNil, assertIs, notNil, is, only as onlyValue } from "../src";
+import { assertNotNil, assertIs, notNil, is } from "../src";
 
 describe("assertNotNil()", () => {
     test("asserts null", () => {
@@ -79,6 +79,25 @@ describe("assertNotNil()", () => {
 });
 
 describe("assertValue()", () => {
+    test("assert null", () => {
+        (value: string | true | false | undefined) => {
+            assertIs(value, undefined);
+
+            const Undefined: undefined = value;
+
+            // @ts-expect-error
+            const Null: null = value;
+
+            // @ts-expect-error
+            const False: false = value;
+
+            // @ts-expect-error
+            const True: true = value;
+
+            // @ts-expect-error
+            const Str: string = value;
+        };
+    });
     test("assert false", () => {
         (value: string | true | false) => {
             assertIs(value, false as const);
@@ -120,6 +139,49 @@ describe("assertValue()", () => {
             const Str: string = value;
         };
     });
+
+    test("assert string literal", () => {
+        (value: string | true | false) => {
+            assertIs(value, "lit" as const);
+
+            // @ts-expect-error
+            const True: true = value;
+
+            // @ts-expect-error
+            const False: false = value;
+
+            // @ts-expect-error
+            const OtherLireal: "other" = value;
+
+            const Str: string = value;
+        };
+    });
+
+    test("run times asserts ok", () => {
+        assertIs("", "");
+        assertIs(true, true);
+        assertIs(false, false);
+        assertIs(null, null);
+        assertIs(undefined, undefined);
+    });
+
+    test("throws on non match", () => {
+        expect(() => {
+            assertIs(false, true);
+        }).toThrow("[@valu/assert Value] false !== true");
+
+        expect(() => {
+            assertIs({}, undefined);
+        }).toThrow("[@valu/assert Value] [object Object] !== undefined");
+
+        expect(() => {
+            assertIs(null, undefined);
+        }).toThrow("[@valu/assert Value] null !== undefined");
+
+        expect(() => {
+            assertIs(null, undefined, "custom");
+        }).toThrow("[@valu/assert Value] custom");
+    });
 });
 
 describe("notNil()", () => {
@@ -135,20 +197,16 @@ describe("notNil()", () => {
     });
 });
 
-describe("onlyValue()", () => {
-    test("can filter false", () => {
-        type Ob = boolean | string | null | undefined;
-        const list: Ob[] = [null, false, true, "", undefined];
-
-        const newList: true[] = list
-            .filter(onlyValue(true as const))
-            .map((value) => {
+describe("is()", () => {
+    test("can guard false", () => {
+        const fn = (value: string | true | false) => {
+            if (is(value, true as const)) {
                 // @ts-expect-error
                 const False: false = value;
-
-                return value;
-            });
-
-        expect(newList).toEqual([true]);
+                return true;
+            } else {
+                return false;
+            }
+        };
     });
 });

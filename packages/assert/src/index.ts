@@ -39,7 +39,7 @@ export function assertNotNil<T>(
     msg?: string,
 ): asserts ob is Exclude<T, undefined | null> {
     if (!msg) {
-        msg = `Unexpeted ${String(ob)}`;
+        msg = `Unexpeted ${_stringify(ob)}`;
     }
 
     assert(!isNil(ob), `[@valu/assert notNil] ${msg}`, 2);
@@ -50,15 +50,17 @@ export function is<T>(ob: any, value: T): ob is T {
 }
 
 export function assertIs<T>(ob: any, value: T, msg?: string): asserts ob is T {
-    if (msg) {
-        msg = `${String(ob)} !== ${String(value)}`;
+    if (!msg) {
+        msg = `${_stringify(ob)} !== ${_stringify(value)}`;
     }
 
-    assert(ob !== value, `[@valu/assert Value] ${msg}`, 2);
+    assert(is(ob, value), `[@valu/assert Value] ${msg}`, 2);
 }
 
-export function only<T>(value: T) {
-    return function isValue(ob: any): ob is T {
-        return value === ob;
-    };
+function _stringify(ob: any) {
+    if (ob === null) {
+        return "null";
+    }
+
+    return String(ob);
 }
