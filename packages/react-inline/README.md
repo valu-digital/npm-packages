@@ -1,6 +1,6 @@
 # React Inline
 
-Tool for writing inline Scripts and CSS in React.
+Tool for writing inline styles and scripts in React.
 
 Often used in Next.js `_document.tsx` files.
 
@@ -8,6 +8,51 @@ Often used in Next.js `_document.tsx` files.
 
 ```
 npm install @valu/react-inline
+```
+
+## Inline Styles
+
+Add inline style tags with syntax highlighting via the `css` template tag and
+the VSCode extension.
+
+Font CSS example:
+
+```tsx
+import { InlineStyle, css } from "@valu/react-inline";
+
+const fontCSS = css`
+    @font-face {
+        font-family: "ApexNewBookRegular";
+        src: url("/fonts/ApexNew-Book.otf");
+        font-display: swap;
+    }
+    @font-face {
+        font-family: "ApexNewBookBold";
+        src: url("/fonts/ApexNew-Bold.otf");
+        font-display: swap;
+    }
+    @font-face {
+        font-family: "ApexNewBookLight";
+        src: url("/fonts/ApexNew-Light.otf");
+        font-display: swap;
+    }
+`;
+
+<InlineStyle css={fontCSS} />;
+```
+
+Alternative API when you have a colliding `css` template tags (ex. with react-bemed):
+
+```tsx
+<InlineStyle
+    css={(css) => css`
+        body,
+        html {
+            padding: 0;
+            margin: 0;
+        }
+    `}
+/>
 ```
 
 ## Inline Script
@@ -53,50 +98,5 @@ Google Tag Manager.
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer','***');`}
-/>
-```
-
-## Inline Styles
-
-Add inline style tags with syntax highlighting via the `css` template tag and
-the VSCode extension
-
-Font CSS example:
-
-```tsx
-import { InlineStyle, css } from "@valu/react-inline";
-
-const fontCSS = css`
-    @font-face {
-        font-family: "ApexNewBookRegular";
-        src: url("/fonts/ApexNew-Book.otf");
-        font-display: swap;
-    }
-    @font-face {
-        font-family: "ApexNewBookBold";
-        src: url("/fonts/ApexNew-Bold.otf");
-        font-display: swap;
-    }
-    @font-face {
-        font-family: "ApexNewBookLight";
-        src: url("/fonts/ApexNew-Light.otf");
-        font-display: swap;
-    }
-`;
-
-<InlineStyle css={fontCSS} />;
-```
-
-Alternative API when you have a colliding `css` template tags (ex. with react-bemed):
-
-```tsx
-<InlineStyle
-    css={(css) => css`
-        body,
-        html {
-            padding: 0;
-            margin: 0;
-        }
-    `}
 />
 ```
