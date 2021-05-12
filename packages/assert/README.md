@@ -73,7 +73,7 @@ Assert that the target is explicitly of the given type
 import { assertIs } from "@valu/assert";
 
 function fn(item: { value: number } | boolean | null) {
-    assertIs(item, false as const, "Not false");
+    assertIs(item, false as const);
 
     item; // item === false
 }
