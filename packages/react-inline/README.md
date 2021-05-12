@@ -38,6 +38,7 @@ Caveats:
 -   The script is inlined with `Function#toString()` so you cannot reference
     variables in the parent closures.
 -   If the script is SSR rendered (ex. in Next.js `_document.tsx`, it might not get transpiled. It's better to avoid modern JavaScript syntax if legacy browser support is required
+    -   TypeScript types are stripped always though.
 -   The args are serialized with `JSON.stringify()`
 
 ## Raw Inline Script
