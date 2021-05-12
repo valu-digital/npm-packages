@@ -58,7 +58,10 @@ Google Tag Manager.
 
 ## Inline Styles
 
-Inline font loader CSS for example
+Add inline style tags with syntax highlighting via the `css` template tag and
+the VSCode extension
+
+Font CSS example:
 
 ```tsx
 import { InlineStyle, css } from "@valu/react-inline";
