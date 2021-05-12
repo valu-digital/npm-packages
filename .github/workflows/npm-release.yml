@@ -118,7 +118,7 @@ jobs:
                   git push origin HEAD:master
                   git push origin --tags
 
-                  slack_message "New \`$npm_name\` stable release. <Changelog|$changelog_link>. \n\nInstall with \`npm install $npm_name@^${next_version}\`"
+                  slack_message "New \`$npm_name\` stable release. See <$changelog_link|Changelog>. \n\nInstall with \`npm install $npm_name@^${next_version}\`"
 
             - name: Make PRERELEASE release
               if: ${{ env.release_mode == 'prerelease' }}
