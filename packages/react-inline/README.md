@@ -86,7 +86,7 @@ Caveats:
     get transpiled. It's better to avoid modern JavaScript syntax when legacy browser
     support is required
 
-        - TypeScript types are stripped always though.
+    -   TypeScript types are stripped always though.
 
 -   The args are serialized with `JSON.stringify()`
 
