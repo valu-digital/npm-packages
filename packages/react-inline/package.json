@@ -16,7 +16,7 @@
     "scripts": {
         "watch": "tsdx watch --tsconfig ./tsconfig.build.json",
         "build": "tsdx build --tsconfig ./tsconfig.build.json",
-        "test": "tsdx test --tsconfig ./tsconfig.build.json",
+        "test": "tsdx test",
         "make-release": "../../release.sh",
         "make-prerelease": "../../prerelease.sh"
     },
