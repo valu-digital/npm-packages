@@ -76,12 +76,14 @@ if $changelog; then
 
     mv $tmp_changelog CHANGELOG.md
 
-    echo
-    echo
-    echo "The CHANGELOG.md file was updated automatically."
-    echo
-    echo
     while true; do
+        echo
+        echo
+        git diff
+        echo
+        echo
+        echo "👆 The CHANGELOG.md file was updated automatically."
+        echo
         echo "Type 'e' to edit in vscode and 'c' to commit and continue"
         read -p "> " changelog_mode
 
