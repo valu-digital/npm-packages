@@ -46,6 +46,7 @@ if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/master)" ]; then
     exit 1
 fi
 
+npm test
 
 current_version="$(jq -r .version package.json)"
 
