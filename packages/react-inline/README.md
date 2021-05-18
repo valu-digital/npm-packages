@@ -74,7 +74,7 @@ With arguments
 ```tsx
 <InlineScript
     args={["World"]}
-    fn={function (name: string) {
+    exec={function (name: string) {
         console.log("Hello " + name);
     }}
 />
