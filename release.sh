@@ -67,7 +67,7 @@ if $changelog; then
     echo >> "$tmp_changelog"
     date +'%Y-%m-%d' >> "$tmp_changelog"
     echo >> "$tmp_changelog"
-    git log --format='-   %s %h - %an' HEAD...$prev_tag . >> "$tmp_changelog"
+    git log --format='-   %s [%h](https://github.com/valu-digital/npm-packages/commit/%h) - %an' HEAD...$prev_tag . >> "$tmp_changelog"
     echo >> "$tmp_changelog"
 
     if [ -f CHANGELOG.md ]; then
