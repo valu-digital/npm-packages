@@ -1,7 +1,7 @@
 /**
  * Assertion function with fixable stack for better error messages
  */
-function assert(cond: boolean, message: string, offsetStack?: number) {
+export function assert(cond: boolean, message: string, offsetStack?: number) {
     if (!cond) {
         const error = new Error(message);
         const stack = error.stack?.split("\n");

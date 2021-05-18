@@ -106,3 +106,17 @@ function fn2(item: Item) {
 ```
 
 GraphQL node connections have often types like this.
+
+## `assert(cond: boolean, message: string, offsetStack?: number)`
+
+Plain assert function with offsettable stack for better error messages like in:
+
+<https://kentcdodds.com/blog/improve-test-error-messages-of-your-abstractions>
+
+```tsx
+import { assert } from "@valu/assert";
+
+function assertCustom() {
+    assert(true === false, "Fail", 2);
+}
+```
