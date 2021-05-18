@@ -82,7 +82,7 @@ if $changelog; then
     echo
     echo
     while true; do
-        echo "Type 'c' (commit) to continue or 'e' to open it in vscode"
+        echo "Type 'e' to edit in vscode and 'c' to commit and continue"
         read -p "> " changelog_mode
 
         if [ "$changelog_mode" = "e" ]; then
