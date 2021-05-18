@@ -3,11 +3,11 @@ import React from "react";
 export type InlineScriptProps<Fn extends (...args: any[]) => any> =
     Fn extends () => any
         ? {
-              fn: Fn;
+              exec: Fn;
               args?: [];
           }
         : {
-              fn: Fn;
+              exec: Fn;
               args: Parameters<Fn>;
           };
 
@@ -16,7 +16,7 @@ export function InlineScript<Fn extends (...args: any[]) => any>(
 ) {
     const strArgs = JSON.stringify(props.args || []);
 
-    let script = `(${props.fn.toString()}).apply(null, ${strArgs});`;
+    let script = `(${props.exec.toString()}).apply(null, ${strArgs});`;
 
     return <script dangerouslySetInnerHTML={{ __html: script }}></script>;
 }

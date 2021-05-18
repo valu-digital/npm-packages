@@ -57,11 +57,13 @@ Alternative API when you have a colliding `css` template tags (ex. with react-be
 
 ## Inline Script
 
+Execute the given function in a inline `<script>` tag
+
 ```tsx
 import { InlineScript } from "@valu/react-inline";
 
 <InlineScript
-    fn={function () {
+    exec={function () {
         console.log("Inline script! ");
     }}
 />;
