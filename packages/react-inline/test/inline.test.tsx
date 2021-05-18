@@ -19,7 +19,7 @@ test("script with args", () => {
     expect(
         InlineScript({
             args: ["World"],
-            fn: (name: string) => `Hello ${name}`,
+            exec: (name: string) => `Hello ${name}`,
         }),
     ).toMatchInlineSnapshot(`
         <script
@@ -35,14 +35,14 @@ test("script with args", () => {
 test("script with args require args prop", () => {
     () => {
         // @ts-expect-error
-        <InlineScript fn={(arg: string) => {}} />;
+        <InlineScript exec={(arg: string) => {}} />;
 
-        <InlineScript args={[""]} fn={(arg: string) => {}} />;
+        <InlineScript args={[""]} exec={(arg: string) => {}} />;
     };
 });
 
 test("script without args do notrequire args prop", () => {
     () => {
-        <InlineScript fn={() => {}} />;
+        <InlineScript exec={() => {}} />;
     };
 });
