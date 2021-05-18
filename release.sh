@@ -79,7 +79,9 @@ if $changelog; then
     while true; do
         echo
         echo
+        echo "----------------------------------------------------------------------"
         git diff
+        echo "----------------------------------------------------------------------"
         echo
         echo
         echo "👆 The CHANGELOG.md file was updated automatically."
