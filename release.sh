@@ -101,7 +101,7 @@ if $changelog; then
 
     if [ "$(git status . --porcelain)" != "" ]; then
         git add CHANGELOG.md
-        git commit -m "Update changelog for @valu/react-valu-search v$new_version"
+        git commit -m "Update changelog for $pkg v$new_version"
         git push origin master:master
     fi
 fi
