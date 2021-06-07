@@ -1,6 +1,7 @@
 # Sync Valtio to Location
 
-Make [Valtio][] state linkable by syncing it to URL location
+Make [Valtio][] state linkable by syncing it to URL location using the browser
+history api.
 
 [valtio]: https://github.com/pmndrs/valtio
 
