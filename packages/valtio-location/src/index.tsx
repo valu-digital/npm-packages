@@ -157,7 +157,7 @@ export class ValtioLocationSync<State> {
 
     start = () => {
         if (this.active) {
-            return;
+            return this.stop;
         }
 
         this.active = true;
