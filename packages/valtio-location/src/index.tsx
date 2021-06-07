@@ -75,7 +75,7 @@ if (typeof history !== "undefined") {
 export interface ValtioLocationSyncOptions<State> {
     key?: string;
     debounceTime?: number;
-    readURL?: (url: URL) => State | undefined;
+    readURL?: (url: URL) => Partial<State> | undefined;
     writeURL?: (state: State, url: URL) => URL | undefined | void;
 }
 
