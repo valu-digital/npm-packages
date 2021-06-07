@@ -175,7 +175,7 @@ export class ValtioLocationSync<State> {
         // Handle manual history.replaceState / history.pushState calls
         this.listeners.custom(spy.onCall(this.handleURLChange));
 
-        // Debounced list on Valtio state changes
+        // Debounced sync on Valtio state changes
         this.listeners.custom(subscribe(this.state, this.debouncedWriteURL));
 
         return this.stop;
