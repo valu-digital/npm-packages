@@ -156,6 +156,10 @@ export class ValtioLocationSync<State> {
     };
 
     start = () => {
+        if (this.active) {
+            return;
+        }
+
         this.active = true;
         this.readURL();
 
