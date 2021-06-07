@@ -15,6 +15,7 @@ npm install @valu/valtio-location
 
 ```tsx
 import { proxy } from "valtio";
+import { sync } from "@valu/valtio-location";
 
 const state = proxy({ tags: [] });
 
