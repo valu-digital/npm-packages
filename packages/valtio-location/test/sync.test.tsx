@@ -119,7 +119,7 @@ test("can spy pushState", async () => {
     expect(state.foo).toEqual("replace-change");
 });
 
-test.only("can stop syncing", async () => {
+test("can stop syncing", async () => {
     const state = proxy({ foo: "" });
 
     const { start, stop } = sync(state, {
