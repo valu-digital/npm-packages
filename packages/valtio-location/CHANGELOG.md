@@ -1,3 +1,9 @@
+## v1.0.2
+
+2021-06-08
+
+-   Fix focusout write [7618bbf](https://github.com/valu-digital/npm-packages/commit/7618bbf) - Esa-Matti Suuronen
+
 ## v1.0.1
 
 2021-06-07
