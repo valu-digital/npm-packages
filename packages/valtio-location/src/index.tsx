@@ -167,7 +167,7 @@ export class ValtioLocationSync<State> {
         this.listeners.onEventTarget(window, "popstate", this.readURL);
 
         // Immediately save when the window is unfocused
-        this.listeners.onEventTarget(window, "focusout", this.writeURL);
+        this.listeners.onEventTarget(window, "blur", this.writeURL);
 
         // Immediately save when user navigates to another page
         this.listeners.onEventTarget(window, "beforeunload", this.writeURL);
