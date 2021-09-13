@@ -5,6 +5,7 @@ declare global {
 }
 
 export interface LazyScriptOptions<T> {
+    id?: string;
     name: string;
     src: string;
     blocked?: boolean;
@@ -154,6 +155,11 @@ export class LazyScript<T = any> {
         el.async = true;
         el.dataset.lazyScript = this.options.name;
         el.src = this.options.src;
+
+        if (this.options.id) {
+            el.id = this.options.id;
+        }
+
         const newScript = this.options.mutate?.(el);
 
         if (newScript instanceof HTMLScriptElement) {
