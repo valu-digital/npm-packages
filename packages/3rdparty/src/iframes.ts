@@ -142,6 +142,14 @@ export class IFrames {
                             node.src || node,
                         );
                         this.block(node);
+                    } else if (node instanceof HTMLElement) {
+                        forEach(node.querySelectorAll("iframe"), (iframe) => {
+                            debug(
+                                "Found new nested iframe from mutation observer",
+                                iframe.src || iframe,
+                            );
+                            this.block(iframe);
+                        });
                     }
                 });
             });
