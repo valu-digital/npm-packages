@@ -113,6 +113,8 @@ export class ValtioLocationSync<State> {
     private state: State;
     private listeners = multiListener();
     private active = false;
+    private pendingWrite?: Promise<any>;
+    private retryWrite = false;
 
     constructor(state: State, options?: ValtioLocationSyncOptions<State>) {
         this.state = state;
@@ -161,9 +163,6 @@ export class ValtioLocationSync<State> {
 
         Object.assign(this.state, value);
     };
-
-    private pendingWrite?: Promise<any>;
-    private retryWrite = false;
 
     writeURL = (): Promise<any> => {
         if (!this.active) {
