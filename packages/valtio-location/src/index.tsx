@@ -139,7 +139,7 @@ export class ValtioLocationSync<State> {
         if (isNextjs && usingDefaultReplace) {
             if (!this.options.nextjsRouter) {
                 throw new Error(
-                    `[valtio-location] Next.js detected. You must pass in 'nextjsRouter'`,
+                    `[valtio-location] Next.js detected. You must pass in 'nextjsRouter'. See https://git.io/Jz0jf`,
                 );
             }
 
