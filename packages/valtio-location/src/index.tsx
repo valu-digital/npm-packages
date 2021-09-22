@@ -96,7 +96,7 @@ export interface NextjsRouterLike {
 }
 
 function createNextjsRouterReplace(nextjsRouter: NextjsRouterLike) {
-    return async function nextjsRouterReplace(url: URL) {
+    return function nextjsRouterReplace(url: URL) {
         const path = nextjsRouter.asPath.replace(/\?.+/, "");
         return nextjsRouter.replace(
             nextjsRouter.pathname,
