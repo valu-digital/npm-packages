@@ -97,6 +97,8 @@ export interface NextjsRouterLike {
 
 function createNextjsRouterReplace(nextjsRouter: NextjsRouterLike) {
     return function nextjsRouterReplace(url: URL) {
+        // Removing the existing query string part because the given "url" param
+        // contains the full updated query string already
         const path = nextjsRouter.asPath.replace(/\?.+/, "");
         return nextjsRouter.replace(
             nextjsRouter.pathname,
