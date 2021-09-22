@@ -87,8 +87,8 @@ function historyReplaceState(url: URL) {
     history.replaceState(history.state, "", url.toString());
 }
 
-// Just structually type the enough of the next.js router interface so we don't
-// have to depend on Next.js directly
+// Just structually type enough of the next.js router interface so we don't have
+// to depend on Next.js directly
 export interface NextjsRouterLike {
     replace: (url: string, as: string, options?: {}) => Promise<any>;
     pathname: string;
