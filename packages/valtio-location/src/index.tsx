@@ -184,6 +184,10 @@ export class ValtioLocationSync<State> {
         const newURL =
             this.options.writeURL(this.state, currentURL) || currentURL;
 
+        if (location.toString().toString() === newURL.toString()) {
+            return Promise.resolve();
+        }
+
         this.pendingWrite =
             this.options.historyReplaceState(newURL) || Promise.resolve();
 
