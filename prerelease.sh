@@ -28,4 +28,4 @@ if [ "$(git status . --porcelain)" != "" ]; then
     exit 1
 fi
 
-git push -f origin master:release/$pkg/prerelease
+git push -f origin HEAD:release/$pkg/prerelease

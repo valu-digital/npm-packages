@@ -9,6 +9,8 @@ interface Emitter {
     removeEventListener(event: string, cb: Listener): any;
 }
 
+const isNextjs = typeof window !== "undefined" && "__NEXT_DATA__" in window;
+
 function multiListener() {
     let unbinds = [] as Function[];
 
@@ -75,8 +77,48 @@ if (typeof history !== "undefined") {
 export interface ValtioLocationSyncOptions<State> {
     key?: string;
     debounceTime?: number;
+    nextjsRouter?: NextjsRouterLike | null;
+    historyReplaceState?: (url: URL) => Promise<any> | undefined | void;
     readURL?: (url: URL) => Partial<State> | undefined;
     writeURL?: (state: State, url: URL) => URL | undefined | void;
+}
+
+function historyReplaceState(url: URL) {
+    history.replaceState(history.state, "", url.toString());
+}
+
+// Just structually type enough of the next.js router interface so we don't have
+// to depend on Next.js directly
+export interface NextjsRouterLike {
+    replace: (
+        url: string,
+        as: string,
+        options?: {
+            shallow?: boolean;
+            scroll?: false;
+        },
+    ) => Promise<any>;
+    pathname: string;
+    asPath: string;
+}
+
+function createNextjsRouterReplace(nextjsRouter: NextjsRouterLike) {
+    return function nextjsRouterReplace(url: URL) {
+        // Removing the existing query string part because the given "url" param
+        // contains the full updated query string already
+        const path = nextjsRouter.asPath.replace(/\?.+/, "");
+        return nextjsRouter.replace(
+            nextjsRouter.pathname,
+            path + url.search + url.hash,
+            {
+                // Do not scroll up on update
+                scroll: false,
+                // Do not fetch page props on update. This does not have
+                // server-side presense so it is not needed
+                shallow: true,
+            },
+        );
+    };
 }
 
 export class ValtioLocationSync<State> {
@@ -84,14 +126,17 @@ export class ValtioLocationSync<State> {
     private options: Required<ValtioLocationSyncOptions<State>>;
     private state: State;
     private listeners = multiListener();
-    private pause = false;
     private active = false;
+    private pendingWrite?: Promise<any>;
+    private retryWrite = false;
 
     constructor(state: State, options?: ValtioLocationSyncOptions<State>) {
         this.state = state;
         this.options = {
             key: "data",
+            historyReplaceState,
             debounceTime: 1000,
+            nextjsRouter: null,
             readURL: (url) => {
                 const value = url.searchParams.get(this.options.key);
                 if (!value) {
@@ -105,6 +150,21 @@ export class ValtioLocationSync<State> {
             },
             ...options,
         };
+
+        const usingDefaultReplace =
+            this.options.historyReplaceState === historyReplaceState;
+
+        if (isNextjs && usingDefaultReplace) {
+            if (!this.options.nextjsRouter) {
+                throw new Error(
+                    `[valtio-location] Next.js detected. You must pass in 'nextjsRouter'. See https://git.io/Jz0jf`,
+                );
+            }
+
+            this.options.historyReplaceState = createNextjsRouterReplace(
+                this.options.nextjsRouter,
+            );
+        }
     }
 
     readURL = () => {
@@ -118,19 +178,38 @@ export class ValtioLocationSync<State> {
         Object.assign(this.state, value);
     };
 
-    writeURL = () => {
-        this.cancelDebounce();
+    writeURL = (): Promise<any> => {
         if (!this.active) {
-            return;
+            return Promise.resolve();
+        }
+
+        this.cancelDebounce();
+
+        if (this.pendingWrite) {
+            if (this.retryWrite) {
+                return Promise.resolve();
+            }
+
+            this.retryWrite = true;
+            return this.pendingWrite.then(this.writeURL);
         }
 
         const currentURL = new URL(location.toString());
         const newURL =
             this.options.writeURL(this.state, currentURL) || currentURL;
 
-        this.pause = true;
-        history.replaceState(undefined, "", newURL.toString());
-        this.pause = false;
+        // If no actual change no need to call the replace state
+        if (location.toString().toString() === newURL.toString()) {
+            return Promise.resolve();
+        }
+
+        this.pendingWrite =
+            this.options.historyReplaceState(newURL) || Promise.resolve();
+
+        return this.pendingWrite.then(() => {
+            this.pendingWrite = undefined;
+            this.retryWrite = false;
+        });
     };
 
     cancelDebounce = () => {
@@ -150,7 +229,7 @@ export class ValtioLocationSync<State> {
     };
 
     handleURLChange = () => {
-        if (!this.pause) {
+        if (!this.pendingWrite) {
             this.readURL();
         }
     };

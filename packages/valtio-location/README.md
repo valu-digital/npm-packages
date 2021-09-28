@@ -66,3 +66,17 @@ function Component() {
 
 The `start()` function returns a `stop()` function which can be used as the
 `useEffect()` cleanup function.
+
+## Next.js
+
+When using Next.js you must pass in the Next.js router because the default
+behaviour of using the `history.replaceState()` api breaks the internal Next.js
+state.
+
+```ts
+import Router from "next/router";
+
+const { start } = sync(state, { nextjsRouter: Router });
+```
+
+Background <https://github.com/vercel/next.js/issues/29252#issuecomment-923998931>
