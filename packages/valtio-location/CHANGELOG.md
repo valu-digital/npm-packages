@@ -1,3 +1,13 @@
+## v1.1.0
+
+2021-09-28
+
+-   Add Next.js support
+
+Technically the Next.js support is a breaking change for existing Next.js users
+but it was also broken for Next.js users as well because it broke the browser
+back button. See the readme for Next.js usage.
+
 ## v1.0.2
 
 2021-06-08
