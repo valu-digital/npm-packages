@@ -90,7 +90,14 @@ function historyReplaceState(url: URL) {
 // Just structually type enough of the next.js router interface so we don't have
 // to depend on Next.js directly
 export interface NextjsRouterLike {
-    replace: (url: string, as: string, options?: {}) => Promise<any>;
+    replace: (
+        url: string,
+        as: string,
+        options?: {
+            shallow?: boolean;
+            scroll?: false;
+        },
+    ) => Promise<any>;
     pathname: string;
     asPath: string;
 }
@@ -103,6 +110,13 @@ function createNextjsRouterReplace(nextjsRouter: NextjsRouterLike) {
         return nextjsRouter.replace(
             nextjsRouter.pathname,
             path + url.search + url.hash,
+            {
+                // Do not scroll up on update
+                scroll: false,
+                // Do not fetch page props on update. This does not have
+                // server-side presense so it is not needed
+                shallow: true,
+            },
         );
     };
 }
