@@ -184,6 +184,7 @@ export class ValtioLocationSync<State> {
         const newURL =
             this.options.writeURL(this.state, currentURL) || currentURL;
 
+        // If no actual change no need to call the replace state
         if (location.toString().toString() === newURL.toString()) {
             return Promise.resolve();
         }
