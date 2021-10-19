@@ -122,7 +122,8 @@ function createNextjsRouterReplace(nextjsRouter: NextjsRouterLike) {
 }
 
 export class ValtioLocationSync<State> {
-    private timer?: ReturnType<typeof setTimeout>;
+    private writeTimer?: ReturnType<typeof setTimeout>;
+    private readTimer?: ReturnType<typeof setTimeout>;
     private options: Required<ValtioLocationSyncOptions<State>>;
     private state: State;
     private listeners = multiListener();
@@ -168,6 +169,10 @@ export class ValtioLocationSync<State> {
     }
 
     readURL = () => {
+        if (this.pendingWrite) {
+            return;
+        }
+
         const url = new URL(location.toString());
 
         const value = this.options.readURL(url);
@@ -183,7 +188,7 @@ export class ValtioLocationSync<State> {
             return Promise.resolve();
         }
 
-        this.cancelDebounce();
+        this.cancelWriteDebounce();
 
         if (this.pendingWrite) {
             if (this.retryWrite) {
@@ -212,26 +217,31 @@ export class ValtioLocationSync<State> {
         });
     };
 
-    cancelDebounce = () => {
-        if (this.timer) {
-            clearTimeout(this.timer);
+    cancelWriteDebounce = () => {
+        if (this.writeTimer) {
+            clearTimeout(this.writeTimer);
+        }
+    };
+
+    cancelReadDebounce = () => {
+        if (this.readTimer) {
+            clearTimeout(this.readTimer);
         }
     };
 
     debouncedWriteURL = () => {
-        this.cancelDebounce();
+        this.cancelWriteDebounce();
 
         if (!this.active) {
             return;
         }
 
-        this.timer = setTimeout(this.writeURL, this.options.debounceTime);
+        this.writeTimer = setTimeout(this.writeURL, this.options.debounceTime);
     };
 
-    handleURLChange = () => {
-        if (!this.pendingWrite) {
-            this.readURL();
-        }
+    debouncedReadURL = () => {
+        this.cancelReadDebounce();
+        this.readTimer = setTimeout(this.readURL, 100);
     };
 
     start = () => {
@@ -243,7 +253,7 @@ export class ValtioLocationSync<State> {
         this.readURL();
 
         // Browser back button
-        this.listeners.onEventTarget(window, "popstate", this.readURL);
+        this.listeners.onEventTarget(window, "popstate", this.debouncedReadURL);
 
         // Immediately save when the window is unfocused
         this.listeners.onEventTarget(window, "blur", this.writeURL);
@@ -252,7 +262,7 @@ export class ValtioLocationSync<State> {
         this.listeners.onEventTarget(window, "beforeunload", this.writeURL);
 
         // Handle manual history.replaceState / history.pushState calls
-        this.listeners.custom(spy.onCall(this.handleURLChange));
+        this.listeners.custom(spy.onCall(this.debouncedReadURL));
 
         // Debounced sync on Valtio state changes
         this.listeners.custom(subscribe(this.state, this.debouncedWriteURL));
@@ -262,7 +272,8 @@ export class ValtioLocationSync<State> {
 
     stop = () => {
         this.active = false;
-        this.cancelDebounce();
+        this.cancelWriteDebounce();
+        this.cancelReadDebounce();
         this.listeners.removeAll();
     };
 }

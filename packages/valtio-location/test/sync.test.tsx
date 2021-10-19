@@ -93,6 +93,8 @@ test("can spy replaceState", async () => {
 
     history.replaceState(undefined, "", "/?foo=replace-change");
 
+    await wait(200);
+
     expect(state.foo).toEqual("replace-change");
 });
 
@@ -115,6 +117,8 @@ test("can spy pushState", async () => {
     start();
 
     history.pushState(undefined, "", "/?foo=replace-change");
+
+    await wait(200);
 
     expect(state.foo).toEqual("replace-change");
 });
@@ -139,12 +143,16 @@ test("can stop syncing", async () => {
 
     history.pushState(undefined, "", "/?foo=replace-change");
 
+    await wait(200);
+
     expect(state.foo).toEqual("replace-change");
 
     stop();
 
     history.pushState(undefined, "", "/?foo=next");
     history.replaceState(undefined, "", "/?foo=next");
+
+    await wait(200);
 
     expect(state.foo).toEqual("replace-change");
 
