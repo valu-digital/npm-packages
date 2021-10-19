@@ -1,3 +1,9 @@
+## v1.2.0
+
+2021-10-19
+
+-   Debounce reads too [636fae6](https://github.com/valu-digital/npm-packages/commit/636fae6) - Esa-Matti Suuronen
+
 ## v1.1.0
 
 2021-09-28
