@@ -114,6 +114,9 @@ export function connectCookieBot(
                  *
                  *  Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko; compatible; Cookiebot/1.0; +http://cookiebot.com/) Chrome/86.0.4240.183 Safari/537.36
                  *
+                 * Docs 26.10.2021 https://support.cookiebot.com/hc/en-us/articles/360003824153-Whitelist-what-IP-addresses-do-you-scan-from-
+                 * "We suggest simply looking for "Cookiebot" in the string and make your desired configurations based on this."
+                 *
                  */
                 if (/cookiebot/i.test(window.navigator.userAgent)) {
                     console.log(
