@@ -124,7 +124,7 @@ export function connectCookieBot(
                         window.navigator.userAgent,
                     );
                     trackingConsent.setStatus("consented");
-                    CookiebotScript.now();
+                    // CookiebotScript.now();
                 }
                 return;
             }
