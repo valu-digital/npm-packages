@@ -135,6 +135,4 @@ jobs:
             - name: Notify about failure
               if: failure()
               run: |
-                  set -eu
-                  . .github/utils.sh
                   slack-message "Failed to make npm release for ${pkg:-} / ${npm_name:-}"
