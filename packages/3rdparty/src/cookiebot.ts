@@ -54,6 +54,9 @@ export function connectCookieBot(
      * The cookiebot id
      */
     cbid: string,
+    options?: {
+        blockingMode?: "manual" | "auto";
+    },
 ) {
     if (typeof window === "undefined") {
         return;
@@ -71,7 +74,11 @@ export function connectCookieBot(
             return window.Cookiebot;
         },
         mutate: (el) => {
-            el.dataset.blockingmode = "manual";
+            if (options?.blockingMode === "auto") {
+                el.async = false;
+            }
+
+            el.dataset.blockingmode = options?.blockingMode ?? "manual";
             el.dataset.cbid = cbid;
             el.id = "Cookiebot";
         },
