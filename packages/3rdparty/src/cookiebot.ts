@@ -80,9 +80,7 @@ export function connectCookieBot(
     window.addEventListener(
         "CookiebotOnAccept",
         () => {
-            if (window.Cookiebot?.hasResponse) {
-                trackingConsent.consent();
-            }
+            trackingConsent.consent();
         },
         false,
     );
@@ -90,9 +88,7 @@ export function connectCookieBot(
     window.addEventListener(
         "CookiebotOnDecline",
         () => {
-            if (window.Cookiebot?.hasResponse) {
-                trackingConsent.decline();
-            }
+            trackingConsent.decline();
         },
         false,
     );
@@ -100,32 +96,6 @@ export function connectCookieBot(
     trackingConsent.onEvent((event) => {
         switch (event) {
             case "init": {
-                /**
-                 * Disable all blocking for the cookiebot crawler so it can see
-                 * the trackers
-                 *
-                 * https://support.cookiebot.com/hc/en-us/community/posts/360010100774-UserAgent-Need-to-know-its-CookieBot-to-avoid-Blocking-unknown-Scanner
-                 *
-                 *    'Yes. Since the last update, you could now identify
-                 *    Cookiebot through the user agent string and it will contain
-                 *    "Cookiebot".'
-                 *
-                 * User agent seems to be like this:
-                 *
-                 *  Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko; compatible; Cookiebot/1.0; +http://cookiebot.com/) Chrome/86.0.4240.183 Safari/537.36
-                 *
-                 * Docs 26.10.2021 https://support.cookiebot.com/hc/en-us/articles/360003824153-Whitelist-what-IP-addresses-do-you-scan-from-
-                 * "We suggest simply looking for "Cookiebot" in the string and make your desired configurations based on this."
-                 *
-                 */
-                if (/cookiebot/i.test(window.navigator.userAgent)) {
-                    console.log(
-                        "CookieBot bot detected! Consenting automatically",
-                        window.navigator.userAgent,
-                    );
-                    trackingConsent.setStatus("consented");
-                    CookiebotScript.now();
-                }
                 return;
             }
 
