@@ -52,6 +52,33 @@ export class TrackingConsent {
     init() {
         this.emit("init");
 
+        if (typeof window !== "undefined") {
+            // _vlu3rdtc = "valu 3rdparty tracking consent"
+            const implicitStatus = /_vlu3rdtc=(decline|consent)/.exec(
+                location.search,
+            )?.[1];
+            const date = new Date().toISOString();
+
+            if (implicitStatus === "consent") {
+                this.response = {
+                    status: "consented",
+                    date,
+                };
+            } else if (implicitStatus === "decline") {
+                this.response = {
+                    status: "declined",
+                    date,
+                };
+            }
+
+            if (implicitStatus) {
+                console.warn(
+                    "[@valu/3rdparty] Using implicit consent response from qs",
+                    this.response,
+                );
+            }
+        }
+
         if (this.response.status === "not-given") {
             this.showPrompt();
         }

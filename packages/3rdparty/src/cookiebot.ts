@@ -59,6 +59,15 @@ export function connectCookieBot(
         return;
     }
 
+    // Disable cookiebot integration temporally
+    // vlu3rdcb = "valu 3rd party cookiebot"
+    if (/_vlu3rdcb=0/.test(location.search)) {
+        console.warn(
+            "[@valu/3rdparty] Cookiebot integration disabled due to qs flag.",
+        );
+        return;
+    }
+
     const CookiebotScript = new LazyScript({
         name: "cookiebot",
         src: "https://consent.cookiebot.com/uc.js",
