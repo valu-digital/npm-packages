@@ -1,3 +1,9 @@
+## v1.2.6
+
+2021-11-04
+
+-   Add qs flags to manipulate consents and cookiebot integration [f81ecfc](https://github.com/valu-digital/npm-packages/commit/f81ecfc) - Esa-Matti Suuronen
+
 ## v1.2.5
 
 2021-11-03
