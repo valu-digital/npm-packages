@@ -66,6 +66,9 @@ function getDefaultConfig() {
 
             // Workaround for https://github.com/webpack/webpack-dev-server/issues/1604
             disableHostCheck: true,
+            // Workaround for multiple issues,
+            // e.g. https://github.com/webpack/webpack-dev-server/issues/1021
+            host: "127.0.0.1",
         },
 
         resolve: {
