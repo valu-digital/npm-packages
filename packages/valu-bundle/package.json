@@ -1,0 +1,45 @@
+{
+    "name": "@valu/bundle",
+    "version": "1.0.0",
+    "description": "",
+    "main": "dist/index.js",
+    "files": [
+        "webpack.js",
+        "webpack.d.ts",
+        "cli-entry.js",
+        "dist"
+    ],
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc --noEmit false",
+        "watch": "tsc --watch --noEmit false"
+    },
+    "bin": {
+        "valu-bundle": "cli-entry.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@babel/core": "^7.16.0",
+        "@babel/preset-env": "^7.16.0",
+        "@babel/preset-react": "^7.16.0",
+        "@babel/preset-typescript": "^7.16.0",
+        "@valu/assert": "^1.1.0",
+        "arg": "^5.0.1",
+        "babel-loader": "^8.2.3",
+        "babel-plugin-macros": "^3.1.0",
+        "css-loader": "^6.5.1",
+        "style-loader": "^3.3.1",
+        "webpack": "^5.64.1",
+        "webpack-assets-manifest": "^5.0.6",
+        "webpack-bundle-analyzer": "^4.5.0",
+        "webpack-dev-server": "^4.5.0",
+        "zod": "^3.11.6"
+    },
+    "devDependencies": {
+        "@types/node": "^16.11.7",
+        "@types/webpack-assets-manifest": "^5.0.2",
+        "@types/webpack-dev-server": "^4.3.1",
+        "typescript": "^4.4.4"
+    }
+}
