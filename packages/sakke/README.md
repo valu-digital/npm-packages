@@ -29,6 +29,7 @@ Create `sakke.config.js`:
 const config = {
     babelPlugins: [],
     webpackPlugins: [],
+    webpackRules: [],
     compileNodeModules: [],
 };
 
