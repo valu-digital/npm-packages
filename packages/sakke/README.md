@@ -13,6 +13,7 @@ Features
 -   Automatically loads entry points from `assets/scripts`
 -   Output is written to `dist/scripts` with a `manifest.json` file
 -   jQuery imports are aliased to the global jQuery
+-   Ability analyze the js bundle contents
 
 ## Install
 
