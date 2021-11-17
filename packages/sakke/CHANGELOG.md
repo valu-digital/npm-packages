@@ -1,3 +1,9 @@
+## v1.1.1
+
+2021-11-17
+
+-   babel dep fixes [2799264](https://github.com/valu-digital/npm-packages/commit/2799264) - Esa-Matti Suuronen
+
 ## v1.1.0
 
 2021-11-17
