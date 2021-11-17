@@ -43,10 +43,10 @@ function extractCommons() {
 function getBabelOptions() {
     return {
         presets: [
-            "@babel/preset-typescript",
-            "@babel/preset-react",
+            require("@babel/preset-typescript"),
+            require("@babel/preset-react"),
             [
-                "@babel/preset-env",
+                require("@babel/preset-env"),
                 Object.assign(
                     {
                         useBuiltIns: "entry",
@@ -57,7 +57,7 @@ function getBabelOptions() {
                 ),
             ],
         ],
-        plugins: ["macros"],
+        plugins: [require("babel-plugin-macros")],
     };
 }
 
@@ -155,7 +155,7 @@ function getBabelLoaderConfig(options: BabelLoaderConfig = {}) {
             extensions: EXTENSIONS,
         },
         use: {
-            loader: resolve(__dirname, "babel-loader.js"),
+            loader: PathUtils.join(__dirname, "babel-loader.js"),
         },
         exclude(modulePath: string) {
             const nodeModuleToCompile = pathMatchers.some((includeModule) =>
