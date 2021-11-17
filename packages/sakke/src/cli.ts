@@ -39,7 +39,7 @@ async function bundleJS(argv: string[]) {
     const valuBundleConfig = SakkeConfigParser.safeParse(require(configPath));
 
     if (!valuBundleConfig.success) {
-        console.error("Invalid sakko.config.js config at", configPath);
+        console.error("Invalid sakke.config.js config at", configPath);
         console.error(valuBundleConfig.error.errors);
         process.exit(5);
     }
