@@ -60,14 +60,14 @@ sakke js --analyze
 ## Importing Webpack
 
 If you need to customize the Webpack plugins you must import it from
-`@valu/bundle/webpack` to ensure correct version is used.
+`sakke/webpack` to ensure correct version is used.
 
 Example
 
 ```js
 const webpack = require("sakke/webpack");
 
-/** @type {import("@valu/bundle").Config} */
+/** @type {import("sakke").Config} */
 const config = {
     webpackPlugins: [
         new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /fi|en/),
