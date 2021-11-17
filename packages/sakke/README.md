@@ -20,6 +20,11 @@ Features
 npm install sakke
 ```
 
+## HTTPS
+
+This tool uses https and you must point SAKKE_CA, SAKKE_CERT and SAKKE_KEY
+environment variables to localhost certificate.
+
 ## Config
 
 Create `sakke.config.js`:
