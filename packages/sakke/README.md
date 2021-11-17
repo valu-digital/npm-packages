@@ -46,6 +46,38 @@ The type comment is just to help the editor autocomplete.
 
 ## CLI Usage
 
+### Dev mode
+
+Run Wepback Dev Server, SASS watcher, live reload etc.
+
+```
+sakke dev
+```
+
+### Build For Production
+
+```
+sakke build
+```
+
+## Deploy
+
+To production
+
+```
+sakke deploy-production
+```
+
+Staging
+
+```
+sakke deploy-staging
+```
+
+### JS
+
+JS specific tasks
+
 Build for production
 
 ```
@@ -62,6 +94,22 @@ Analyze bundle contents
 
 ```
 sakke js --analyze
+```
+
+### CSS
+
+Build CSS from SASS
+
+```
+sakke css
+```
+
+### Legacy Gulp task
+
+Run any legacy gulp task with
+
+```
+sakke gulp [task name]
 ```
 
 ## Importing Webpack
