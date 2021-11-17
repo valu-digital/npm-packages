@@ -177,7 +177,7 @@ const assertGitMaster = sh`
 gulp.task(
     "scripts",
     sh`
-	    webpack --mode production
+	    sakke js --production
 	    terser -m eval load-polyfills.js > dist/scripts/load-polyfills.js
 	`,
 );
@@ -360,7 +360,7 @@ gulp.task(
         "images",
         (done) => {
             livereload.listen({ port: sakke.livereload.port });
-            sh`webpack-dev-server --mode development`();
+            sh`sakke js --watch`();
 
             gulp.watch(
                 [ROOT + "/assets/styles/**", ROOT + "/sakke-plugins/**/*.scss"],
