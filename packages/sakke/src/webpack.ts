@@ -128,6 +128,14 @@ export interface DevServerConfig {
     http2?: boolean;
     allowedHosts?: string;
 
+    server?: {
+        type: "https";
+        options: {
+            ca: string;
+            key: string;
+            cert: string;
+        };
+    };
     https?: ServerOptions;
     historyApiFallback?: TODO;
 }
@@ -256,18 +264,22 @@ export async function createWebpackConfig(options: SakkeConfig, args: Args) {
 
     const devServer: DevServerConfig = (config as TODO).devServer;
 
-    const ca = readFileSync(
-        "/Users/esamatti1/Library/Application Support/mkcert/rootCA.pem",
-    );
-    const cert = readFileSync(
-        "/Users/esamatti1/code/valu-playbooks/development_certs/localhost/fullchain.pem",
-    );
+    const ca = process.env["SAKKE_CA"];
+    const cert = process.env["SAKKE_CERT"];
+    const key = process.env["SAKKE_KEY"];
 
-    const key = readFileSync(
-        "/Users/esamatti1/code/valu-playbooks/development_certs/localhost/privkey.pem",
-    );
-
-    devServer.https = { ca, cert, key };
+    if (ca && cert && key) {
+        devServer.server = {
+            type: "https",
+            options: {
+                ca,
+                cert,
+                key,
+            },
+        };
+    } else {
+        throw Error("You must define SAKKE_CA, SAKKE_CERT and SAKKE_KEY");
+    }
 
     const publicPath = `/wp-content/themes/${wpTheme}/dist/scripts/`;
     const outputPath = PathUtils.join(process.cwd(), "dist/scripts");
