@@ -31,7 +31,6 @@ function parseJSArgs(argv: string[]) {
 }
 
 async function gulp(argv: string[]) {
-    console.log("args", argv);
     require("../gulpfile.js");
     const gulp = require("gulp");
     const task = gulp.task(argv[0]);
