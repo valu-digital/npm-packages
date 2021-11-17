@@ -8,7 +8,7 @@ Features
 -   JavaScript / TypeScript / JSX Transpiling
 -   CSS importing
 -   SVG importing
--   Build-in Webpack Dev Server
+-   Build-in Webpack Dev Server with https
 -   Automatically reads `sakke.json`
 -   Automatically loads entry points from `assets/scripts`
 -   Output is written to `dist/scripts` with a `manifest.json` file
