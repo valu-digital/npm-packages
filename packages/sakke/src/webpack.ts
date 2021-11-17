@@ -6,7 +6,7 @@ import { DefinePlugin, Configuration, EnvironmentPlugin } from "webpack";
 import WebpackAssetsManifest from "webpack-assets-manifest";
 import { ServerOptions } from "https";
 import { promises as fs, readFileSync } from "fs";
-import { SakkeJSON, ValuBundleConfigType } from "./types";
+import { SakkeJSON, SakkeConfig } from "./types";
 
 const gitRev = "todogitrev";
 
@@ -235,10 +235,7 @@ async function loadSakkeJSON() {
     return SakkeJSON.parse(JSON.parse(data.toString()));
 }
 
-export async function createWebpackConfig(
-    options: ValuBundleConfigType,
-    args: Args,
-) {
+export async function createWebpackConfig(options: SakkeConfig, args: Args) {
     const isProduction = args.mode === "production";
     // For some reason --mode option does not set NODE_ENV for .babelrc.js
     process.env["NODE_ENV"] = args.mode ?? "development";

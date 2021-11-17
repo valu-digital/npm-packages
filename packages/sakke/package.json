@@ -1,7 +1,7 @@
 {
-    "name": "@valu/bundle",
+    "name": "sakke",
     "version": "1.0.0",
-    "description": "",
+    "description": "Webpack and Babel wrapper for Sakke WordPress Themes",
     "main": "dist/index.js",
     "files": [
         "webpack.js",
@@ -15,7 +15,7 @@
         "watch": "tsc --watch --noEmit false"
     },
     "bin": {
-        "valu-bundle": "cli-entry.js"
+        "sakke": "cli-entry.js"
     },
     "author": "",
     "license": "ISC",

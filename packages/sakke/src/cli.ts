@@ -2,7 +2,7 @@ import { webpack } from "webpack";
 import WebpackDevServer from "webpack-dev-server";
 import PathUtils from "path";
 import arg from "arg";
-import { ValuBundleConfig } from "./types";
+import { SakkeConfigParser } from "./types";
 import { createWebpackConfig } from "./webpack";
 
 function parseArgs(argv: string[]) {
@@ -34,13 +34,12 @@ async function bundleJS(argv: string[]) {
     const args = parseArgs(argv);
 
     const configPath =
-        args["--config"] ??
-        PathUtils.join(process.cwd(), "valu-bundle.config.js");
+        args["--config"] ?? PathUtils.join(process.cwd(), "sakke.config.js");
 
-    const valuBundleConfig = ValuBundleConfig.safeParse(require(configPath));
+    const valuBundleConfig = SakkeConfigParser.safeParse(require(configPath));
 
     if (!valuBundleConfig.success) {
-        console.error("Invalid valu-bundle config at", configPath);
+        console.error("Invalid sakko.config.js config at", configPath);
         console.error(valuBundleConfig.error.errors);
         process.exit(5);
     }
@@ -80,10 +79,10 @@ async function bundleJS(argv: string[]) {
 
 function help() {
     console.error(`
-usage: valu-bundle <subcommand> <options>
+usage: sakke <subcommand> <options>
 
-    example: valu-bundle js --production
-             valu-bundle js --serve
+    example: sakke js --production
+             sakke js --serve
 `);
 }
 

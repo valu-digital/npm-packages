@@ -1,7 +1,7 @@
-# Valu Bundle
+# sakke npm package
 
 Small wrapper for Webpack, Babel and various Webpack loaders for Valu Digital
-projects.
+Sakke projects.
 
 Features
 
@@ -17,15 +17,15 @@ Features
 ## Install
 
 ```
-npm install @valu/bundle
+npm install sakke
 ```
 
 ## Config
 
-Create `valu-bundle.config.js`:
+Create `sakke.config.js`:
 
 ```js
-/** @type {import("@valu/bundle").Config} */
+/** @type {import("sakke").Config} */
 const config = {
     babelPlugins: [],
     webpackPlugins: [],
@@ -37,24 +37,24 @@ module.exports = config;
 
 The type comment is just to help the editor autocomplete.
 
-## Usage
+## CLI Usage
 
 Build for development
 
 ```
-valu-bundle js --production
+sakke js --production
 ```
 
 Develop with the dev server
 
 ```
-valu-bundle js --serve
+sakke js --serve
 ```
 
-Analyze bundle contents
+sakke bundle contents
 
 ```
-valu-bundle js --analyze
+sakke js --analyze
 ```
 
 ## Importing Webpack
@@ -65,7 +65,7 @@ If you need to customize the Webpack plugins you must import it from
 Example
 
 ```js
-const webpack = require("@valu/bundle/webpack");
+const webpack = require("sakke/webpack");
 
 /** @type {import("@valu/bundle").Config} */
 const config = {
@@ -88,7 +88,7 @@ npm uninstall @valu/webpack-config # or possibly @epeli/webpack-config
 Install the new package and refresh the lock file
 
 ```
-npm install @valu/bundle
+npm install sakke
 rm -rf node_modules package-json.lock
 npm install
 ```
@@ -99,7 +99,7 @@ Remove old jquery proxy
 rm assets/scripts/lib/jquery.js
 ```
 
-Create `valu-bundle.config.js` and copy `babelPlugins`, `webpackPlugins` and
+Create `sakke.config.js` and copy `babelPlugins`, `webpackPlugins` and
 `compileNodeModules`, `webpackRules` fields from `webpack.config.js` if
 applicable.
 

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const anyFn = () => z.function().args(z.any()).returns(z.any());
 
-export const ValuBundleConfig = z
+export const SakkeConfigParser = z
     .object({
         babelPlugins: z
             .array(z.union([z.string(), z.array(z.string()), anyFn()]))
@@ -19,7 +19,7 @@ export const ValuBundleConfig = z
     })
     .strict();
 
-export type ValuBundleConfigType = z.infer<typeof ValuBundleConfig>;
+export type SakkeConfig = z.infer<typeof SakkeConfigParser>;
 
 export const SakkeJSON = z.object({
     webpack: z.object({
