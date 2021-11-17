@@ -5,7 +5,7 @@ import arg from "arg";
 import { SakkeConfigParser } from "./types";
 import { createWebpackConfig } from "./webpack";
 
-function parseArgs(argv: string[]) {
+function parseJSArgs(argv: string[]) {
     return arg(
         {
             "--production": Boolean,
@@ -30,8 +30,20 @@ function parseArgs(argv: string[]) {
     );
 }
 
+async function gulp(argv: string[]) {
+    console.log("args", argv);
+    require("../gulpfile.js");
+    const gulp = require("gulp");
+    const task = gulp.task(argv[0]);
+    if (!task) {
+        console.error(`Unknown gulp task "${argv[0]}`);
+        process.exit(9);
+    }
+    await task();
+}
+
 async function bundleJS(argv: string[]) {
-    const args = parseArgs(argv);
+    const args = parseJSArgs(argv);
 
     const configPath =
         args["--config"] ?? PathUtils.join(process.cwd(), "sakke.config.js");
@@ -79,21 +91,42 @@ async function bundleJS(argv: string[]) {
 
 function help() {
     console.error(`
-usage: sakke <subcommand> <options>
+usage: sakke [subcommand] <options>
 
-    example: sakke js --production
+    example:
+
+             sakke dev
+             sakke build
+             sakke js --production
              sakke js --serve
+             sakke css
+             sakke gulp [legacy gulp task]
 `);
 }
 
 export async function cli(argv: string[]) {
     if (argv[2] === "js") {
-        return await bundleJS(argv.slice(2));
+        return await bundleJS(argv.slice(3));
+    } else if (argv[2] === "gulp") {
+        return await gulp(argv.slice(3));
+    } else if (argv[2] === "deploy-production") {
+        return await gulp(["deploy-production"]);
+    } else if (argv[2] === "deploy-staging") {
+        return await gulp(["deploy-staging"]);
+    } else if (argv[2] === "build") {
+        return await gulp(["build"]);
+    } else if (argv[2] === "css") {
+        return await gulp(["styles"]);
+    } else if (argv[2] === "dev" || argv[2] === "watch") {
+        return await gulp(["watch"]);
+    } else if (argv[2] === "-h" || argv[2] === "--help") {
+        help();
+        process.exit(0);
     } else if (!argv[2]) {
         help();
         process.exit(1);
     } else {
-        console.error("Unknown subcommand. Only 'js' is supported atm.");
+        console.error("Unknown subcommand ");
         help();
         process.exit(1);
     }

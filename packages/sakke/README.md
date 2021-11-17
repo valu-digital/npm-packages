@@ -46,6 +46,38 @@ The type comment is just to help the editor autocomplete.
 
 ## CLI Usage
 
+### Dev mode
+
+Run Wepback Dev Server, SASS watcher, live reload etc.
+
+```
+sakke dev
+```
+
+### Build For Production
+
+```
+sakke build
+```
+
+## Deploy
+
+To production
+
+```
+sakke deploy-production
+```
+
+Staging
+
+```
+sakke deploy-staging
+```
+
+### JS
+
+JS specific tasks
+
 Build for production
 
 ```
@@ -62,6 +94,22 @@ Analyze bundle contents
 
 ```
 sakke js --analyze
+```
+
+### CSS
+
+Build CSS from SASS
+
+```
+sakke css
+```
+
+### Legacy Gulp task
+
+Run any legacy gulp task with
+
+```
+sakke gulp [task name]
 ```
 
 ## Importing Webpack
@@ -114,4 +162,25 @@ Remove `webpack.config.js`
 
 ```
 rm webpack.config.js
+```
+
+```ts
+const { fetchData, provide, useData } = createFetcher(async () => {
+    return fetch(endpoint);
+});
+
+function Page() {
+    // Can be used from also  any child component
+    const data = useData();
+    // ...
+}
+
+export function getServerSideProps() {
+    return fetchData();
+}
+
+// provide() wraps the Page component, captures the server side props and moves
+// them to a Context Provider which use read by the useData() via internal
+// useContext() call
+export default provide(Page);
 ```
