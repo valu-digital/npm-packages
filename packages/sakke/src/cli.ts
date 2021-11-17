@@ -5,7 +5,7 @@ import arg from "arg";
 import { SakkeConfigParser } from "./types";
 import { createWebpackConfig } from "./webpack";
 
-function parseArgs(argv: string[]) {
+function parseJSArgs(argv: string[]) {
     return arg(
         {
             "--production": Boolean,
@@ -30,8 +30,15 @@ function parseArgs(argv: string[]) {
     );
 }
 
+async function gulpWrap(argv: string[]) {
+    console.log("args", argv);
+    require("../gulpfile.js");
+    const gulp = require("gulp");
+    await gulp.task(argv[0])();
+}
+
 async function bundleJS(argv: string[]) {
-    const args = parseArgs(argv);
+    const args = parseJSArgs(argv);
 
     const configPath =
         args["--config"] ?? PathUtils.join(process.cwd(), "sakke.config.js");
@@ -88,7 +95,9 @@ usage: sakke <subcommand> <options>
 
 export async function cli(argv: string[]) {
     if (argv[2] === "js") {
-        return await bundleJS(argv.slice(2));
+        return await bundleJS(argv.slice(3));
+    } else if (argv[2] === "gulp") {
+        return await gulpWrap(argv.slice(3));
     } else if (!argv[2]) {
         help();
         process.exit(1);

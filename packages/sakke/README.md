@@ -115,3 +115,24 @@ Remove `webpack.config.js`
 ```
 rm webpack.config.js
 ```
+
+```ts
+const { fetchData, provide, useData } = createFetcher(async () => {
+    return fetch(endpoint);
+});
+
+function Page() {
+    // Can be used from also  any child component
+    const data = useData();
+    // ...
+}
+
+export function getServerSideProps() {
+    return fetchData();
+}
+
+// provide() wraps the Page component, captures the server side props and moves
+// them to a Context Provider which use read by the useData() via internal
+// useContext() call
+export default provide(Page);
+```
