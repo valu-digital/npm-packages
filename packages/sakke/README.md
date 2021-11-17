@@ -27,10 +27,10 @@ Create `sakke.config.js`:
 ```js
 /** @type {import("sakke").Config} */
 const config = {
-    babelPlugins: [],
-    webpackPlugins: [],
-    webpackRules: [],
-    compileNodeModules: [],
+    // babelPlugins: [],
+    // webpackPlugins: [],
+    // webpackRules: [],
+    // compileNodeModules: [],
 };
 
 module.exports = config;
