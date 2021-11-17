@@ -39,7 +39,7 @@ The type comment is just to help the editor autocomplete.
 
 ## CLI Usage
 
-Build for development
+Build for production
 
 ```
 sakke js --production
@@ -51,7 +51,7 @@ Develop with the dev server
 sakke js --serve
 ```
 
-sakke bundle contents
+Analyze bundle contents
 
 ```
 sakke js --analyze
