@@ -264,21 +264,23 @@ export async function createWebpackConfig(options: SakkeConfig, args: Args) {
 
     const devServer: DevServerConfig = (config as TODO).devServer;
 
-    const ca = process.env["SAKKE_CA"];
-    const cert = process.env["SAKKE_CERT"];
-    const key = process.env["SAKKE_KEY"];
+    if (args.devServer) {
+        const ca = process.env["SAKKE_CA"];
+        const cert = process.env["SAKKE_CERT"];
+        const key = process.env["SAKKE_KEY"];
 
-    if (ca && cert && key) {
-        devServer.server = {
-            type: "https",
-            options: {
-                ca,
-                cert,
-                key,
-            },
-        };
-    } else {
-        throw Error("You must define SAKKE_CA, SAKKE_CERT and SAKKE_KEY");
+        if (ca && cert && key) {
+            devServer.server = {
+                type: "https",
+                options: {
+                    ca,
+                    cert,
+                    key,
+                },
+            };
+        } else {
+            throw Error("You must define SAKKE_CA, SAKKE_CERT and SAKKE_KEY");
+        }
     }
 
     const publicPath = `/wp-content/themes/${wpTheme}/dist/scripts/`;
