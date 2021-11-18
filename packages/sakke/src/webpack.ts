@@ -469,9 +469,9 @@ export async function createWebpackConfig(options: SakkeConfig, args: Args) {
     //         },
     //     };
 
-    //     if (typeof options.customize === "function") {
-    //         config = options.customize(config, _, args) || config;
-    //     }
+    if (typeof options.customize === "function") {
+        config = options.customize(config, args) || config;
+    }
 
     return config;
 }

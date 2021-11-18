@@ -12,6 +12,7 @@ export const SakkeConfigParser = z
         webpackRules: z.array(z.any()).optional(),
         compileNodeModules: z.array(z.string()).optional(),
         customizeBabelOptions: anyFn().optional(),
+        customize: anyFn().optional(),
 
         env: z.record(z.string()).optional(),
 
