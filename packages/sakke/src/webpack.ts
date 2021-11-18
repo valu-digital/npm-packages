@@ -355,12 +355,8 @@ export async function createWebpackConfig(options: SakkeConfig, args: Args) {
         options.babelPlugins.forEach((plugin) => {
             if (typeof plugin === "function") {
                 babelOptions.plugins.push(plugin(args));
-            } else if (typeof plugin === "string") {
-                babelOptions.plugins.push(plugin);
             } else {
-                throw new Error(
-                    "[@valu/bundle] unsupported babel plugin format!",
-                );
+                babelOptions.plugins.push(plugin);
             }
         });
     }
