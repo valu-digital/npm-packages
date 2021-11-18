@@ -6,7 +6,8 @@ import { DefinePlugin, Configuration, EnvironmentPlugin } from "webpack";
 import WebpackAssetsManifest from "webpack-assets-manifest";
 import { ServerOptions } from "https";
 import { promises as fs, readFileSync } from "fs";
-import { SakkeJSON, SakkeConfig } from "./types";
+import { SakkeJSON, SakkeConfig, SakkeJSONType } from "./types";
+import { logger } from "./utils";
 
 const gitRev = "todogitrev";
 
@@ -238,8 +239,25 @@ async function autoloadEntries(dir: string) {
     }, {} as TODO);
 }
 
-async function loadSakkeJSON() {
-    const data = await fs.readFile(PathUtils.join(process.cwd(), "sakke.json"));
+async function loadSakkeJSON(): Promise<SakkeJSONType> {
+    const data = await fs
+        .readFile(PathUtils.join(process.cwd(), "sakke.json"))
+        .catch((error) => {
+            if (error.code !== "ENOENT") {
+                throw error;
+            }
+        });
+
+    if (!data) {
+        logger.warn("No sakke.json found. Generating some defaults.");
+        return {
+            webpack: {
+                port: 3941,
+                host: "localhost",
+            },
+        };
+    }
+
     return SakkeJSON.parse(JSON.parse(data.toString()));
 }
 
