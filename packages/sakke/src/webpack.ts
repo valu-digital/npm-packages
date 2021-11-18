@@ -297,7 +297,9 @@ export async function createWebpackConfig(options: SakkeConfig, args: Args) {
                 },
             };
         } else {
-            throw Error("You must define SAKKE_CA, SAKKE_CERT and SAKKE_KEY");
+            throw Error(
+                "🛑 You must define SAKKE_CA, SAKKE_CERT and SAKKE_KEY",
+            );
         }
     }
 
