@@ -9,10 +9,6 @@ import { promises as fs, readFileSync } from "fs";
 import { SakkeJSON, SakkeConfig, SakkeJSONType } from "./types";
 import { logger } from "./utils";
 
-const gitRev = "todogitrev";
-
-const gitDate = "todogitdate";
-
 export const EXTENSIONS = [".tsx", ".ts", ".mjs", ".jsx", ".js"];
 
 /**
@@ -455,14 +451,6 @@ export async function createWebpackConfig(options: SakkeConfig, args: Args) {
         new WebpackAssetsManifest({
             output: PathUtils.join(config.output.path, "manifest.json"),
             writeToDisk: true,
-        }),
-    );
-
-    config.plugins.push(
-        new DefinePlugin({
-            WEBPACK_GIT_DATE: JSON.stringify(gitDate),
-            WEBPACK_GIT_REV: JSON.stringify(gitRev),
-            WEBPACK_BUILD_DATE: JSON.stringify(new Date().toISOString()),
         }),
     );
 
