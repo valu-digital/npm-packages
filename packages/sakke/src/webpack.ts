@@ -470,6 +470,11 @@ export async function createWebpackConfig(options: SakkeConfig, args: Args) {
         Object.assign(config.optimization, { minimize: false });
     }
 
+    if (process.env["SAKKE_SKIP_MINIFY"]) {
+        logger.warn("Disabling minification via SAKKE_SKIP_MINIFY");
+        Object.assign(config.optimization, { minimize: false });
+    }
+
     //     config.resolve = {
     //         alias: {
     //             jquery: PathUtils.join(process.cwd(), ""),
