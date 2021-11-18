@@ -415,27 +415,6 @@ export async function createWebpackConfig(options: SakkeConfig, args: Args) {
 
     devServer.port = sakke.webpack.port;
 
-    //     if (!isProduction && options.cors) {
-    //         const host = options.devServerHost || "localhost";
-    //         config.output.publicPath = `http://${host}:${devServerPort}${publicPath}`;
-    //         devServer.headers = {
-    //             "Access-Control-Allow-Origin": "*",
-    //         };
-    //     } else {
-
-    //     if (args.devServer) {
-    //         config.output.publicPath = `http://${sakke.webpack.host}:${sakke.webpack.port}${publicPath}`;
-    //         // config.output.publicPath = "auto";
-    //     } else {
-    //         config.output.publicPath = publicPath;
-    //     }
-
-    //     }
-
-    //     if (options.historyApiFallback) {
-    //         devServer.historyApiFallback = options.historyApiFallback;
-    //     }
-
     if (args.analyze) {
         const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
         config.plugins.push(
@@ -462,12 +441,6 @@ export async function createWebpackConfig(options: SakkeConfig, args: Args) {
         logger.warn("Disabling minification via SAKKE_SKIP_MINIFY");
         Object.assign(config.optimization, { minimize: false });
     }
-
-    //     config.resolve = {
-    //         alias: {
-    //             jquery: PathUtils.join(process.cwd(), ""),
-    //         },
-    //     };
 
     if (typeof options.customize === "function") {
         config = options.customize(config, args) || config;
