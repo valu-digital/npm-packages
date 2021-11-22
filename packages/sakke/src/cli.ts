@@ -139,6 +139,8 @@ export async function cli(argv: string[]) {
         return await minifyJSFile(argv[3]);
     } else if (argv[2] === "gulp") {
         return await gulp(argv.slice(3));
+    } else if (argv[2] === "reset-dist") {
+        return await gulp(["reset-dist"]);
     } else if (argv[2] === "deploy-production") {
         return await gulp(["deploy-production"]);
     } else if (argv[2] === "deploy-staging") {
