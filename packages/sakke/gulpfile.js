@@ -178,7 +178,7 @@ gulp.task(
     "scripts",
     sh`
 	    sakke js --production
-	    terser -m eval load-polyfills.js > dist/scripts/load-polyfills.js
+	    sakke minify-js load-polyfills.js load-polyfills.js > dist/scripts/load-polyfills.js
 	`,
 );
 
