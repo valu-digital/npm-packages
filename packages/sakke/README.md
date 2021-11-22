@@ -134,10 +134,10 @@ module.exports = config;
 
 ## Migrating from `@valu/webpack-config`
 
-Remove the wepback config package
+Remove the wepback config package and other build packages
 
 ```
-npm uninstall @valu/webpack-config # or possibly @epeli/webpack-config
+npm uninstall @valu/webpack-config @epeli/webpack-config cssnano gulp gulp-cssnano gulp-imagemin gulp-livereload gulp-postcss gulp-sass imagemin-pngcrush autoprefixer terser
 ```
 
 Install the new package and refresh the lock file
@@ -148,10 +148,22 @@ rm -rf node_modules package-json.lock
 npm install
 ```
 
+Remove gulpfile(s)
+
+```
+rm -f gulpfile.js sakke-lib/gulpfile.js
+```
+
 Remove old jquery proxy
 
 ```
 rm assets/scripts/lib/jquery.js
+```
+
+Other old crap too if present
+
+```
+rm -rf sakke-lib/tools sakke-lib/package*
 ```
 
 Create `sakke.config.js` and copy `babelPlugins`, `webpackPlugins` and
