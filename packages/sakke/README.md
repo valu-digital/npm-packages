@@ -137,7 +137,7 @@ module.exports = config;
 Remove the wepback config package and other build packages
 
 ```
-npm uninstall @valu/webpack-config @epeli/webpack-config cssnano gulp gulp-cssnano gulp-imagemin gulp-livereload gulp-postcss gulp-sass imagemin-pngcrush autoprefixer terser
+npm uninstall @valu/webpack-config @epeli/webpack-config cssnano gulp gulp-cssnano gulp-imagemin gulp-livereload gulp-postcss gulp-sass imagemin-pngcrush autoprefixer terser find-process
 ```
 
 Install the new package and refresh the lock file
