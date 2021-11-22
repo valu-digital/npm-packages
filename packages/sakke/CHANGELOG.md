@@ -1,3 +1,9 @@
+## v1.3.1
+
+2021-11-22
+
+-   Fix gulp watch [9fc1391](https://github.com/valu-digital/npm-packages/commit/9fc1391) - Esa-Matti Suuronen
+
 ## v1.3.0
 
 2021-11-22
