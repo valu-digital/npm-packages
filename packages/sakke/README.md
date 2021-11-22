@@ -175,3 +175,5 @@ Remove `webpack.config.js`
 ```
 rm webpack.config.js
 ```
+
+Fix scripts in package.json. Mostly just replace `gulp` with `sakke`.
