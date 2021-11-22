@@ -360,7 +360,7 @@ gulp.task(
         "images",
         (done) => {
             livereload.listen({ port: sakke.livereload.port });
-            sh`sakke js --watch`();
+            sh`sakke js --serve`();
 
             gulp.watch(
                 [ROOT + "/assets/styles/**", ROOT + "/sakke-plugins/**/*.scss"],
