@@ -4,6 +4,7 @@ import PathUtils from "path";
 import arg from "arg";
 import { SakkeConfigParser } from "./types";
 import { createWebpackConfig } from "./webpack";
+import { promises as fs } from "fs";
 
 function parseJSArgs(argv: string[]) {
     return arg(
@@ -39,6 +40,33 @@ async function gulp(argv: string[]) {
         process.exit(9);
     }
     await task();
+}
+
+async function minifyJSFile(filePath: string) {
+    // Import terser only when it is used. Can be a bit large so avoid requiring
+    // unless needed.
+    const minify: typeof import("terser").minify = require("terser").minify;
+
+    const code = await fs.readFile(filePath).catch((error) => {
+        if (error.code !== "ENOENT") {
+            throw error;
+        }
+    });
+
+    if (!code) {
+        return;
+    }
+
+    const res = await minify(code.toString(), {
+        mangle: {
+            eval: true,
+        },
+        compress: true,
+    });
+
+    if (res.code) {
+        process.stdout.write(res.code);
+    }
 }
 
 async function bundleJS(argv: string[]) {
@@ -94,11 +122,12 @@ usage: sakke [subcommand] <options>
 
     example:
 
-             sakke dev
-             sakke build
-             sakke js --production
-             sakke js --serve
-             sakke css
+             sakke dev                      # Run all dev watchers
+             sakke build                    # Build everything for production
+             sakke js --production          # Build JS for production
+             sakke js --serve               # Serve JS for development
+             sakke css                      # Build CSS for production
+             sakke minify-js                # Minify single JS file to stdout
              sakke gulp [legacy gulp task]
 `);
 }
@@ -106,6 +135,8 @@ usage: sakke [subcommand] <options>
 export async function cli(argv: string[]) {
     if (argv[2] === "js") {
         return await bundleJS(argv.slice(3));
+    } else if (argv[2] === "minify-js" && argv[3]) {
+        return await minifyJSFile(argv[3]);
     } else if (argv[2] === "gulp") {
         return await gulp(argv.slice(3));
     } else if (argv[2] === "deploy-production") {
