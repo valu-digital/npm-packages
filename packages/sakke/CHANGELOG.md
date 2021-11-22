@@ -1,3 +1,13 @@
+## v1.3.0
+
+2021-11-22
+
+-   Improve migration docs from @valu/webpack-config
+-   Add configure-repository [f11cca6](https://github.com/valu-digital/npm-packages/commit/f11cca6) - Esa-Matti Suuronen
+-   Add reset-dist [1241c58](https://github.com/valu-digital/npm-packages/commit/1241c58) - Esa-Matti Suuronen
+-   Use sakke minify-js to minify the polyfill loader [b732430](https://github.com/valu-digital/npm-packages/commit/b732430) - Esa-Matti Suuronen
+-   Add minify-js task [dd1659b](https://github.com/valu-digital/npm-packages/commit/dd1659b) - Esa-Matti Suuronen
+
 ## v1.2.0
 
 2021-11-18
