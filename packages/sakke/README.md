@@ -134,6 +134,8 @@ module.exports = config;
 
 ## Migrating from `@valu/webpack-config`
 
+Ensure the project package `"name"` is not `"sakke"` in the `package.json` file.
+
 Remove the wepback config package and other build packages
 
 ```
