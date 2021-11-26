@@ -3,13 +3,9 @@
 2021-11-26
 
 -   Implement admin.js and gutenberg.js for sakke-plugins [d322800](https://github.com/valu-digital/npm-packages/commit/d322800) - Esa-Matti Suuronen
--   Add dedent [db68d8b](https://github.com/valu-digital/npm-packages/commit/db68d8b) - Esa-Matti Suuronen
--   typing [151fe18](https://github.com/valu-digital/npm-packages/commit/151fe18) - Esa-Matti Suuronen
 -   Fix sakke-plugins and port sakke-loader to typescript [b271a15](https://github.com/valu-digital/npm-packages/commit/b271a15) - Esa-Matti Suuronen
--   Update debug too [0dbff30](https://github.com/valu-digital/npm-packages/commit/0dbff30) - Esa-Matti Suuronen
 -   Make WordPress globals as externals for admin entries [95c5da7](https://github.com/valu-digital/npm-packages/commit/95c5da7) - Esa-Matti Suuronen
 -   Use webpack multicompiler to compile for wp-admin [f83ba69](https://github.com/valu-digital/npm-packages/commit/f83ba69) - Esa-Matti Suuronen
--   Update README.md [73230cc](https://github.com/valu-digital/npm-packages/commit/73230cc) - Esa-Matti Suuronen
 
 ## v1.3.1
 
