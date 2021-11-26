@@ -1,15 +1,12 @@
-const { promises: fs } = require("fs");
-const PathUtils = require("path");
-const sakke = require(process.cwd() + "/sakke.json");
+import PathUtils from "path";
+import { isFile, loadSakkeJSON } from "./utils";
 
-async function isFile(path) {
-    return fs.stat(path).then(
-        (stat) => stat.isFile(),
-        () => false, // "try-catch" error on missing files etc.
-    );
-}
+// typescript porting todo
+type TODO = any;
 
-async function sakkeLoader(context, source) {
+async function sakkeLoader(context: TODO, source: string) {
+    const sakke = await loadSakkeJSON();
+
     if (!sakke.plugins) {
         return source;
     }
@@ -21,7 +18,7 @@ async function sakkeLoader(context, source) {
      * @param dir
      * @return {Promise<string|null>}
      */
-    const getImportStament = async (dir, index) => {
+    const getImportStament = async (dir: TODO, index: TODO) => {
         const hasIndexFile = await isFile(
             `${process.cwd()}/sakke-plugins/${dir}/index.js`,
         );
@@ -60,8 +57,8 @@ async function sakkeLoader(context, source) {
     return source;
 }
 
-const sakkeLoaderRule = {
-    test: (modulePath) => {
+export const sakkeLoaderRule = {
+    test: (modulePath: string) => {
         return (
             PathUtils.join(process.cwd(), "assets/scripts/main.js") ===
             modulePath
@@ -77,14 +74,18 @@ const sakkeLoaderRule = {
     ],
 };
 
+interface WebpackCallback {
+    (...args: TODO[]): Promise<TODO>;
+}
+
 /**
  * Convert async-function to callback based webpack loader. This ensures all
  * errors are properly passed to webpack.
  * https://webpack.js.org/api/loaders/#asynchronous-loaders
  */
-function asAsyncWebpackLoader(fn) {
+function asAsyncWebpackLoader(fn: WebpackCallback) {
     // Must _not_ use arrow function here to be able to get the correct "this" value
-    return function asyncWebpackLoaderAdapter(source) {
+    return function asyncWebpackLoaderAdapter(this: TODO, source: string) {
         const callback = this.async();
         fn(this, source).then(
             (transformed) => {
@@ -97,8 +98,4 @@ function asAsyncWebpackLoader(fn) {
     };
 }
 
-// Export the loader as the "default export" and rule as named
-module.exports = Object.assign(asAsyncWebpackLoader(sakkeLoader), {
-    sakkeLoaderRule,
-    isFile,
-});
+export default asAsyncWebpackLoader(sakkeLoader);

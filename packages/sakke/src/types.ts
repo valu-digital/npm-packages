@@ -27,6 +27,16 @@ export const SakkeJSON = z.object({
         port: z.number(),
         host: z.string(),
     }),
+    plugins: z
+        .array(
+            z.union([
+                z.string(),
+                z.object({
+                    name: z.string(),
+                }),
+            ]),
+        )
+        .optional(),
 });
 
 export type SakkeJSONType = z.infer<typeof SakkeJSON>;

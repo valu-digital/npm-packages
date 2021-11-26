@@ -15,7 +15,7 @@ const stream = require("stream");
 
 const pkg = require(process.cwd() + "/package.json");
 const sakke = require(process.cwd() + "/sakke.json");
-const { isFile } = require(__dirname + "/sakke-loader.js");
+const { isFile } = require("./dist/utils");
 
 const getImportBuffer = async (plugin) => {
     const hasIndexFile = await isFile(
