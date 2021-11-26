@@ -214,25 +214,40 @@ export interface Customizer {
     (config: Configuration, _: unknown, args: TODO): Configuration;
 }
 
-interface Args {
+interface WebpackOptions {
     mode: "production" | "development";
     devServer: boolean;
     analyze: boolean;
+    wpAdmin: boolean;
 }
 
 function removeExtension(filename: string) {
     return filename.replace(/\.[^/.]+$/, "");
 }
 
-async function autoloadEntries(dir: string) {
-    const entryFiles = (await fs.readdir(dir)).filter((fileName) =>
-        EXTENSIONS.some((ext) => fileName.endsWith(ext)),
-    );
+async function autoloadEntries(
+    dir: string,
+    options: { adminEntries: boolean },
+) {
+    const entryFiles = (await fs.readdir(dir)).filter((fileName) => {
+        const extOk = EXTENSIONS.some((ext) => fileName.endsWith(ext));
+        if (!extOk) {
+            return false;
+        }
+
+        const isAdminScript = /-admin\.[a-z]+?/.test(fileName);
+
+        if (options.adminEntries) {
+            return isAdminScript;
+        } else {
+            return !isAdminScript;
+        }
+    });
 
     return entryFiles.reduce((entry, file) => {
         entry[removeExtension(file)] = PathUtils.join(dir, file);
         return entry;
-    }, {} as TODO);
+    }, {} as Record<string, string>);
 }
 
 async function loadSakkeJSON(): Promise<SakkeJSONType> {
@@ -257,7 +272,31 @@ async function loadSakkeJSON(): Promise<SakkeJSONType> {
     return SakkeJSON.parse(JSON.parse(data.toString()));
 }
 
-export async function createWebpackConfig(options: SakkeConfig, args: Args) {
+/**
+ * These imports are available as global in WordPress admin so we don't need to
+ * bundle them when creating admin bundles
+ */
+const WordPressAdminExternals = {
+    "@wordpress/components": "wp.components",
+    "@wordpress/api-fetch": "wp.apiFetch",
+    "@wordpress/edit-post": "wp.editPost",
+    "@wordpress/element": "wp.element",
+    "@wordpress/plugins": "wp.plugins",
+    "@wordpress/editor": "wp.editor",
+    "@wordpress/block-editor": "wp.blockEditor",
+    "@wordpress/blocks": "wp.blocks",
+    "@wordpress/hooks": "wp.hooks",
+    "@wordpress/utils": "wp.utils",
+    "@wordpress/date": "wp.date",
+    "@wordpress/data": "wp.data",
+    react: "React",
+    "react-dom": "ReactDOM",
+};
+
+export async function createWebpackConfig(
+    options: SakkeConfig,
+    args: WebpackOptions,
+) {
     const isProduction = args.mode === "production";
     // For some reason --mode option does not set NODE_ENV for .babelrc.js
     process.env["NODE_ENV"] = args.mode ?? "development";
@@ -317,6 +356,7 @@ export async function createWebpackConfig(options: SakkeConfig, args: Args) {
 
     config.entry = await autoloadEntries(
         PathUtils.join(process.cwd(), "assets/scripts"),
+        { adminEntries: args.wpAdmin },
     );
 
     if (!config.plugins) {
@@ -426,12 +466,26 @@ export async function createWebpackConfig(options: SakkeConfig, args: Args) {
 
     assertNotNil(config.output.path);
 
-    config.plugins.push(
-        new WebpackAssetsManifest({
-            output: PathUtils.join(config.output.path, "manifest.json"),
-            writeToDisk: true,
-        }),
-    );
+    if (args.wpAdmin) {
+        config.plugins.push(
+            new WebpackAssetsManifest({
+                output: PathUtils.join(
+                    config.output.path,
+                    "manifest-admin.json",
+                ),
+                writeToDisk: true,
+            }),
+        );
+
+        Object.assign(config.externals, WordPressAdminExternals);
+    } else {
+        config.plugins.push(
+            new WebpackAssetsManifest({
+                output: PathUtils.join(config.output.path, "manifest.json"),
+                writeToDisk: true,
+            }),
+        );
+    }
 
     if (!isProduction) {
         Object.assign(config.optimization, { minimize: false });
