@@ -1,63 +1,63 @@
 {
-    "name": "sakke",
-    "version": "1.3.1",
-    "description": "Webpack and Babel wrapper for Sakke WordPress Themes",
-    "main": "dist/index.js",
-    "files": [
-        "webpack.js",
-        "webpack.d.ts",
-        "cli-entry.js",
-        "gulpfile.js",
-        "dist"
-    ],
-    "typings": "dist/index.d.ts",
-    "scripts": {
-        "build": "tsc --noEmit false",
-        "watch": "tsc --watch --noEmit false"
-    },
-    "bin": {
-        "sakke": "cli-entry.js"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "@babel/core": "^7.16.0",
-        "@babel/plugin-proposal-class-static-block": "^7.16.0",
-        "@babel/preset-env": "^7.16.0",
-        "@babel/preset-react": "^7.16.0",
-        "@babel/preset-typescript": "^7.16.0",
-        "@valu/assert": "^1.1.0",
-        "arg": "^5.0.1",
-        "autoprefixer": "^10.4.0",
-        "babel-loader": "^8.2.3",
-        "babel-plugin-macros": "^3.1.0",
-        "css-loader": "^6.5.1",
-        "cssnano": "^5.0.11",
-        "dedent": "^0.7.0",
-        "find-process": "^1.4.5",
-        "gulp": "^4.0.2",
-        "gulp-imagemin": "^6.2.0",
-        "gulp-livereload": "^4.0.2",
-        "gulp-postcss": "^9.0.1",
-        "gulp-sass": "^5.0.0",
-        "gulp-sourcemaps": "^3.0.0",
-        "imagemin-pngcrush": "^6.0.0",
-        "postcss-prefixwrap": "^1.25.0",
-        "sass": "^1.43.4",
-        "sh-thunk": "^0.3.2",
-        "style-loader": "^3.3.1",
-        "terser": "^5.10.0",
-        "webpack": "^5.64.1",
-        "webpack-assets-manifest": "^5.0.6",
-        "webpack-bundle-analyzer": "^4.5.0",
-        "webpack-dev-server": "^4.5.0",
-        "zod": "^3.11.6"
-    },
-    "devDependencies": {
-        "@types/dedent": "^0.7.0",
-        "@types/node": "^16.11.7",
-        "@types/webpack-assets-manifest": "^5.0.2",
-        "@types/webpack-dev-server": "^4.3.1",
-        "typescript": "^4.4.4"
-    }
+  "name": "sakke",
+  "version": "1.4.0",
+  "description": "Webpack and Babel wrapper for Sakke WordPress Themes",
+  "main": "dist/index.js",
+  "files": [
+    "webpack.js",
+    "webpack.d.ts",
+    "cli-entry.js",
+    "gulpfile.js",
+    "dist"
+  ],
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --noEmit false",
+    "watch": "tsc --watch --noEmit false"
+  },
+  "bin": {
+    "sakke": "cli-entry.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/plugin-proposal-class-static-block": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
+    "@valu/assert": "^1.1.0",
+    "arg": "^5.0.1",
+    "autoprefixer": "^10.4.0",
+    "babel-loader": "^8.2.3",
+    "babel-plugin-macros": "^3.1.0",
+    "css-loader": "^6.5.1",
+    "cssnano": "^5.0.11",
+    "dedent": "^0.7.0",
+    "find-process": "^1.4.5",
+    "gulp": "^4.0.2",
+    "gulp-imagemin": "^6.2.0",
+    "gulp-livereload": "^4.0.2",
+    "gulp-postcss": "^9.0.1",
+    "gulp-sass": "^5.0.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "imagemin-pngcrush": "^6.0.0",
+    "postcss-prefixwrap": "^1.25.0",
+    "sass": "^1.43.4",
+    "sh-thunk": "^0.3.2",
+    "style-loader": "^3.3.1",
+    "terser": "^5.10.0",
+    "webpack": "^5.64.1",
+    "webpack-assets-manifest": "^5.0.6",
+    "webpack-bundle-analyzer": "^4.5.0",
+    "webpack-dev-server": "^4.5.0",
+    "zod": "^3.11.6"
+  },
+  "devDependencies": {
+    "@types/dedent": "^0.7.0",
+    "@types/node": "^16.11.7",
+    "@types/webpack-assets-manifest": "^5.0.2",
+    "@types/webpack-dev-server": "^4.3.1",
+    "typescript": "^4.4.4"
+  }
 }
