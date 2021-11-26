@@ -18,7 +18,7 @@ async function sakkeLoader(context: TODO, source: string) {
      * @param dir
      * @return {Promise<string|null>}
      */
-    const getImportStament = async (dir: TODO, index: TODO) => {
+    const getImportStament = async (dir: string, index: number) => {
         const hasIndexFile = await isFile(
             `${process.cwd()}/sakke-plugins/${dir}/index.js`,
         );
