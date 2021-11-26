@@ -168,13 +168,13 @@ export async function cli(argv: string[]) {
         return await gulp(["watch"]);
     } else if (argv[2] === "-h" || argv[2] === "--help") {
         help();
-        process.exit(0);
+        return 0;
     } else if (!argv[2]) {
         help();
-        process.exit(1);
+        return 1;
     } else {
         console.error("Unknown subcommand ");
         help();
-        process.exit(1);
+        return 1;
     }
 }
