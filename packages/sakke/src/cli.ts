@@ -98,8 +98,10 @@ async function bundleJS(argv: string[]) {
     });
 
     if (args["--debug"]) {
-        console.log("Generated Webpack config");
+        console.log("Generated Webpack frontend config:");
         console.log(frontendConfig);
+        console.log("Generated Webpack wp-admin config:");
+        console.log(adminConfig);
         process.exit(0);
     }
 
