@@ -1,13 +1,13 @@
 import { Static, Client } from "webpack-dev-server";
 import { assertNotNil } from "@valu/assert";
 import PathUtils from "path";
-import { resolve } from "path";
-import { DefinePlugin, Configuration, EnvironmentPlugin } from "webpack";
+import { Configuration, EnvironmentPlugin } from "webpack";
 import WebpackAssetsManifest from "webpack-assets-manifest";
 import { ServerOptions } from "https";
-import { promises as fs, readFileSync } from "fs";
-import { SakkeJSON, SakkeConfig, SakkeJSONType } from "./types";
-import { logger } from "./utils";
+import { promises as fs } from "fs";
+import { SakkeConfig } from "./types";
+import { loadSakkeJSON, logger } from "./utils";
+import { sakkeLoaderRule } from "./sakke-webpack-loader";
 
 export const EXTENSIONS = [".tsx", ".ts", ".mjs", ".jsx", ".js"];
 
@@ -250,28 +250,6 @@ async function autoloadEntries(
     }, {} as Record<string, string>);
 }
 
-async function loadSakkeJSON(): Promise<SakkeJSONType> {
-    const data = await fs
-        .readFile(PathUtils.join(process.cwd(), "sakke.json"))
-        .catch((error) => {
-            if (error.code !== "ENOENT") {
-                throw error;
-            }
-        });
-
-    if (!data) {
-        logger.warn("No sakke.json found. Generating some defaults.");
-        return {
-            webpack: {
-                port: 3941,
-                host: "localhost",
-            },
-        };
-    }
-
-    return SakkeJSON.parse(JSON.parse(data.toString()));
-}
-
 /**
  * These imports are available as global in WordPress admin so we don't need to
  * bundle them when creating admin bundles
@@ -380,6 +358,8 @@ export async function createWebpackConfig(
             compileNodeModules: options.compileNodeModules,
         }),
     );
+
+    config.module.rules.push(sakkeLoaderRule);
 
     if (options.webpackRules) {
         config.module.rules.push(...options.webpackRules);
