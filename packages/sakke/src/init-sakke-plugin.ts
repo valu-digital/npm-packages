@@ -1,6 +1,6 @@
 import dedent from "dedent";
 import { promises as fs } from "fs";
-import { isDirecotry, logger } from "./utils";
+import { isDir, logger } from "./utils";
 
 export async function initSakkePlugin(argv: string[]) {
     const name = argv[0];
@@ -12,7 +12,7 @@ export async function initSakkePlugin(argv: string[]) {
 
     const dir = `sakke-plugins/${name}`;
 
-    if (await isDirecotry(dir)) {
+    if (await isDir(dir)) {
         logger.error("Plugin already exist");
         return 4;
     }
