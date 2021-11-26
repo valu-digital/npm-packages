@@ -1,3 +1,9 @@
+## v1.5.0
+
+2021-11-26
+
+-   Add 'sakke init-plugin' command [c4e74c2](https://github.com/valu-digital/npm-packages/commit/c4e74c2) - Esa-Matti Suuronen
+
 ## v1.4.0
 
 2021-11-26
