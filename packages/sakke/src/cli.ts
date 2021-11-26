@@ -83,22 +83,33 @@ async function bundleJS(argv: string[]) {
         process.exit(5);
     }
 
-    const config = await createWebpackConfig(valuBundleConfig.data, {
+    const frontendConfig = await createWebpackConfig(valuBundleConfig.data, {
         mode: args["--production"] ? "production" : "development",
         devServer: Boolean(args["--serve"]),
         analyze: Boolean(args["--analyze"]),
+        wpAdmin: false,
+    });
+
+    const adminConfig = await createWebpackConfig(valuBundleConfig.data, {
+        mode: args["--production"] ? "production" : "development",
+        devServer: Boolean(args["--serve"]),
+        analyze: Boolean(args["--analyze"]),
+        wpAdmin: true,
     });
 
     if (args["--debug"]) {
         console.log("Generated Webpack config");
-        console.log(config);
+        console.log(frontendConfig);
         process.exit(0);
     }
 
-    const compiler = webpack(config);
+    const compiler = webpack([frontendConfig, adminConfig]);
 
     if (args["--serve"]) {
-        const server = new WebpackDevServer({ ...config.devServer }, compiler);
+        const server = new WebpackDevServer(
+            { ...frontendConfig.devServer },
+            compiler,
+        );
         await server.start();
     } else {
         compiler.run((err, stats) => {
