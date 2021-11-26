@@ -5,6 +5,7 @@ import arg from "arg";
 import { SakkeConfigParser } from "./types";
 import { createWebpackConfig } from "./webpack";
 import { promises as fs } from "fs";
+import { initSakkePlugin } from "./init-sakke-plugin";
 
 function parseJSArgs(argv: string[]) {
     return arg(
@@ -135,12 +136,13 @@ usage: sakke [subcommand] <options>
 
     example:
 
-             sakke dev                      # Run all dev watchers
-             sakke build                    # Build everything for production
-             sakke js --production          # Build JS for production
-             sakke js --serve               # Serve JS for development
-             sakke css                      # Build CSS for production
-             sakke minify-js                # Minify single JS file to stdout
+             sakke dev                        # Run all dev watchers
+             sakke build                      # Build everything for production
+             sakke js --production            # Build JS for production
+             sakke js --serve                 # Serve JS for development
+             sakke css                        # Build CSS for production
+             sakke minify-js                  # Minify single JS file to stdout
+             sakke init-plugin [plugin name]  # Init new sakke plugin
              sakke gulp [legacy gulp task]
 `);
 }
@@ -150,6 +152,8 @@ export async function cli(argv: string[]) {
         return await bundleJS(argv.slice(3));
     } else if (argv[2] === "minify-js" && argv[3]) {
         return await minifyJSFile(argv[3]);
+    } else if (argv[2] === "init-plugin") {
+        return await initSakkePlugin(argv.slice(3));
     } else if (argv[2] === "gulp") {
         return await gulp(argv.slice(3));
     } else if (argv[2] === "configure-repository") {

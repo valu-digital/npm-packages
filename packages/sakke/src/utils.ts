@@ -27,6 +27,13 @@ export async function isFile(path: string) {
     );
 }
 
+export async function isDirecotry(path: string) {
+    return fs.stat(path).then(
+        (stat) => stat.isDirectory(),
+        () => false, // "try-catch" error on missing files etc.
+    );
+}
+
 export async function loadSakkeJSON(): Promise<SakkeJSONType> {
     const data = await fs
         .readFile(PathUtils.join(process.cwd(), "sakke.json"))
