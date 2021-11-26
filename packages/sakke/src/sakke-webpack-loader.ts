@@ -1,67 +1,88 @@
 import PathUtils from "path";
+import dedent from "dedent";
+import { SakkeConfig, SakkeJSONType } from "./types";
 import { isFile, loadSakkeJSON } from "./utils";
 
 // typescript porting todo
 type TODO = any;
 
-async function sakkeLoader(context: TODO, source: string) {
-    const sakke = await loadSakkeJSON();
-
-    if (!sakke.plugins) {
-        return source;
+/**
+ * Generate imports for the given sakke plugin js entry file
+ */
+async function generateImports(
+    sakke: SakkeJSONType,
+    entry: "index" | "admin" | "gutenberg",
+) {
+    if (!sakke.plugins || sakke.plugins.length === 0) {
+        return "";
     }
 
-    /**
-     * This function checks if there is index.js -file in sakke-plugin root-folder.
-     * and if there is => returns import -statement for that file
-     *
-     * @param dir
-     * @return {Promise<string|null>}
-     */
-    const getImportStament = async (dir: TODO, index: TODO) => {
-        const hasIndexFile = await isFile(
-            `${process.cwd()}/sakke-plugins/${dir}/index.js`,
-        );
+    const entryFiles = await Promise.all(
+        sakke.plugins.map(async (plugin, index) => {
+            // If sakke-plugin is defined as a simple string, use it as name of
+            // sakke-plugin Otherwise get sakke-plugin name from 'name'-property
+            const pluginName =
+                typeof plugin === "string" ? plugin : plugin.name;
 
-        if (!hasIndexFile) {
-            return null;
-        }
+            const hasFile = await isFile(
+                `${process.cwd()}/sakke-plugins/${pluginName}/${entry}.js`,
+            );
 
-        return `
-        import pluginInit_${index} from "${context.rootContext}/sakke-plugins/${dir}/index.js";
-        if (typeof pluginInit_${index} !== "function") {
-            throw new Error("Sakke Plugin missing default function export in: " + __filename);
-        }
-        if (document.body.classList.contains("sp-${dir}")) {
-           pluginInit_${index}();
-        }
-        `;
-    };
+            if (!hasFile) {
+                return "";
+            }
 
-    const indexFiles = await Promise.all(
-        sakke.plugins.map((dir, index) => {
-            // If sakke-plugin is defined as simple string, use it as name of sakke-plugin
-            // Otherwise get sakke-plugin name from 'name'-property
-            dir = typeof dir === "string" ? dir : dir.name;
-            return getImportStament(dir, index);
+            const importPath = `sakke-plugins/${pluginName}/${entry}.js`;
+
+            return dedent`
+                import pluginInit_${index} from "../../${importPath}";
+                if (typeof pluginInit_${index} !== "function") {
+                    throw new Error("Sakke Plugin missing default function export in: ${importPath}");
+                }
+                if (document.body.classList.contains("sp-${pluginName}")) {
+                    pluginInit_${index}();
+                }
+            `.trim();
         }),
     );
 
-    for (const indexFile of indexFiles) {
-        if (!indexFile) {
-            continue;
-        }
-        source = indexFile + "\n" + source;
+    return entryFiles.filter(Boolean).join("\n");
+}
+
+// TODO we could probably import the real type from somewhere
+interface WebpackContext {
+    resourcePath?: string;
+}
+
+async function sakkeLoader(context: WebpackContext, source: string) {
+    const sakke = await loadSakkeJSON();
+
+    const path = context.resourcePath ?? "";
+
+    if (path.endsWith("assets/scripts/main.js")) {
+        source += await generateImports(sakke, "index");
+    } else if (path.endsWith("assets/scripts/main-admin.js")) {
+        source += await generateImports(sakke, "admin");
+    } else if (path.endsWith("assets/scripts/gutenberg-admin.js")) {
+        source += await generateImports(sakke, "gutenberg");
+    } else {
+        console.warn(
+            "[sakke-webpack-loader] 🛑 Invalid resource passed to the loader function: " +
+                context.resourcePath,
+        );
     }
 
     return source;
 }
 
 export const sakkeLoaderRule = {
+    // When loading assets/scripts/main.js, assets/scripts/main-admin.js or
+    // assets/scripts/gutenberg-admin.js
     test: (modulePath: string) => {
-        return (
-            PathUtils.join(process.cwd(), "assets/scripts/main.js") ===
-            modulePath
+        return ["main.js", "main-admin.js", "gutenberg-admin.js"].some(
+            (entry) =>
+                PathUtils.join(process.cwd(), "assets/scripts/" + entry) ===
+                modulePath,
         );
     },
 
