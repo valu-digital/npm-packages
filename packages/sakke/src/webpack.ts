@@ -272,6 +272,27 @@ async function loadSakkeJSON(): Promise<SakkeJSONType> {
     return SakkeJSON.parse(JSON.parse(data.toString()));
 }
 
+/**
+ * These imports are available as global in WordPress admin so we don't need to
+ * bundle them when creating admin bundles
+ */
+const WordPressAdminExternals = {
+    "@wordpress/components": "wp.components",
+    "@wordpress/api-fetch": "wp.apiFetch",
+    "@wordpress/edit-post": "wp.editPost",
+    "@wordpress/element": "wp.element",
+    "@wordpress/plugins": "wp.plugins",
+    "@wordpress/editor": "wp.editor",
+    "@wordpress/block-editor": "wp.blockEditor",
+    "@wordpress/blocks": "wp.blocks",
+    "@wordpress/hooks": "wp.hooks",
+    "@wordpress/utils": "wp.utils",
+    "@wordpress/date": "wp.date",
+    "@wordpress/data": "wp.data",
+    react: "React",
+    "react-dom": "ReactDOM",
+};
+
 export async function createWebpackConfig(
     options: SakkeConfig,
     args: WebpackOptions,
@@ -455,6 +476,8 @@ export async function createWebpackConfig(
                 writeToDisk: true,
             }),
         );
+
+        Object.assign(config.externals, WordPressAdminExternals);
     } else {
         config.plugins.push(
             new WebpackAssetsManifest({
