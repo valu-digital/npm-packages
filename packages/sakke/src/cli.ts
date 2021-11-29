@@ -50,13 +50,13 @@ function monitorErrors() {
         reason: {} | null | undefined,
         promise: Promise<unknown>,
     ) => {
-        onError();
         rejectedPromise = promise;
+        onError();
     };
 
     const captureError = (error: Error) => {
-        onError();
         capturedError = error;
+        onError();
     };
 
     process.on("unhandledRejection", captureRejection);
