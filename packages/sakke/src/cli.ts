@@ -38,7 +38,7 @@ async function gulp(argv: string[]) {
     const task = gulp.task(argv[0]);
     if (!task) {
         console.error(`Unknown gulp task "${argv[0]}`);
-        process.exit(9);
+        return 9;
     }
     await task();
 }
@@ -70,7 +70,7 @@ async function minifyJSFile(filePath: string) {
     }
 }
 
-async function bundleJS(argv: string[]) {
+async function bundleJS(argv: string[]): Promise<number> {
     const args = parseJSArgs(argv);
 
     const configPath =
@@ -81,7 +81,7 @@ async function bundleJS(argv: string[]) {
     if (!valuBundleConfig.success) {
         console.error("Invalid sakke.config.js config at", configPath);
         console.error(valuBundleConfig.error.errors);
-        process.exit(5);
+        return 5;
     }
 
     const frontendConfig = await createWebpackConfig(valuBundleConfig.data, {
@@ -103,7 +103,7 @@ async function bundleJS(argv: string[]) {
         console.log(frontendConfig);
         console.log("Generated Webpack wp-admin config:");
         console.log(adminConfig);
-        process.exit(0);
+        return 0;
     }
 
     const compiler = webpack([frontendConfig, adminConfig]);
@@ -115,19 +115,23 @@ async function bundleJS(argv: string[]) {
         );
         await server.start();
     } else {
-        compiler.run((err, stats) => {
-            if (err) {
-                console.error("Webpack error", err);
-                process.exit(2);
-            }
+        return new Promise<number>((resolve) => {
+            compiler.run((err, stats) => {
+                if (err) {
+                    console.error("Webpack error", err);
+                    resolve(3);
+                }
 
-            console.error(stats?.toString());
+                console.error(stats?.toString());
 
-            if (stats?.hasErrors()) {
-                process.exit(3);
-            }
+                if (stats?.hasErrors()) {
+                    resolve(3);
+                }
+            });
         });
     }
+
+    return 0;
 }
 
 function help() {
