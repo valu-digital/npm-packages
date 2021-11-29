@@ -1,3 +1,13 @@
+## v1.5.1
+
+2021-11-29
+
+-   clean up [30b0712](https://github.com/valu-digital/npm-packages/commit/30b0712) - Esa-Matti Suuronen
+-   Capture gulp errors... [902eca3](https://github.com/valu-digital/npm-packages/commit/902eca3) - Esa-Matti Suuronen
+-   Fix gulp task awaiting [41ba0fb](https://github.com/valu-digital/npm-packages/commit/41ba0fb) - Esa-Matti Suuronen
+-   Do not use process.exit() in libary code [b20114b](https://github.com/valu-digital/npm-packages/commit/b20114b) - Esa-Matti Suuronen
+-   typo [2225a41](https://github.com/valu-digital/npm-packages/commit/2225a41) - Esa-Matti Suuronen
+
 ## v1.5.0
 
 2021-11-26
