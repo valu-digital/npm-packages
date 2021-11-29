@@ -35,12 +35,42 @@ function parseJSArgs(argv: string[]) {
 async function gulp(argv: string[]) {
     require("../gulpfile.js");
     const gulp = require("gulp");
-    const task = gulp.task(argv[0]);
+    const taskName = argv[0];
+    if (!taskName) {
+        console.error("[sakke] You must pass task name argument to gulp");
+        return 34;
+    }
+
+    const task = gulp.task(taskName);
     if (!task) {
         console.error(`Unknown gulp task "${argv[0]}`);
         return 9;
     }
-    await task();
+
+    const wrapTaskName = taskName + "-wrap";
+
+    // Ok, gulp is not too usable to be used inside a library. I was not able to
+    // find a way to monitor when the task completes so we workaround it here by
+    // creating another task on the fly where the original task is a "series"
+    // dependency and we wait for the wrapped task to complete
+
+    // Create promise of the wrapped task completion but do not await it yet
+    const wrapPromise = new Promise<void>((resolve) => {
+        gulp.task(wrapTaskName, gulp.series(taskName, resolve));
+    });
+
+    // Invoke the wrapped task
+    gulp.task(wrapTaskName)();
+
+    // Aaand wait for the wrapped task to complete
+    await wrapPromise;
+
+    // XXX Error handling is bit sketchy here since cannot capture the gulp
+    // errors here...
+
+    // It might be a better idea to just invoke the gulp tasks in a subprocess.
+    // That way it would be way easier to detect when it exits and if it was an
+    // error
 }
 
 async function minifyJSFile(filePath: string) {
