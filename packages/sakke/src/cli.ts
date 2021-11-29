@@ -6,6 +6,7 @@ import { SakkeConfigParser } from "./types";
 import { createWebpackConfig } from "./webpack";
 import { promises as fs } from "fs";
 import { initSakkePlugin } from "./init-sakke-plugin";
+import { logger } from "./utils";
 
 function parseJSArgs(argv: string[]) {
     return arg(
@@ -30,6 +31,57 @@ function parseJSArgs(argv: string[]) {
         },
         { argv },
     );
+}
+
+/**
+ * Capture any errors happening in background.
+ */
+function monitorErrors() {
+    // There are two types of errors at least. Thrown errors or promise
+    // rejections. Capture both.
+
+    let rejectedPromise: undefined | Promise<unknown> = undefined;
+    let capturedError: Error | undefined = undefined;
+
+    let onError: Function;
+    const onErrorPromise = new Promise((r) => (onError = r));
+
+    const captureRejection = (
+        reason: {} | null | undefined,
+        promise: Promise<unknown>,
+    ) => {
+        onError();
+        rejectedPromise = promise;
+    };
+
+    const captureError = (error: Error) => {
+        onError();
+        capturedError = error;
+    };
+
+    process.on("unhandledRejection", captureRejection);
+    process.on("uncaughtException", captureError);
+
+    return {
+        clear() {
+            process.off("unhandledRejection", captureRejection);
+            process.off("uncaughtException", captureError);
+        },
+
+        waitForError() {
+            return onErrorPromise;
+        },
+
+        async getError() {
+            if (capturedError) {
+                return capturedError;
+            }
+
+            if (rejectedPromise) {
+                return await rejectedPromise;
+            }
+        },
+    };
 }
 
 async function gulp(argv: string[]) {
@@ -59,14 +111,26 @@ async function gulp(argv: string[]) {
         gulp.task(wrapTaskName, gulp.series(taskName, resolve));
     });
 
+    // Capture any unhandled errors since gulp does not return them to us
+    const cap = monitorErrors();
+
     // Invoke the wrapped task
     gulp.task(wrapTaskName)();
 
-    // Aaand wait for the wrapped task to complete
-    await wrapPromise;
+    // Aaand wait for the wrapped task to complete or error via the monitor
+    await Promise.race([wrapPromise, cap.waitForError()]);
 
-    // XXX Error handling is bit sketchy here since cannot capture the gulp
-    // errors here...
+    // Stop capturing unhandled errors
+    cap.clear();
+
+    const error = await cap.getError();
+    if (error) {
+        console.error(error);
+        logger.error(`Gulp task "${taskName}" failed`);
+        return 1;
+    } else {
+        console.log("no gulp error");
+    }
 
     // It might be a better idea to just invoke the gulp tasks in a subprocess.
     // That way it would be way easier to detect when it exits and if it was an
