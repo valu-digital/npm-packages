@@ -128,10 +128,8 @@ async function gulp(argv: string[]) {
         console.error(error);
         logger.error(`Gulp task "${taskName}" failed`);
         return 1;
-    } else {
-        console.log("no gulp error");
     }
-
+    
     // It might be a better idea to just invoke the gulp tasks in a subprocess.
     // That way it would be way easier to detect when it exits and if it was an
     // error
