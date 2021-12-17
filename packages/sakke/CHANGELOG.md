@@ -1,3 +1,9 @@
+## v1.5.2
+
+2021-12-17
+
+-   Ensure dev-server does not exit too early [1aef34a](https://github.com/valu-digital/npm-packages/commit/1aef34a) - Esa-Matti Suuronen
+
 ## v1.5.1
 
 2021-11-29
