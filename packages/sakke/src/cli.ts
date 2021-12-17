@@ -206,6 +206,10 @@ async function bundleJS(argv: string[]): Promise<number> {
             compiler,
         );
         await server.start();
+
+        await new Promise((resolve) => {
+            server.server.on("close", resolve);
+        });
     } else {
         return new Promise<number>((resolve) => {
             compiler.run((err, stats) => {
