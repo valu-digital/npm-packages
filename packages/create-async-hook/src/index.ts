@@ -7,7 +7,7 @@ type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
  * https://stackoverflow.com/a/25456134/153718
  */
 function deepEqual(x: any, y: any) {
-    if (x === y) {
+    if (Object.is(x, y)) {
         return true;
     } else if (
         typeof x == "object" &&
