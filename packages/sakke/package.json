@@ -1,6 +1,6 @@
 {
   "name": "sakke",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Webpack and Babel wrapper for Sakke WordPress Themes",
   "main": "dist/index.js",
   "files": [
