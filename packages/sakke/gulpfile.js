@@ -218,12 +218,12 @@ function configuredPostcss() {
  * TODO: this should be done some other way (outside of sakke-lib),
  *  since this is project specified
  */
-async function getActiveSakkePluginStyleEntries() {
+function getActiveSakkePluginStyleEntries() {
     return [];
 }
 
-gulp.task("styles", async () => {
-    const pluginStyles = await getActiveSakkePluginStyleEntries();
+gulp.task("styles", () => {
+    const pluginStyles = getActiveSakkePluginStyleEntries();
 
     return gulp
         .src([ROOT + "/assets/styles/*.scss", ...pluginStyles])
