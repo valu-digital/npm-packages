@@ -329,7 +329,7 @@ gulp.task(
 
 gulp.task(
     "prettier",
-    sh`prettier --write "assets/**/*.{js,jsx,ts,tsx,css,scss}"`,
+    sh`prettier --write "assets/**/*.{js,jsx,ts,tsx,css,scss}" "sakke-plugins/**/*.{js,jsx,ts,tsx,css,scss}"`,
 );
 
 /**
@@ -338,8 +338,8 @@ gulp.task(
 gulp.task(
     "prettier-check",
     sh`
-	    prettier --check "assets/**/*.{js,jsx,ts,tsx,css,scss}" || {
-		echo "Run it with: gulp prettier"
+	    prettier --check "assets/**/*.{js,jsx,ts,tsx,css,scss}" "sakke-plugins/**/*.{js,jsx,ts,tsx,css,scss}" || {
+		echo "Run it with: npm run prettier"
 		echo
 		echo "    You should really enable Prettier formatting on save!"
 		echo
