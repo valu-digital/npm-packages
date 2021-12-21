@@ -57,7 +57,7 @@ function loadSakkePluginStyles() {
                         typeof plugin === "string" ? plugin : plugin.name;
                         return getImportBuffer(plugin, entry);
                     }),
-                    );
+                );
 
                 file.contents = Buffer.concat([file.contents, ...indexBuffers]);
             }
