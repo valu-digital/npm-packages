@@ -1,3 +1,9 @@
+## v1.5.3
+
+2021-12-21
+
+-   Run prettier also for sakke-plugins [2c9ee9a](https://github.com/valu-digital/npm-packages/commit/2c9ee9a) - Sauli Rajala
+
 ## v1.5.2
 
 2021-12-17
