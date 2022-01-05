@@ -1,3 +1,9 @@
+## v2.0.0
+
+2022-01-05
+
+-   Sakke: Do not wrap sakke-plugin styles to body class [0223a3b](https://github.com/valu-digital/npm-packages/commit/0223a3b). Styles of sakke plugin needs to written so that they apply only to the elements of the plugin - Sauli Rajala
+
 ## v1.5.3
 
 2021-12-21
