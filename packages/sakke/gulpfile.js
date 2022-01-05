@@ -25,9 +25,7 @@ const getImportBuffer = async (plugin) => {
         return Buffer.from("");
     }
 
-    return Buffer.from(
-        `.sp-${plugin} { @import "sakke-plugins/${plugin}/index.scss"; }`,
-    );
+    return Buffer.from(`@import "sakke-plugins/${plugin}/index.scss";`);
 };
 
 /**
