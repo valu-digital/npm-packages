@@ -1,6 +1,6 @@
 {
   "name": "@valu/trpc-fetch-api-adapter",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Web Platform Adapter for trpc.io",
   "main": "dist/adapter.js",
   "typings": "dist/adapter.d.ts",
