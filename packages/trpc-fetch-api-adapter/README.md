@@ -6,10 +6,9 @@ to deploy tRPC endoints to Remix routes and possibly to other systems using the 
 By "Fetch API" we mean systems that implement the [Request][] and [Response][]
 objects specified in the [Fetch Standard][] such as [Remix][], [CloudFlare
 Workers][], [Deno][] and Service Workers. This is some times refered as "The
-Web Platform". In theory this adapter should allow to deploy tRPC on all these
-systems. But in practice it might not be possible since tRPC might have some
-hard Node.js dependecies. Only Remix on Node.js has been tested so
-far.
+Web Platform". This adapter should allow to deploy tRPC on all these
+systems but in practice it bit tricky since tRPC has some hard dependencies on Node.js
+but there are [workarounds](https://github.com/trpc/trpc/issues/1375).
 
 [request]: https://developer.mozilla.org/en-US/docs/Web/API/Request
 [response]: https://developer.mozilla.org/en-US/docs/Web/API/Response
