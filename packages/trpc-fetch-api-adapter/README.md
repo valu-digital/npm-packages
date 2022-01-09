@@ -21,6 +21,8 @@ far.
 This implementation is very basic. No batching support and error handling might
 be bit lacking. But it does support queries, mutations and request contexts.
 
+Hopefully we can see this implemented in tRPC core some day. Here's a tracking issue https://github.com/trpc/trpc/issues/1374
+
 ## Install
 
 ```
