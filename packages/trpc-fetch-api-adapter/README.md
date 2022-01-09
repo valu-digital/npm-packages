@@ -87,7 +87,7 @@ const client = createTRPCClient<AppRouter>({
 
 ## Usage in CloudFlare Workers
 
-Not actually tested but this could work when using a bundler 😅
+Full example here https://github.com/esamattis/trpc-cloudflare-worker
 
 ```ts
 import * as trpc from "@trpc/server";";
