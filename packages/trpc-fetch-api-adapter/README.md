@@ -7,7 +7,7 @@ By "Fetch API" we mean systems that implement the [Request][] and [Response][]
 objects specified in the [Fetch Standard][] such as [Remix][], [CloudFlare
 Workers][], [Deno][] and Service Workers. This is some times refered as "The
 Web Platform". This adapter should allow to deploy tRPC on all these
-systems but in practice it bit tricky since tRPC has some hard dependencies on Node.js
+systems but in practice it is bit tricky since tRPC has some hard dependencies on Node.js
 but there are [workarounds](https://github.com/trpc/trpc/issues/1375).
 
 [request]: https://developer.mozilla.org/en-US/docs/Web/API/Request
