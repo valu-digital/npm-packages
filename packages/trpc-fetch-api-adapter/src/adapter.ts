@@ -85,9 +85,10 @@ export function createFetchAPIHandler<TRouter extends AnyRouter>(opts: {
         }
 
         if (req.method === "GET") {
+            const input = url.searchParams.get("input");
             const result: TRPCResult = await caller.query(
                 trpcPath,
-                JSON.parse(url.searchParams.get("input") ?? "{}"),
+                input ? JSON.parse(input) : undefined,
             );
 
             return trpcRespond(200, {
