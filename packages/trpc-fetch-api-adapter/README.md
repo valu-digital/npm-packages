@@ -96,7 +96,7 @@ import { createFetchAPIHandler } from "@valu/trpc-fetch-api-adapter";
 export const appRouter = trpc.router<MyContext>().query("hello", {
     resolve() {
         return {
-            greeting: "Hello Remix",
+            greeting: "Hello from CloudFlare",
         };
     },
 });
