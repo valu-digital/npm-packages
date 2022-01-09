@@ -90,8 +90,7 @@ const client = createTRPCClient<AppRouter>({
 Not actually tested but this could work when using a bundler 😅
 
 ```ts
-import * as trpc from "@trpc/server";
-import type { ActionFunction } from "remix";
+import * as trpc from "@trpc/server";";
 import { createFetchAPIHandler } from "@valu/trpc-fetch-api-adapter";
 
 export const appRouter = trpc.router<MyContext>().query("hello", {
