@@ -118,7 +118,7 @@ jobs:
                   version: 6.25.1
               if: ${{ env.is_pnpm == '1' }}
 
-            - name: "Build ${{ env.pkg }}"
+            - name: "Install node modules"
               run: |
                   set -eu
                   cd "packages/$pkg"
@@ -130,6 +130,11 @@ jobs:
                   else
                       npm install
                   fi
+
+            - name: "Build ${{ env.pkg }}"
+              run: |
+                  set -eu
+                  cd "packages/$pkg"
 
                   if [ "$is_pnpm" = "1" ]; then
                       pnpm run build
