@@ -148,7 +148,7 @@ jobs:
                   echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > "$HOME/.npmrc"
 
                   if [ "$is_pnpm" = "1" ]; then
-                      pnpm publish --access public
+                      pnpm publish --access public --no-git-checks
                   else
                       npm publish --access public
                   fi
