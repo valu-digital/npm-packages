@@ -125,7 +125,7 @@ jobs:
 
                   if [ "$is_pnpm" = "1" ]; then
                       pnpm install --frozen-lockfile
-                  elif if [ -f package-lock.json ]; then
+                  elif [ -f package-lock.json ]; then
                       npm ci
                   else
                       npm install
