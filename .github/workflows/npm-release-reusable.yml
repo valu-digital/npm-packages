@@ -59,7 +59,7 @@ jobs:
                   prev_version=$(echo "$prev_tag" | sed -E "s/.+v([0-9\.]+)\$/\1/")
 
                   link_ver="$(echo $next_version | tr -cd '[:alnum:]')"
-                  changelog_link="https://github.com/valu-digital/npm-packages/blob/master/packages/$pkg/CHANGELOG.md#v${link_ver}"
+                  changelog_link="https://github.com/${GITHUB_REPOSITORY}/blob/master/packages/$pkg/CHANGELOG.md#v${link_ver}"
 
                   if [ "$next_version" = "$prev_version" ]; then
                     echo "Cannot release $prev_version again"
