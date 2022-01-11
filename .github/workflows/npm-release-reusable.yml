@@ -26,6 +26,7 @@ jobs:
 
             - name: Set version enviroment variables
               run: |
+                  set -eu
                   slack-message "New npm release"
 
                   release_mode=stable
@@ -68,9 +69,19 @@ jobs:
                     exit 9
                   fi
 
+                  is_pnpm=0
+
+                  if [ -f pnpm-lock.yaml ]; then
+                    is_pnpm=1
+                  fi
+
+                  if [ -f "packages/$pkg/pnpm-lock.yaml" ]; then
+                    is_pnpm=1
+                  fi
 
                   set -x
                   echo "pkg=$pkg" >> $GITHUB_ENV
+                  echo "is_pnpm=$is_pnpm" >> $GITHUB_ENV
                   echo "npm_name=$npm_name" >> $GITHUB_ENV
                   echo "next_version=$next_version" >> $GITHUB_ENV
                   echo "next_tag=$next_tag" >> $GITHUB_ENV
@@ -81,6 +92,7 @@ jobs:
 
             - name: Set version number
               run: |
+                  set -eu
                   cd "packages/$pkg"
 
                   jq ".version = \"$next_version\"" package.json > tmp.json
@@ -89,7 +101,9 @@ jobs:
             - name: Commit version numbers
               if: ${{ env.release_mode == 'stable' }}
               run: |
+                  set -eu
                   cd "packages/$pkg"
+
                   git config user.email "action@github.com"
                   git config user.name "${{ github.actor }}"
                   git add package.json
@@ -101,27 +115,47 @@ jobs:
               with:
                   node-version: "14.x"
 
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2.0.1
+              with:
+                  version: 6.25.1
+              if: ${{ env.is_pnpm == '1' }}
+
             - name: "Build ${{ env.pkg }}"
               run: |
+                  set -eu
                   cd "packages/$pkg"
 
-                  if [ -f package-lock.json ]; then
+                  if [ "$is_pnpm" = "1" ]; then
+                      pnpm install --frozen-lockfile
+                  elif if [ -f package-lock.json ]; then
                       npm ci
                   else
                       npm install
                   fi
 
-                  npm run build
-
-                  npm run test
+                  if [ "$is_pnpm" = "1" ]; then
+                      pnpm run build
+                      pnpm run test
+                  else
+                      npm run build
+                      npm run test
+                  fi
 
             - name: Make STABLE release
               if: ${{ env.release_mode == 'stable' }}
               run: |
+                  set -eu
                   cd "packages/$pkg"
+
                   echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > "$HOME/.npmrc"
-                  npm whoami
-                  npm publish --access public
+
+                  if [ "$is_pnpm" = "1" ]; then
+                      pnpm publish --access public
+                  else
+                      npm publish --access public
+                  fi
+
                   rm "$HOME/.npmrc"
 
                   git push origin HEAD:master
@@ -132,10 +166,17 @@ jobs:
             - name: Make PRERELEASE release
               if: ${{ env.release_mode == 'prerelease' }}
               run: |
+                  set -eu
                   cd "packages/$pkg"
+
                   echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > "$HOME/.npmrc"
-                  npm whoami
-                  npm publish --tag dev --access public
+
+                  if [ "$is_pnpm" = "1" ]; then
+                      pnpm publish --tag dev --access public
+                  else
+                      npm publish --tag dev --access public
+                  fi
+
                   rm "$HOME/.npmrc"
 
                   slack-message "New \`$npm_name\` prelease. \n\nInstall with \`npm install --save-exact $npm_name@${next_version}\`"
