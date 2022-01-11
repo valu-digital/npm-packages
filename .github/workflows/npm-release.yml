@@ -13,7 +13,7 @@ jobs:
 
             - uses: valu-digital/slack-action@master
               with:
-                  webhook: "${{ secrets.SLACK_WEBHOOK }}"
+                  token: "${{ secrets.SLACK_ACCESS_TOKEN }}"
                   channel: "#npm-packages"
 
             - name: Set version enviroment variables
