@@ -4,7 +4,7 @@ on:
             - release/*/*
 jobs:
     release:
-        uses: ./.github/workflows/npm-release-reusable.yml
+        uses: ./.github/workflows/npm-release-reusable.yml@master
         with:
             slack_channel: "#npm-packages"
         secrets:
