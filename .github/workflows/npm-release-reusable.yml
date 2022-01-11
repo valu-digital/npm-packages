@@ -81,7 +81,7 @@ jobs:
 
             - name: Set version number
               run: |
-                  . .github/npm-release.sh
+                  cd "packages/$pkg"
 
                   jq ".version = \"$next_version\"" package.json > tmp.json
                   mv tmp.json package.json
@@ -89,7 +89,7 @@ jobs:
             - name: Commit version numbers
               if: ${{ env.release_mode == 'stable' }}
               run: |
-                  . .github/npm-release.sh
+                  cd "packages/$pkg"
                   git config user.email "action@github.com"
                   git config user.name "${{ github.actor }}"
                   git add package.json
@@ -103,7 +103,7 @@ jobs:
 
             - name: "Build ${{ env.pkg }}"
               run: |
-                  . .github/npm-release.sh
+                  cd "packages/$pkg"
 
                   if [ -f package-lock.json ]; then
                       npm ci
@@ -118,7 +118,7 @@ jobs:
             - name: Make STABLE release
               if: ${{ env.release_mode == 'stable' }}
               run: |
-                  . .github/npm-release.sh
+                  cd "packages/$pkg"
                   echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > "$HOME/.npmrc"
                   npm whoami
                   npm publish --access public
@@ -132,7 +132,7 @@ jobs:
             - name: Make PRERELEASE release
               if: ${{ env.release_mode == 'prerelease' }}
               run: |
-                  . .github/npm-release.sh
+                  cd "packages/$pkg"
                   echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > "$HOME/.npmrc"
                   npm whoami
                   npm publish --tag dev --access public
