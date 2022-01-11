@@ -21,7 +21,7 @@ jobs:
 
             - uses: valu-digital/slack-action@master
               with:
-                  webhook: "${{ secrets.SLACK_ACCESS_TOKEN }}"
+                  token: "${{ secrets.SLACK_ACCESS_TOKEN }}"
                   channel: "${{ inputs.slack_channel }}"
 
             - name: Set version enviroment variables
