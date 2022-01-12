@@ -1,15 +1,15 @@
 {
-    "name": "@valu/npm-tools",
-    "version": "0.0.0",
-    "description": "Tools for working with npm packages",
-    "author": "Esa-Matti Suuronen, Valu Digital Oy",
-    "bin": {
-        "valu-npm-prerelease": "scripts/valu-npm-prerelease",
-        "valu-npm-release": "scripts/valu-npm-release",
-        "valu-npm-dev-install": "scripts/valu-npm-dev-install"
-    },
-    "license": "ISC",
-    "scripts": {
-        "build": "echo no-op"
-    }
+  "name": "@valu/npm-tools",
+  "version": "0.0.1",
+  "description": "Tools for working with npm packages",
+  "author": "Esa-Matti Suuronen, Valu Digital Oy",
+  "bin": {
+    "valu-npm-prerelease": "scripts/valu-npm-prerelease",
+    "valu-npm-release": "scripts/valu-npm-release",
+    "valu-npm-dev-install": "scripts/valu-npm-dev-install"
+  },
+  "license": "ISC",
+  "scripts": {
+    "build": "echo no-op"
+  }
 }
