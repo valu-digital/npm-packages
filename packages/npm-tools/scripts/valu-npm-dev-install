@@ -1,0 +1,85 @@
+#!/bin/zsh
+
+set -e
+
+local help=false
+local fast=false
+local build=false
+
+while true; do
+    case "${1:-}" in
+    -h|--help)
+        help=true
+        shift
+        ;;
+    -f|--fast)
+        fast=true
+        shift
+        ;;
+    -b|--build)
+        build=true
+        shift
+        ;;
+    -d|--debug)
+        set -x
+        shift
+        ;;
+    -*|--*)
+        >&2 echo "Unknown arg $1"
+        return 2
+        ;;
+    *)
+        break
+        ;;
+    esac
+done
+
+
+if [ "$help" = "true" -o "${1:-}" = "" ]; then
+    >&2 echo "usage: valu-npm-dev-install [options] <path>
+    -f --fast    Use fast mode. Just copies the package files to local node_modules
+                    without building the actual package. This can be used if the package
+                    has proper watch mode.
+    -b --build   build the package even when using --fast
+    -d --debug   Print all the executed commands
+    "
+    exit 1
+fi
+
+local pkg_dir="$1"
+local project_dir="$(pwd)"
+
+cd "$pkg_dir"
+
+local pkg_file=$(node -p 'p = require("./package.json"), `${p.name.replace(/^@/, "").replace(/\//, "-")}-${p.version}.tgz`')
+local pkg_name=$(jq -r .name package.json)
+local pkg_files=$(jq -r '.files|join(" ")' package.json)
+
+if [ ! -d node_modules ]; then
+    npm install
+fi
+
+if ! $fast; then
+    npm run build
+    npm pack
+elif $build; then
+    npm run build
+fi
+
+if ! $fast; then
+    cd "$project_dir"
+    if [ -f pnpm-lock.yaml ]; then
+        pnpm install "$pkg_dir/$pkg_file"
+    elif [ -f ../../pnpm-workspace.yaml ]; then
+        pnpm install "$pkg_dir/$pkg_file"
+    else
+        npm install "$pkg_dir/$pkg_file"
+    fi
+    rm "$pkg_dir/$pkg_file"
+else
+    local pkg_install_dir="$project_dir/node_modules/$pkg_name"
+    mkdir -p "$pkg_install_dir"
+    cd "$pkg_dir"
+    # XXX zsh specific syntax
+    cp -r package.json ${=pkg_files} "$pkg_install_dir"
+fi
