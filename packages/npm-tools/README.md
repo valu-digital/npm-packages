@@ -20,7 +20,7 @@ Run in a `packages/*` directory to make stable release of that package
 
 ### `valu-npm-dev-install`
 
-Install package unpublished package to a project
+Install unpublished package to a project
 
 ```
 cd project
@@ -29,3 +29,13 @@ valu-npm-dev-install /path/to/npm-packages/packages/a-package
 
 You can use `-f` to install the package without building it first.
 This is useful when using a watcher to build the package automatically.
+
+```
+cd /path/to/npm-packages/packages/a-package
+npm run watch
+```
+
+```
+cd project
+valu-npm-dev-install -f /path/to/npm-packages/packages/a-package
+```
