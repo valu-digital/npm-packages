@@ -1,6 +1,6 @@
 {
     "name": "@valu/npm-tools",
-    "version": "1.0.0",
+    "version": "0.0.0",
     "description": "Tools for working with npm packages",
     "author": "Esa-Matti Suuronen, Valu Digital Oy",
     "bin": {
