@@ -8,5 +8,8 @@
         "valu-npm-release": "scripts/valu-npm-release",
         "valu-npm-dev-install": "scripts/valu-npm-dev-install"
     },
-    "license": "ISC"
+    "license": "ISC",
+    "scripts": {
+        "build": "echo no-op"
+    }
 }
