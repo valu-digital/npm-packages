@@ -54,6 +54,11 @@ interface FocusTrapOptions {
     escDisables?: boolean;
 
     /**
+     * Options to control aspects of the focusing process
+     */
+    focusOptions?: FocusOptions;
+
+    /**
      * Executed before trap enables
      */
     onBeforeEnable?(trap: FocusTrap): void;

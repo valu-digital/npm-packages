@@ -27,6 +27,11 @@ interface FocusTrapOptions {
     escDisables?: boolean;
 
     /**
+     * Options to control aspects of the focusing process
+     */
+    focusOptions?: FocusOptions;
+
+    /**
      * Executed before trap enables
      */
     onBeforeEnable?(trap: FocusTrap): void;
@@ -145,7 +150,7 @@ export class FocusTrap {
         this.state.active = true;
 
         if (this.lastFocusedElement) {
-            this.lastFocusedElement.focus();
+            this.setElementFocus(this.lastFocusedElement);
         } else {
             if (
                 document.activeElement instanceof HTMLElement &&
@@ -198,11 +203,16 @@ export class FocusTrap {
             this.parent.enable();
             this.parent = undefined;
         } else if (this.elementBeforeTrap) {
-            this.elementBeforeTrap.focus();
+            this.setElementFocus(this.elementBeforeTrap);
+
             if (this.options.onAfterDisable) {
                 this.options.onAfterDisable(this);
             }
         }
+    }
+
+    setElementFocus(element: HTMLElement) {
+        element.focus(this.options.focusOptions);
     }
 
     /**
@@ -245,7 +255,7 @@ export class FocusTrap {
         if (this.state.shifKeyDown) {
             const tabbables = this.getTabbables(nextContainer);
             if (tabbables.length > 0) {
-                tabbables[tabbables.length - 1].focus();
+                this.setElementFocus(tabbables[tabbables.length - 1]);
             } else {
                 // The container had no tabbable items update the current
                 // container and restart focus moving attempt
@@ -255,7 +265,7 @@ export class FocusTrap {
         } else {
             const tabbables = this.getTabbables(nextContainer);
             if (tabbables.length > 0) {
-                tabbables[0].focus();
+                this.setElementFocus(tabbables[0]);
             } else {
                 // The container had no tabbable items...
                 this.state.currentContainerIndex = nextContainerIndex;
@@ -380,7 +390,7 @@ export class FocusTrap {
             // focus back to the previous element
             if (this.state.usingMouse && prev) {
                 this.lastFocusedElement = prev;
-                prev.focus();
+                this.setElementFocus(prev);
                 return;
             }
 
