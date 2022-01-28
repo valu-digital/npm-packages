@@ -131,16 +131,22 @@ jobs:
                       npm install
                   fi
 
-            - name: "Build ${{ env.pkg }}"
+            - name: "Build the package"
               run: |
                   set -eu
                   cd "packages/$pkg"
+                  
+                  task=build
+                  
+                  if [ "$(jq -r '.scripts."publish-build"' package.json)" != "null" ]; then
+                      task=publish-build
+                  fi
 
                   if [ "$is_pnpm" = "1" ]; then
-                      pnpm run build
+                      pnpm run $task
                       pnpm run test
                   else
-                      npm run build
+                      npm run $task
                       npm run test
                   fi
 
