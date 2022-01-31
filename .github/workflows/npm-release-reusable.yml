@@ -184,7 +184,7 @@ jobs:
               run: slack-message "New \`$npm_name\` stable release. See <$changelog_link|Changelog>. \n\nInstall with \`npm install $npm_name@^${next_version}\`"
 
             - name: Make PRERELEASE release
-              if: ${{ env.release_mode == 'prerelease' && env.HAS_SLACK == '1' }}
+              if: ${{ env.release_mode == 'prerelease' }}
               run: |
                   set -eu
                   cd "packages/$pkg"
@@ -200,7 +200,7 @@ jobs:
                   rm "$HOME/.npmrc"
 
             - name: Notify about PRERELEASE release
-              if: ${{ env.release_mode == 'prerelease' && secrets.SLACK_ACCESS_TOKEN }}
+              if: ${{ env.release_mode == 'prerelease' && env.HAS_SLACK == '1'}}
               run: slack-message "New \`$npm_name\` prelease. \n\nInstall with \`npm install --save-exact $npm_name@${next_version}\`"
 
             - name: Notify about failure
