@@ -26,13 +26,13 @@ jobs:
                   fi
 
             - uses: valu-digital/slack-action@master
-              if: ${{ env.HAS_SLACK == "1" }}
+              if: ${{ env.HAS_SLACK == '1' }}
               with:
                   token: "${{ secrets.SLACK_ACCESS_TOKEN }}"
                   channel: "${{ inputs.slack_channel }}"
 
             - name: Notify start
-              if: ${{ env.HAS_SLACK == "1" }}
+              if: ${{ env.HAS_SLACK == '1' }}
               run: slack-message "New npm release"
 
             - name: Set version enviroment variables
@@ -180,11 +180,11 @@ jobs:
                   git push origin --tags
 
             - name: Notify about STABLE release
-              if: ${{ env.release_mode == 'stable' && env.HAS_SLACK == "1" }}
+              if: ${{ env.release_mode == 'stable' && env.HAS_SLACK == '1' }}
               run: slack-message "New \`$npm_name\` stable release. See <$changelog_link|Changelog>. \n\nInstall with \`npm install $npm_name@^${next_version}\`"
 
             - name: Make PRERELEASE release
-              if: ${{ env.release_mode == 'prerelease' && env.HAS_SLACK == "1" }}
+              if: ${{ env.release_mode == 'prerelease' && env.HAS_SLACK == '1' }}
               run: |
                   set -eu
                   cd "packages/$pkg"
