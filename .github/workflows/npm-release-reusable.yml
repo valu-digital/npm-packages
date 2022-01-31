@@ -199,6 +199,17 @@ jobs:
 
                   rm "$HOME/.npmrc"
 
+            - name: Log install command
+              if: ${{ env.release_mode == 'stable' }}
+              run: |
+                  echo
+                  if [ "$release_mode" = "stable" ]; then
+                      echo "npm install $npm_name@${next_version}"
+                  else
+                      echo "npm install --save-exact $npm_name@${next_version}"
+                  fi
+                  echo
+
             - name: Notify about PRERELEASE release
               if: ${{ env.release_mode == 'prerelease' && env.HAS_SLACK == '1'}}
               run: slack-message "New \`$npm_name\` prelease. \n\nInstall with \`npm install --save-exact $npm_name@${next_version}\`"
