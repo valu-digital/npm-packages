@@ -3,13 +3,13 @@ on:
     workflow_call:
         inputs:
             slack_channel:
-                required: true
+                required: false
                 type: string
         secrets:
             NPM_TOKEN:
                 required: true
             SLACK_ACCESS_TOKEN:
-                required: true
+                required: false
 jobs:
     release:
         runs-on: ubuntu-latest
@@ -20,14 +20,18 @@ jobs:
                   fetch-depth: 0
 
             - uses: valu-digital/slack-action@master
+              if: ${{ secrets.SLACK_ACCESS_TOKEN }}
               with:
                   token: "${{ secrets.SLACK_ACCESS_TOKEN }}"
                   channel: "${{ inputs.slack_channel }}"
 
+            - name: Notify start
+              if: ${{ secrets.SLACK_ACCESS_TOKEN }}
+              run: slack-message "New npm release"
+
             - name: Set version enviroment variables
               run: |
                   set -eu
-                  slack-message "New npm release"
 
                   release_mode=stable
 
@@ -135,9 +139,9 @@ jobs:
               run: |
                   set -eu
                   cd "packages/$pkg"
-                  
+
                   task=build
-                  
+
                   if [ "$(jq -r '.scripts."publish-build"' package.json)" != "null" ]; then
                       task=publish-build
                   fi
@@ -169,7 +173,9 @@ jobs:
                   git push origin HEAD:master
                   git push origin --tags
 
-                  slack-message "New \`$npm_name\` stable release. See <$changelog_link|Changelog>. \n\nInstall with \`npm install $npm_name@^${next_version}\`"
+            - name: Notify about STABLE release
+              if: ${{ env.release_mode == 'stable' && secrets.SLACK_ACCESS_TOKEN }}
+              run: slack-message "New \`$npm_name\` stable release. See <$changelog_link|Changelog>. \n\nInstall with \`npm install $npm_name@^${next_version}\`"
 
             - name: Make PRERELEASE release
               if: ${{ env.release_mode == 'prerelease' }}
@@ -187,9 +193,10 @@ jobs:
 
                   rm "$HOME/.npmrc"
 
-                  slack-message "New \`$npm_name\` prelease. \n\nInstall with \`npm install --save-exact $npm_name@${next_version}\`"
+            - name: Notify about PRERELEASE release
+              if: ${{ env.release_mode == 'prerelease' && secrets.SLACK_ACCESS_TOKEN }}
+              run: slack-message "New \`$npm_name\` prelease. \n\nInstall with \`npm install --save-exact $npm_name@${next_version}\`"
 
             - name: Notify about failure
               if: failure()
-              run: |
-                  slack-message "Failed to make npm release for ${pkg:-} / ${npm_name:-}"
+              run: slack-message "Failed to make npm release for ${pkg:-} / ${npm_name:-}"
