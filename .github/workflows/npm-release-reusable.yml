@@ -200,7 +200,6 @@ jobs:
                   rm "$HOME/.npmrc"
 
             - name: Log install command
-              if: ${{ env.release_mode == 'stable' }}
               run: |
                   echo
                   if [ "$release_mode" = "stable" ]; then
