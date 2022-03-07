@@ -1,3 +1,9 @@
+## v2.1.1
+
+2022-03-07
+
+-   Sakke: Fix `npx sakke css` [https://github.com/valu-digital/npm-packages/pull/11](https://github.com/valu-digital/npm-packages/pull/11) - Sauli Rajala
+
 ## v2.1.0
 
 2022-03-07
