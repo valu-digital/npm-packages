@@ -1,3 +1,9 @@
+## v3.0.0
+
+2022-03-07
+
+-   Sakke: add support for gutenberg.scss and admin.scss in sakke-plugin [https://github.com/valu-digital/npm-packages/pull/12/](https://github.com/valu-digital/npm-packages/pull/12/) - Sauli Rajala
+
 ## v2.1.1
 
 2022-03-07
