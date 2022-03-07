@@ -17,15 +17,17 @@ const pkg = require(process.cwd() + "/package.json");
 const sakke = require(process.cwd() + "/sakke.json");
 const { isFile } = require("./dist/utils");
 
-const getImportBuffer = async (plugin) => {
+const getImportBuffer = async (plugin, entry) => {
     const hasIndexFile = await isFile(
-        `${process.cwd()}/sakke-plugins/${plugin}/index.scss`,
+        `${process.cwd()}/sakke-plugins/${plugin}/${entry}.scss`,
     );
     if (!hasIndexFile) {
         return Buffer.from("");
     }
 
-    return Buffer.from(`@import "sakke-plugins/${plugin}/index.scss";`);
+    return Buffer.from(
+        `@import "sakke-plugins/${plugin}/${entry}.scss";`,
+    );
 };
 
 /**
@@ -36,16 +38,24 @@ function loadSakkePluginStyles() {
         readableObjectMode: true,
         writableObjectMode: true,
         async transform(file, encoding, cb) {
+            const pluginsWithStyles = sakke.plugins || [];
+            let entry = '';
             if (file.path.endsWith("main.scss")) {
-                const pluginsWithStyles = sakke.plugins || [];
+                entry = 'index';
+            } else if (file.path.endsWith("main-gutenberg.scss")) {
+                entry = 'gutenberg';
+            } else if (file.path.endsWith("main-admin.scss")) {
+                entry = 'admin';
+            }
 
+            if(entry !== ''){
                 const indexBuffers = await Promise.all(
                     pluginsWithStyles.map((plugin) => {
                         // If sakke-plugin is defined as simple string, use it as name of sakke-plugin
                         // Otherwise get sakke-plugin name from 'name'-property
                         plugin =
-                            typeof plugin === "string" ? plugin : plugin.name;
-                        return getImportBuffer(plugin);
+                        typeof plugin === "string" ? plugin : plugin.name;
+                        return getImportBuffer(plugin, entry);
                     }),
                 );
 
