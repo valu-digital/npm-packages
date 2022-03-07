@@ -13,7 +13,8 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --noEmit false",
-    "watch": "tsc --watch --noEmit false"
+    "watch": "tsc --watch --noEmit false",
+    "prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,scss}'"
   },
   "bin": {
     "sakke": "cli-entry.js"
@@ -43,6 +44,7 @@
     "gulp-sourcemaps": "^3.0.0",
     "imagemin-pngcrush": "^6.0.0",
     "postcss-prefixwrap": "^1.25.0",
+    "prettier": "^2.5.1",
     "sass": "^1.43.4",
     "sh-thunk": "^0.3.2",
     "style-loader": "^3.3.1",
