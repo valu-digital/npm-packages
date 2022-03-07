@@ -1,0 +1,218 @@
+# See https://docs.github.com/en/actions/learn-github-actions/reusing-workflows
+on:
+    workflow_call:
+        inputs:
+            slack_channel:
+                required: false
+                type: string
+        secrets:
+            NPM_TOKEN:
+                required: true
+            SLACK_ACCESS_TOKEN:
+                required: false
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  # Fetch full history to get all tags so we can get PREV_VERSION
+                  fetch-depth: 0
+
+            # https://github.com/actions/runner/issues/520
+            - run: |
+                  if [ "${{ secrets.SLACK_ACCESS_TOKEN }}" != "" ]; then
+                      echo HAS_SLACK=1 >> $GITHUB_ENV
+                  fi
+
+            - uses: valu-digital/slack-action@master
+              if: ${{ env.HAS_SLACK == '1' }}
+              with:
+                  token: "${{ secrets.SLACK_ACCESS_TOKEN }}"
+                  channel: "${{ inputs.slack_channel }}"
+
+            - name: Notify start
+              if: ${{ env.HAS_SLACK == '1' }}
+              run: slack-message "New npm release"
+
+            - name: Set version enviroment variables
+              run: |
+                  set -eu
+
+                  release_mode=stable
+
+                  pkg=$(echo "$GITHUB_REF" | cut -d / -f 4)
+                  next_version=${GITHUB_REF##*/}
+                  next_tag="$pkg/v${next_version}"
+
+                  npm_name=$pkg
+
+                  current_version=0.0.0
+
+                  if [ -f "packages/$pkg/package.json" ]; then
+                    current_version="$(jq -r .version "packages/$pkg/package.json")"
+                    npm_name="$(jq -r .name "packages/$pkg/package.json")"
+                  fi
+
+
+                  next_tag="$pkg/v${next_version}"
+
+                  if [ "$next_version" = "prerelease" ]; then
+                    next_version="${current_version}-dev.${GITHUB_SHA:0:10}"
+                    # No tag for prereleases
+                    next_tag=
+                    release_mode=prerelease
+                  fi
+
+
+                  prev_tag="$(git describe --abbrev=0 --match "$pkg/v*" || true)"
+                  prev_version=$(echo "$prev_tag" | sed -E "s/.+v([0-9\.]+)\$/\1/")
+
+                  link_ver="$(echo $next_version | tr -cd '[:alnum:]')"
+                  changelog_link="https://github.com/${GITHUB_REPOSITORY}/blob/master/packages/$pkg/CHANGELOG.md#v${link_ver}"
+
+                  if [ "$next_version" = "$prev_version" ]; then
+                    echo "Cannot release $prev_version again"
+                    exit 9
+                  fi
+
+                  is_pnpm=0
+
+                  if [ -f pnpm-lock.yaml ]; then
+                    is_pnpm=1
+                  fi
+
+                  if [ -f "packages/$pkg/pnpm-lock.yaml" ]; then
+                    is_pnpm=1
+                  fi
+
+                  set -x
+                  echo "pkg=$pkg" >> $GITHUB_ENV
+                  echo "is_pnpm=$is_pnpm" >> $GITHUB_ENV
+                  echo "npm_name=$npm_name" >> $GITHUB_ENV
+                  echo "next_version=$next_version" >> $GITHUB_ENV
+                  echo "next_tag=$next_tag" >> $GITHUB_ENV
+                  echo "prev_tag=$prev_tag" >> $GITHUB_ENV
+                  echo "prev_version=$prev_version" >> $GITHUB_ENV
+                  echo "release_mode=$release_mode" >> $GITHUB_ENV
+                  echo "changelog_link=$changelog_link" >> $GITHUB_ENV
+
+            - name: Set version number
+              run: |
+                  set -eu
+                  cd "packages/$pkg"
+
+                  jq ".version = \"$next_version\"" package.json > tmp.json
+                  mv tmp.json package.json
+
+            - name: Commit version numbers
+              if: ${{ env.release_mode == 'stable' }}
+              run: |
+                  set -eu
+                  cd "packages/$pkg"
+
+                  git config user.email "action@github.com"
+                  git config user.name "${{ github.actor }}"
+                  git add package.json
+                  git commit -m "$pkg: v${next_version}"
+                  git tag -a "$next_tag" -m "$pkg v$next_version"
+
+            - name: Use Node.js
+              uses: actions/setup-node@v1
+              with:
+                  node-version: "14.x"
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2.0.1
+              with:
+                  version: 6.25.1
+              if: ${{ env.is_pnpm == '1' }}
+
+            - name: "Install node modules"
+              run: |
+                  set -eu
+                  cd "packages/$pkg"
+
+                  if [ "$is_pnpm" = "1" ]; then
+                      pnpm install --frozen-lockfile
+                  elif [ -f package-lock.json ]; then
+                      npm ci
+                  else
+                      npm install
+                  fi
+
+            - name: "Build the package"
+              run: |
+                  set -eu
+                  cd "packages/$pkg"
+
+                  task=build
+
+                  if [ "$(jq -r '.scripts."publish-build"' package.json)" != "null" ]; then
+                      task=publish-build
+                  fi
+
+                  if [ "$is_pnpm" = "1" ]; then
+                      pnpm run $task
+                      pnpm run test
+                  else
+                      npm run $task
+                      npm run test
+                  fi
+
+            - name: Make STABLE release
+              if: ${{ env.release_mode == 'stable' }}
+              run: |
+                  set -eu
+                  cd "packages/$pkg"
+
+                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > "$HOME/.npmrc"
+
+                  if [ "$is_pnpm" = "1" ]; then
+                      pnpm publish --access public --no-git-checks
+                  else
+                      npm publish --access public
+                  fi
+
+                  rm "$HOME/.npmrc"
+
+                  git push origin HEAD:master
+                  git push origin --tags
+
+            - name: Notify about STABLE release
+              if: ${{ env.release_mode == 'stable' && env.HAS_SLACK == '1' }}
+              run: slack-message "New \`$npm_name\` stable release. See <$changelog_link|Changelog>. \n\nInstall with \`npm install $npm_name@^${next_version}\`"
+
+            - name: Make PRERELEASE release
+              if: ${{ env.release_mode == 'prerelease' }}
+              run: |
+                  set -eu
+                  cd "packages/$pkg"
+
+                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > "$HOME/.npmrc"
+
+                  if [ "$is_pnpm" = "1" ]; then
+                      pnpm publish --tag dev --access public --no-git-checks
+                  else
+                      npm publish --tag dev --access public
+                  fi
+
+                  rm "$HOME/.npmrc"
+
+            - name: Log install command
+              run: |
+                  echo
+                  if [ "$release_mode" = "stable" ]; then
+                      echo "npm install $npm_name@${next_version}"
+                  else
+                      echo "npm install --save-exact $npm_name@${next_version}"
+                  fi
+                  echo
+
+            - name: Notify about PRERELEASE release
+              if: ${{ env.release_mode == 'prerelease' && env.HAS_SLACK == '1'}}
+              run: slack-message "New \`$npm_name\` prelease. \n\nInstall with \`npm install --save-exact $npm_name@${next_version}\`"
+
+            - name: Notify about failure
+              if: failure()
+              run: slack-message "Failed to make npm release for ${pkg:-} / ${npm_name:-}"

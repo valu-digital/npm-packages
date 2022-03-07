@@ -54,6 +54,28 @@ module.exports = createWebpackConfig({
 });
 ```
 
+
+If you use Sakke (https://www.npmjs.com/package/sakke):
+
+Add this to sakke.config.js in theme root
+
+```js
+const { BabelGQLWebpackPlugin } = require("babel-gql/plugin");
+
+const config = {
+    babelPlugins: ["babel-gql/plugin"],
+    webpackPlugins: [
+        new BabelGQLWebpackPlugin({
+            target: ".queries",
+        }),
+    ],
+    // webpackRules: [],
+    // compileNodeModules: [],
+};
+
+module.exports = config;
+```
+
 ## Usage
 
 ```js

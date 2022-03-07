@@ -1,3 +1,9 @@
+## v1.2.0
+
+2022-01-20
+
+-   Add assertNotBrowser() [6f07f5c](https://github.com/valu-digital/npm-packages/commit/6f07f5c) - Esa-Matti Suuronen
+
 ## v1.1.0
 
 2021-05-18

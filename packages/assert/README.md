@@ -107,6 +107,11 @@ function fn2(item: Item) {
 
 GraphQL node connections have often types like this.
 
+## `assertNotBrowser()`
+
+Throw if the environment is a web browser. Used assert that server-side code is
+not accidentally loaded into the browser bundles.
+
 ## `assert(cond: boolean, message: string, offsetStack?: number)`
 
 Plain assert function with offsettable stack for better error messages like in:

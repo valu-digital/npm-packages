@@ -64,3 +64,8 @@ function _stringify(ob: any) {
 
     return String(ob);
 }
+
+
+export function assertNotBrowser( ) {
+    assert(typeof window === "undefined", "This code is not allowed in the browser", 2);
+}
