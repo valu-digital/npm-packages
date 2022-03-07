@@ -1,3 +1,9 @@
+## v2.1.0
+
+2022-03-07
+
+-   Sakke: Allow usage outside of WP theme folder [https://github.com/valu-digital/npm-packages/pull/14](https://github.com/valu-digital/npm-packages/pull/14) - Sauli Rajala
+
 ## v2.0.0
 
 2022-01-05
