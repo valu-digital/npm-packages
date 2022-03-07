@@ -37,6 +37,7 @@ export const SakkeJSON = z.object({
             ]),
         )
         .optional(),
+    publicPath: z.string().optional(),
 });
 
 export type SakkeJSONType = z.infer<typeof SakkeJSON>;

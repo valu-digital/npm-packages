@@ -132,6 +132,19 @@ const config = {
 module.exports = config;
 ```
 
+## Changing webpack publicPath
+
+This is needed when sakke build tool is used outside of WP theme context:
+
+In `sakke.json`
+
+```json
+{
+  "publicPath": "/wp-content/plugins/my-plugin/dist/scripts/"
+}
+
+```
+
 ## Migrating from `@valu/webpack-config`
 
 Ensure the project package `"name"` is not `"sakke"` in the `package.json` file.

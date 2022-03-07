@@ -316,7 +316,10 @@ export async function createWebpackConfig(
         }
     }
 
-    const publicPath = `/wp-content/themes/${wpTheme}/dist/scripts/`;
+    let publicPath = `/wp-content/themes/${wpTheme}/dist/scripts/`;
+    if (sakke.publicPath) {
+        publicPath = sakke.publicPath;
+    }
     const outputPath = PathUtils.join(process.cwd(), "dist/scripts");
 
     devServer.static.publicPath = `https://${sakke.webpack.host}:${sakke.webpack.port}${publicPath}`;
