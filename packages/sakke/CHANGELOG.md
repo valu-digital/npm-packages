@@ -1,3 +1,9 @@
+## v3.0.1
+
+2022-03-07
+
+-   Move prettier as dev dependency [0166440](https://github.com/valu-digital/npm-packages/commit/0166440) - Sauli Rajala
+
 ## v3.0.0
 
 2022-03-07
