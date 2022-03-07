@@ -213,20 +213,9 @@ function configuredPostcss() {
     return postcss(plugins);
 }
 
-/**
- * Get standalone css bundles from sakke plugins
- * TODO: this should be done some other way (outside of sakke-lib),
- *  since this is project specified
- */
-function getActiveSakkePluginStyleEntries() {
-    return [];
-}
-
 gulp.task("styles", () => {
-    const pluginStyles = getActiveSakkePluginStyleEntries();
-
     return gulp
-        .src([ROOT + "/assets/styles/*.scss", ...pluginStyles])
+        .src([ROOT + "/assets/styles/*.scss"])
         .pipe(loadSakkePluginStyles())
         .pipe(sourcemaps.init())
         .pipe(sass().on("error", sass.logError))
