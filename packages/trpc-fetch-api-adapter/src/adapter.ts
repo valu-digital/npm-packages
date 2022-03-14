@@ -7,7 +7,7 @@ import type {
 } from "@trpc/server/dist/declarations/src/rpc";
 
 // Copy pasted from https://github.com/trpc/trpc/blob/74c0bb9c76f57805672fbb02596f5ed5e5c339e5/packages/server/src/rpc/codes.ts#L11
-// Because I was not able to import it Remix without bundling errors
+// Because I was not able to import it in Remix without bundling errors
 /**
  * JSON-RPC 2.0 Error codes
  *
