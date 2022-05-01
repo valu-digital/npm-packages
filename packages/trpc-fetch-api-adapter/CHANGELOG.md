@@ -1,3 +1,9 @@
+## v0.0.3
+
+2022-05-01
+
+-   Fix homepage url [d509d59](https://github.com/valu-digital/npm-packages/commit/d509d59) - Esa-Matti Suuronen
+
 ## v0.0.2
 
 2022-01-09
