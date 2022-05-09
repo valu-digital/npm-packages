@@ -1,3 +1,4 @@
+import { assertNotAny, assertType } from "@valu/assert";
 import { test, expect } from "vitest";
 import { TypedEnv } from "../src";
 
@@ -53,12 +54,6 @@ test("can fallback to default", () => {
     const env = new TypedEnv<"FOO">(raw);
     expect(env.get("FOO", "default")).toEqual("default");
 });
-
-function assertNotAny<T>(x: NotAny<T>) {}
-type IsAny<T> = unknown extends T ? (T extends {} ? T : never) : never;
-type NotAny<T> = T extends IsAny<T> ? never : T;
-
-function assertType<T = never>(value: T) {}
 
 () => {
     const env = new TypedEnv<"FOO">({});
