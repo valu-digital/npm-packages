@@ -65,7 +65,23 @@ function _stringify(ob: any) {
     return String(ob);
 }
 
-
-export function assertNotBrowser( ) {
-    assert(typeof window === "undefined", "This code is not allowed in the browser", 2);
+export function assertNotBrowser() {
+    assert(
+        typeof window === "undefined",
+        "This code is not allowed in the browser",
+        2,
+    );
 }
+
+/**
+ * Asserts that the given value is not any type
+ */
+export function assertNotAny<T>(value: NotAny<T>) {}
+
+type IsAny<T> = unknown extends T ? (T extends {} ? T : never) : never;
+type NotAny<T> = T extends IsAny<T> ? never : T;
+
+/**
+ * Assert that the type of the `value` is assignable to the type T
+ */
+export function assertType<T>(value: T) {}

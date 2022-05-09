@@ -125,3 +125,35 @@ function assertCustom() {
     assert(true === false, "Fail", 2);
 }
 ```
+
+## `assertNotAny()`
+
+Assert that the given value is not type of any
+
+```ts
+import { assertNotAny } from "@valu/assert";
+
+const value: any = "wat";
+// Produces type error
+assertNotAny(value);
+
+const value = "wat";
+// ok because is string
+assertNotAny(value);
+```
+
+## `assertType()`
+
+Assert that the given value is not type of any
+
+```ts
+import { assertType } from "@valu/assert";
+
+const value: string = "wat";
+// Produces type error because string is not assignable to number
+assertType<number>(value);
+
+const value = "wat";
+// ok
+assertType<string>(value);
+```

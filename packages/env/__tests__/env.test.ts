@@ -58,11 +58,15 @@ function assertNotAny<T>(x: NotAny<T>) {}
 type IsAny<T> = unknown extends T ? (T extends {} ? T : never) : never;
 type NotAny<T> = T extends IsAny<T> ? never : T;
 
+function assertType<T = never>(value: T) {}
+
 () => {
     const env = new TypedEnv<"FOO">({});
     const value = env.get("FOO");
     assertNotAny(value);
     const str: string = value;
+
+    assertType(value);
 
     // @ts-expect-error
     const bad: number = value;

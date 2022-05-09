@@ -1,4 +1,11 @@
-import { assertNotNil, assertIs, notNil, is } from "../src";
+import {
+    assertNotNil,
+    assertIs,
+    notNil,
+    is,
+    assertNotAny,
+    assertType,
+} from "../src";
 
 describe("assertNotNil()", () => {
     test("asserts null", () => {
@@ -210,3 +217,28 @@ describe("is()", () => {
         };
     });
 });
+
+// assertNotAny tests
+() => {
+    const ding: any = 1;
+
+    // @ts-expect-error
+    assertNotAny(ding);
+
+    const num = 1;
+    assertNotAny(num);
+};
+
+// assertTypeTests
+() => {
+    const ding: string = "ding";
+
+    // @ts-expect-error
+    assertType<number>(ding);
+
+    // @ts-expect-error
+    assertType<"ding">("dong");
+
+    // ok
+    assertType<string>("dong");
+};
