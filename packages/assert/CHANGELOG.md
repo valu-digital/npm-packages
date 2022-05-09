@@ -1,3 +1,9 @@
+## v1.3.0
+
+2022-05-09
+
+-   Add assertNotAny() and asserType() [f10fe42](https://github.com/valu-digital/npm-packages/commit/f10fe42) - Esa-Matti Suuronen
+
 ## v1.2.0
 
 2022-01-20
