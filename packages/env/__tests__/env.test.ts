@@ -55,13 +55,25 @@ test("can fallback to default", () => {
     expect(env.get("FOO", "default")).toEqual("default");
 });
 
+test("can fallback with undefined", () => {
+    const raw: Record<string, string> = {};
+    const env = new TypedEnv<"FOO">(raw);
+
+    expect(env.get("FOO", undefined)).toEqual(undefined);
+    const ret = env.get("FOO", undefined);
+    assertType<string | undefined>(ret);
+
+    // @ts-expect-error
+    assertType<string>(ret);
+});
+
 () => {
     const env = new TypedEnv<"FOO">({});
     const value = env.get("FOO");
     assertNotAny(value);
     const str: string = value;
 
-    assertType(value);
+    assertType<string>(value);
 
     // @ts-expect-error
     const bad: number = value;

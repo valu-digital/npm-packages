@@ -7,10 +7,12 @@ export class TypedEnv<EnvKey extends string = ""> {
 
     get(key: EnvKey): string;
     get<F>(key: EnvKey, fallback: F): string | F;
-    get(key: EnvKey, fallback?: string): string {
-        const value = this.env[key] ?? fallback;
+    get(...args: [key: EnvKey, fallback?: any]): any {
+        const [key, fallback] = args;
 
-        if (value === undefined) {
+        const value = this.env[key];
+
+        if (value === undefined && args.length === 1) {
             const error = new Error(`Env ${key} is not defined`);
             const stack = error.stack?.split("\n");
 
@@ -22,7 +24,7 @@ export class TypedEnv<EnvKey extends string = ""> {
             throw error;
         }
 
-        return value;
+        return value ?? fallback;
     }
 
     set(key: EnvKey, value: string) {
