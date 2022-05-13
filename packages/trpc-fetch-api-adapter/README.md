@@ -90,7 +90,7 @@ export const client = createTRPCClient<AppRouter>({
 
 ```
 
-In order to use trpc queries you must provide your client to context in the `root.tsx` file. It should look something like this:
+In order to use tRPC queries you must wrap the root `<Outlet />` with the necessary [tRPC/react-query providers](https://trpc.io/docs/react#3-add-trpc-providers):
 
 ```ts
 // root.tsx
