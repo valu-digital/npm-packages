@@ -67,6 +67,12 @@ test("can fallback with undefined", () => {
     assertType<string>(ret);
 });
 
+test("can create env", () => {
+    const env = new TypedEnv<"FOO" | "BAR">({});
+    const values = env.createEnv({ BAR: "value" });
+    expect(values).toEqual({ BAR: "value" });
+});
+
 () => {
     const env = new TypedEnv<"FOO">({});
     const value = env.get("FOO");
@@ -100,4 +106,24 @@ test("can fallback with undefined", () => {
         // @ts-expect-error
         const str: string = value;
     }
+};
+
+() => {
+    // create env
+    const env = new TypedEnv<"FOO" | "BAR">({});
+
+    const values = env.createEnv({ BAR: "value" });
+
+    const s: string = values.BAR;
+
+    assertNotAny(values.BAR);
+
+    // @ts-expect-error
+    values.bad;
+
+    // @ts-expect-error
+    values.FOO;
+
+    // @ts-expect-error
+    env.createEnv({ bad: "value" });
 };

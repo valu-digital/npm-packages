@@ -34,4 +34,10 @@ export class TypedEnv<EnvKey extends string = ""> {
     delete(key: EnvKey) {
         delete this.env[key];
     }
+
+    createEnv<Subset extends EnvKey>(env: { [P in Subset]?: string }): {
+        [P in Subset]: string;
+    } {
+        return env as any;
+    }
 }
