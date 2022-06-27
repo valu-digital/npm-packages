@@ -54,6 +54,10 @@ export function connectCookieBot(
      * The cookiebot id
      */
     cbid: string,
+    /**
+     * Language
+     */
+    lang: string
 ) {
     if (typeof window === "undefined") {
         return;
@@ -81,6 +85,7 @@ export function connectCookieBot(
         },
         mutate: (el) => {
             el.dataset.blockingmode = "manual";
+            el.dataset.culture = lang;
             el.dataset.cbid = cbid;
             el.id = "Cookiebot";
         },
