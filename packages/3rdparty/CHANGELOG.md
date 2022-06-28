@@ -1,3 +1,9 @@
+## v1.2.8
+
+2022-06-28
+
+-   Make language optional in dataset culture [2678c2b](https://github.com/valu-digital/npm-packages/commit/2678c2b) - Timo Paananen
+
 ## v1.2.7
 
 2022-06-28
