@@ -1,3 +1,9 @@
+## v1.2.9
+
+2022-06-28
+
+-   Do not print empty dataset culture if no lang set [cf8a64b](https://github.com/valu-digital/npm-packages/commit/cf8a64b) - Timo Paananen
+
 ## v1.2.8
 
 2022-06-28
