@@ -1,3 +1,9 @@
+## v1.2.7
+
+2022-06-28
+
+-   Add data-culture to force language [ab575a0](https://github.com/valu-digital/npm-packages/commit/ab575a0) - Timo Paananen
+
 ## v1.2.6
 
 2021-11-04
