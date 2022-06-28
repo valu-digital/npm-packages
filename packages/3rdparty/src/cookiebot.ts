@@ -85,7 +85,9 @@ export function connectCookieBot(
         },
         mutate: (el) => {
             el.dataset.blockingmode = "manual";
-            el.dataset.culture = lang ?? "";
+            if (lang) {
+                el.dataset.culture = lang;
+            }
             el.dataset.cbid = cbid;
             el.id = "Cookiebot";
         },
