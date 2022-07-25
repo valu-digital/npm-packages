@@ -57,13 +57,13 @@ describe("assertNotNil()", () => {
     test("throws on null", () => {
         expect(() => {
             assertNotNil(null);
-        }).toThrow("[@valu/assert notNil] Unexpeted null");
+        }).toThrow("[@valu/assert notNil] Unexpected null");
     });
 
     test("throws on undefined", () => {
         expect(() => {
             assertNotNil(undefined);
-        }).toThrow("[@valu/assert notNil] Unexpeted undefined");
+        }).toThrow("[@valu/assert notNil] Unexpected undefined");
     });
 
     test("can use custom error message", () => {
