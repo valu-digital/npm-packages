@@ -1,3 +1,10 @@
+## v1.3.1
+
+2022-07-25
+
+-   Fix tests for the typo fix [a78c8ae](https://github.com/valu-digital/npm-packages/commit/a78c8ae) - Esa-Matti Suuronen
+-   Typo fix on error message [d64cfbc](https://github.com/valu-digital/npm-packages/commit/d64cfbc) - Joonas Varis
+
 ## v1.3.0
 
 2022-05-09
