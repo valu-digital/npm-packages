@@ -70,18 +70,65 @@ export const action: ActionFunction = async ({ request }) => {
 And create a client without batching
 
 ```ts
+// trpc.ts
 import { createTRPCClient } from "@trpc/client";
 import { httpLink } from "@trpc/client/links/httpLink";
 
-import type { AppRouter } from "./routes/trpc/$";
+import { createReactQueryHooks } from "@trpc/react";
 
-const client = createTRPCClient<AppRouter>({
-    links: [
-        httpLink({
-            url: "http://localhost:3000/trpc",
-        }),
-    ],
+import type { AppRouter } from "../routes/trpc/$";
+
+export const trpc = createReactQueryHooks<AppRouter>();
+
+export const client = createTRPCClient<AppRouter>({
+  links: [
+    httpLink({
+      url: "http://localhost:3000/trpc",
+    }),
+  ],
 });
+
+```
+
+In order to use tRPC queries you must wrap the root `<Outlet />` with the necessary [tRPC/react-query providers](https://trpc.io/docs/react#3-add-trpc-providers):
+
+```ts
+// root.tsx
+import {
+  Links,
+  LiveReload,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+} from "@remix-run/react";
+
+import { QueryClient, QueryClientProvider } from "react-query";
+import { client, trpc } from "./utils/trpc";
+
+const queryClient = new QueryClient();
+
+export default function App() {
+  return (
+    <html lang="en">
+      <head>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <trpc.Provider client={client} queryClient={queryClient}>
+          <QueryClientProvider client={queryClient}>
+            <Outlet />
+          </QueryClientProvider>
+        </trpc.Provider>
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+      </body>
+    </html>
+  );
+}
+
 ```
 
 ## Usage in CloudFlare Workers
