@@ -39,7 +39,7 @@ export function assertNotNil<T>(
     msg?: string,
 ): asserts ob is Exclude<T, undefined | null> {
     if (!msg) {
-        msg = `Unexpeted ${_stringify(ob)}`;
+        msg = `Unexpected ${_stringify(ob)}`;
     }
 
     assert(!isNil(ob), `[@valu/assert notNil] ${msg}`, 2);
