@@ -1,4 +1,4 @@
-import tabbable, { isTabbable } from "tabbable";
+import { tabbable, isTabbable, FocusableElement } from "tabbable";
 
 function getTabbables(el: HTMLElement) {
     const tabbables = tabbable(el);
@@ -57,8 +57,8 @@ interface FocusTrapOptions {
      * Skip focusing given tabbable when returning false
      */
     validateTabbable?(
-        tabbable: HTMLElement,
-        container: HTMLElement,
+        tabbable: Element,
+        container: Element,
         trap: FocusTrap,
     ): boolean;
 }
@@ -211,7 +211,7 @@ export class FocusTrap {
         }
     }
 
-    setElementFocus(element: HTMLElement) {
+    setElementFocus(element: FocusableElement) {
         element.focus(this.options.focusOptions);
     }
 
@@ -321,7 +321,7 @@ export class FocusTrap {
         });
     }
 
-    isValidTabbable(tabbable: HTMLElement, container: HTMLElement) {
+    isValidTabbable(tabbable: Element, container: HTMLElement) {
         if (!this.options.validateTabbable) {
             return true;
         }
