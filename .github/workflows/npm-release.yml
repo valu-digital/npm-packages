@@ -1,12 +1,22 @@
+name: Publish npm package
+
+concurrency:
+  group: "npm-publish"
+
 on:
-    push:
-        branches:
-            - release/*/*
+  push:
+    branches:
+      - release/*/*
+
 jobs:
-    release:
-        uses: valu-digital/npm-packages/.github/workflows/npm-release-reusable.yml@master
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+      - name: Publish
+        uses: ./.github/release-action
         with:
-            slack_channel: "#npm-packages"
-        secrets:
-            NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-            SLACK_ACCESS_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
+          slack_access_token: "${{ secrets.SLACK_ACCESS_TOKEN }}"
+          slack_channel: "#npm-packages"
+          npm_token: "${{ secrets.NPM_TOKEN }}"
