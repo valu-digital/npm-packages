@@ -71,9 +71,9 @@ if $changelog; then
     date +'%Y-%m-%d' >> "$tmp_changelog"
     echo >> "$tmp_changelog"
     # XXX get the base url from somewhere
-    git log --format='-   %s [%h](https://github.com/${repo}/commit/%h) - %an' HEAD...$prev_tag . >> "$tmp_changelog"
+    git log --format="-   %s [%h](https://github.com/${repo}/commit/%h) - %an" HEAD...$prev_tag . >> "$tmp_changelog"
     echo >> "$tmp_changelog"
-    echo "All changes https://github.com/esamattis/react-zorm/compare/react-zorm/${prev_tag}...${next_tag}" >> "$tmp_changelog"
+    echo "All changes https://github.com/esamattis/${repo}/compare/${prev_tag}...${next_tag}" >> "$tmp_changelog"
     echo >> "$tmp_changelog"
 
     if [ -f CHANGELOG.md ]; then
