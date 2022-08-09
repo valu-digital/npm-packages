@@ -1,3 +1,11 @@
+## v1.1.2
+
+2022-08-09
+
+-   lol, yet another link fix [5f3b6b7](https://github.com/valu-digital/npm-packages/commit/5f3b6b7) - Esa-Matti Suuronen
+
+All changes https://github.com/valu-digital/npm-packages/compare/npm-tools/v1.1.1...npm-tools/v1.1.2
+
 ## v1.1.1
 
 2022-08-09
