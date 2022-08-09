@@ -128,7 +128,7 @@ runs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        version: "${{ inputs.node_version }}"
+        node-version: "${{ inputs.node_version }}"
 
     - name: Setup pnpm
       uses: pnpm/action-setup@v2.0.1
