@@ -73,7 +73,7 @@ if $changelog; then
     # XXX get the base url from somewhere
     git log --format="-   %s [%h](https://github.com/${repo}/commit/%h) - %an" HEAD...$prev_tag . >> "$tmp_changelog"
     echo >> "$tmp_changelog"
-    echo "All changes https://github.com/esamattis/${repo}/compare/${prev_tag}...${next_tag}" >> "$tmp_changelog"
+    echo "All changes https://github.com/${repo}/compare/${prev_tag}...${next_tag}" >> "$tmp_changelog"
     echo >> "$tmp_changelog"
 
     if [ -f CHANGELOG.md ]; then
