@@ -1,3 +1,11 @@
+## v1.1.0
+
+2022-08-09
+
+-   npm-tools: Fix commit links and add compare link [91af8b6](https://github.com/${repo}/commit/91af8b6) - Esa-Matti Suuronen
+
+All changes https://github.com/esamattis/react-zorm/compare/react-zorm/npm-tools/v1.0.0...npm-tools/v1.1.0
+
 ## v1.0.0
 
 2022-01-12
