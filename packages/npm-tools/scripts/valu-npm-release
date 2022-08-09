@@ -9,6 +9,7 @@ if [ "${1:-}" != "" ]; then
 fi
 
 pkg="$(basename $(pwd))"
+repo="$(git remote get-url origin | sed -nre 's/git@github\.com:(.+)\.git/\1/p')"
 
 if [ "$(git rev-parse --show-toplevel)" = "$(pwd)" ]; then
     echo "valu-npm-release must be run from the packge dir"
@@ -61,6 +62,7 @@ fi
 
 if $changelog; then
     prev_tag="$(git describe --abbrev=0 --match "$pkg/v*" || true)"
+    next_tag="$pkg/v$new_version"
 
     tmp_changelog=changelog_entry.md
 
@@ -69,7 +71,9 @@ if $changelog; then
     date +'%Y-%m-%d' >> "$tmp_changelog"
     echo >> "$tmp_changelog"
     # XXX get the base url from somewhere
-    git log --format='-   %s [%h](https://github.com/valu-digital/npm-packages/commit/%h) - %an' HEAD...$prev_tag . >> "$tmp_changelog"
+    git log --format='-   %s [%h](https://github.com/${repo}/commit/%h) - %an' HEAD...$prev_tag . >> "$tmp_changelog"
+    echo >> "$tmp_changelog"
+    echo "All changes https://github.com/esamattis/react-zorm/compare/react-zorm/${prev_tag}...${next_tag}" >> "$tmp_changelog"
     echo >> "$tmp_changelog"
 
     if [ -f CHANGELOG.md ]; then
