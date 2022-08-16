@@ -20,6 +20,13 @@ if [ ! -f package.json ]; then
     exit 1
 fi
 
+if [ "$(jq -r .private package.json)" = "true" ]; then
+    echo
+    echo "Cannot publish a private package"
+    echo
+    exit 1
+fi
+
 
 if [ "$(git status . --porcelain)" != "" ]; then
     echo
