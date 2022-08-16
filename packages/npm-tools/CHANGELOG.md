@@ -1,3 +1,11 @@
+## v1.2.0
+
+2022-08-16
+
+-   npm-tools: Exit early on private packages [d0a965b](https://github.com/valu-digital/npm-packages/commit/d0a965b) - Esa-Matti Suuronen
+
+All changes https://github.com/valu-digital/npm-packages/compare/npm-tools/v1.1.2...npm-tools/v1.2.0
+
 ## v1.1.2
 
 2022-08-09
