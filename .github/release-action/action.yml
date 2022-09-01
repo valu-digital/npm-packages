@@ -194,7 +194,7 @@ runs:
     - name: Notify about STABLE release
       shell: bash
       if: ${{ env.release_mode == 'stable' && env.HAS_SLACK == '1' }}
-      run: slack-message "New \`$npm_name\` stable release. See <$changelog_link|Changelog>.\\nInstall with \`npm install $npm_name@^${next_version}\`"
+      run: slack-message "New \`$npm_name\` stable release. See <$changelog_link|Changelog>."$'\n'"Install with \`npm install $npm_name@^${next_version}\`"
 
     - name: Make PRERELEASE release
       shell: bash
@@ -227,7 +227,7 @@ runs:
     - name: Notify about PRERELEASE release
       shell: bash
       if: ${{ env.release_mode == 'prerelease' && env.HAS_SLACK == '1'}}
-      run: slack-message "New \`$npm_name\` prelease.\\nInstall with \`npm install --save-exact $npm_name@${next_version}\`"
+      run: slack-message "New \`$npm_name\` prelease."$'\n'"Install with \`npm install --save-exact $npm_name@${next_version}\`"
 
     - name: Notify about failure
       shell: bash
