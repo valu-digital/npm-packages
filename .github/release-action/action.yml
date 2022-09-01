@@ -38,7 +38,7 @@ runs:
     - name: Notify start
       if: ${{ env.HAS_SLACK == '1' }}
       shell: bash
-      run: slack-message "New npm release"
+      run: slack-message "Creating new npm release..."
 
     - name: Set version enviroment variables
       shell: bash
