@@ -1,3 +1,11 @@
+## v0.0.10
+
+2022-10-16
+
+-   Example change [bd8a6e2](https://github.com/valu-digital/npm-packages/commit/bd8a6e2) - Esa-Matti Suuronen
+
+All changes https://github.com/valu-digital/npm-packages/compare/example/v0.0.9...example/v0.0.10
+
 ## v0.0.9
 
 2022-10-16
