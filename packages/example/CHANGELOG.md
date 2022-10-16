@@ -1,3 +1,10 @@
+## v0.0.9
+
+2022-10-16
+
+
+All changes https://github.com/valu-digital/npm-packages/compare/example/v0.0.8...example/v0.0.9
+
 ## v0.0.8
 
 2022-10-16
