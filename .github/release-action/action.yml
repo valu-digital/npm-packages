@@ -302,8 +302,9 @@ runs:
       uses: actions/github-script@v6
       with:
         script: |
-          let body = `Changelog ${process.env.changelog_link}`;
-          body += '\n\n by @${{ github.actor }}';
+          let body = `Changelog ${process.env.changelog_link}\n\n`;
+          body += 'Install with `npm install --save-exact ' + process.env.npm_name + '@' + process.env.next_version + '`\n\n';
+          body += 'by @${{ github.actor }}\n\n';
 
           await github.rest.repos.createRelease({
             draft: false,
