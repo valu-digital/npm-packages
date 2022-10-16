@@ -299,6 +299,7 @@ runs:
 
     - name: Create Github Release entry for STABLE release
       if: ${{ env.release_mode == 'stable' }}
+      uses: actions/github-script@v6
       with:
         script: |
           let body = `Changelog ${process.env.changelog_link}`;
