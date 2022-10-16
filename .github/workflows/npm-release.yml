@@ -17,6 +17,6 @@ jobs:
       - name: Publish
         uses: ./.github/release-action
         with:
-          # slack_access_token: "${{ secrets.SLACK_ACCESS_TOKEN }}"
-          # slack_channel: "#npm-packages"
+          slack_access_token: "${{ secrets.SLACK_ACCESS_TOKEN }}"
+          slack_channel: "#npm-packages"
           npm_token: "${{ secrets.NPM_TOKEN }}"
