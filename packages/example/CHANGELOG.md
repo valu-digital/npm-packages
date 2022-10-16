@@ -2,6 +2,15 @@
 
 2022-10-16
 
+-   Example change [397c3a2](https://github.com/valu-digital/npm-packages/commit/397c3a2) - Esa-Matti Suuronen
+-   Update changelog for example v0.0.9 [5091656](https://github.com/valu-digital/npm-packages/commit/5091656) - Esa-Matti Suuronen
+
+All changes https://github.com/valu-digital/npm-packages/compare/example/v0.0.8...example/v0.0.9
+
+## v0.0.9
+
+2022-10-16
+
 
 All changes https://github.com/valu-digital/npm-packages/compare/example/v0.0.8...example/v0.0.9
 
