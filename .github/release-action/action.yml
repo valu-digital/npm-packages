@@ -303,7 +303,7 @@ runs:
       with:
         script: |
           let body = `Changelog ${process.env.changelog_link}`;
-          body += '\n\n by @${{ github.actor }}n';
+          body += '\n\n by @${{ github.actor }}';
 
           await github.rest.repos.createRelease({
             draft: false,
