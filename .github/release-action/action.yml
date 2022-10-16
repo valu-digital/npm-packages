@@ -17,9 +17,91 @@ inputs:
     description: "pnpm version"
     required: false
     default: "7.9.0"
+  package:
+    description: "package to release"
+    required: false
+    default: ""
+  mode:
+    description: "release mode"
+    required: false
+    default: "stable"
+  allowed_users:
+    description: |
+      Users allowed to release
+
+      Generate collaborators list with:
+
+        gh api /repos/{org}/{repo}/collaborators | jq -r '.[] | .login'
+
+    required: false
+    default: ""
 runs:
   using: composite
   steps:
+    - name: "PR Comment: Set PR_RELEASE, PR_SHA and package name"
+      if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '!release') }}
+      uses: actions/github-script@v6
+      with:
+        script: |
+          core.exportVariable('PR_RELEASE', "1");
+
+          const pull = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.issue.number
+          });
+
+          core.exportVariable('PR_SHA', pull.data.head.sha);
+
+          const pkg = context.payload.comment.body.match(/!release +(.*)/)?.[1];
+
+          if (pkg) {
+            console.log(`Package name: ${pkg}`);
+            core.exportVariable('pkg', pkg);
+          } else {
+            core.setFailed(`Cannot find package name from the comment`);
+          }
+
+    - name: Check allowed users
+      if: ${{ env.PR_RELEASE == '1' }}
+      env:
+        allowed_users: "${{ inputs.allowed_users }}"
+      uses: actions/github-script@v6
+      with:
+        script: |
+          let ok = false;
+
+          const allowedUsers = process.env.allowed_users.split("\n");
+          if (allowedUsers.includes(context.actor)) {
+            console.log(`User ${context.actor} is allowed to release because in the list.`);
+            ok = true;
+          }
+
+          if (!ok) {
+            const collaborators = await github.rest.repos.listCollaborators({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            if (collaborators.data.some((c) => c.login === context.actor)) {
+              console.log(`User ${context.actor} is allowed to release because they are a collaborator.`);
+              ok = true;
+            }
+          }
+
+          if (ok) {
+            process.exit(0);
+          }
+
+          await github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `Sorry @${context.actor}, you are not allowed to release this package.`,
+          });
+
+          core.setFailed(`User ${context.actor} is not allowed to release`)
+
     # https://github.com/actions/runner/issues/520
     - name: Enable slack messaging
       shell: bash
@@ -40,31 +122,55 @@ runs:
       shell: bash
       run: slack-message "Creating new npm release..."
 
+    - name: Set pkg env
+      shell: bash
+      run: echo "pkg=${{ inputs.package }}" >> $GITHUB_ENV
+
+    - name: Switch to PR branch
+      if: ${{ env.PR_RELEASE == '1' }}
+      shell: bash
+      run: |
+        set -eux
+        git checkout $PR_SHA
+
     - name: Set version enviroment variables
       shell: bash
       run: |
         set -eu
 
-        release_mode=stable
+        release_mode=${{ inputs.mode }}
 
-        pkg=$(echo "$GITHUB_REF" | cut -d / -f 4)
-        next_version=${GITHUB_REF##*/}
+        if [ "$pkg" == "" ]; then
+          pkg=$(echo "$GITHUB_REF" | cut -d / -f 4)
+        fi
+
+        if [ ! -f "packages/$pkg/package.json" ]; then
+          echo "Unknown package $pkg"
+          exit 1
+        fi
+
+        if [ "$release_mode" == "stable" ]; then
+          next_version=${GITHUB_REF##*/}
+        else
+          next_version=prerelease
+        fi
+
+
         next_tag="$pkg/v${next_version}"
 
         npm_name=$pkg
 
         current_version=0.0.0
 
-        if [ -f "packages/$pkg/package.json" ]; then
-          current_version="$(jq -r .version "packages/$pkg/package.json")"
-          npm_name="$(jq -r .name "packages/$pkg/package.json")"
-        fi
+        current_version="$(jq -r .version "packages/$pkg/package.json")"
+        npm_name="$(jq -r .name "packages/$pkg/package.json")"
 
 
         next_tag="$pkg/v${next_version}"
 
         if [ "$next_version" = "prerelease" ]; then
-          next_version="${current_version}-dev.${GITHUB_SHA:0:10}"
+          sha=$(git rev-parse HEAD)
+          next_version="${current_version}-dev.${sha:0:10}"
           # No tag for prereleases
           next_tag=
           release_mode=prerelease
@@ -75,7 +181,7 @@ runs:
         prev_version=$(echo "$prev_tag" | sed -E "s/.+v([0-9\.]+)\$/\1/")
 
         link_ver="$(echo $next_version | tr -cd '[:alnum:]')"
-        changelog_link="https://github.com/${GITHUB_REPOSITORY}/blob/master/packages/$pkg/CHANGELOG.md#v${link_ver}"
+        changelog_link="https://github.com/${GITHUB_REPOSITORY}/blob/${{ github.event.repository.default_branch }}/packages/$pkg/CHANGELOG.md#v${link_ver}"
 
         if [ "$next_version" = "$prev_version" ]; then
           echo "Cannot release $prev_version again"
@@ -188,7 +294,7 @@ runs:
 
         rm "$HOME/.npmrc"
 
-        git push origin HEAD:master
+        git push origin HEAD:${{ github.event.repository.default_branch }}
         git push origin --tags
 
     - name: Notify about STABLE release
@@ -226,10 +332,59 @@ runs:
 
     - name: Notify about PRERELEASE release
       shell: bash
-      if: ${{ env.release_mode == 'prerelease' && env.HAS_SLACK == '1'}}
+      if: ${{  env.release_mode == 'prerelease' && env.HAS_SLACK == '1'}}
       run: slack-message "New \`$npm_name\` prelease."$'\n'"Install with \`npm install --save-exact $npm_name@${next_version}\`"
+
+    - name: Add comment about the release
+      uses: actions/github-script@v6
+      if: ${{ env.PR_RELEASE == '1' }}
+      with:
+        script: |
+          let body = 'Hey @${{ github.actor }}! I made a prerelease of `${{ env.npm_name }}`\n';
+
+          body += '\n';
+
+          body += 'Version\n';
+          body += '```\n';
+          body += '${{ env.next_version }}';
+          body += '\n```';
+
+          body += '\n';
+
+          body += 'Install with\n';
+          body += '```\n';
+          body += 'npm install --save-exact ${{ env.npm_name }}@${{ env.next_version }}';
+          body += '\n```';
+
+          await github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body
+          });
+
+    - name: Restore to original branch
+      if: ${{ always() }}
+      shell: bash
+      run: |
+        if [ "${PR_SHA:-}" != "" ]; then
+          git switch -
+        fi
 
     - name: Notify about failure
       shell: bash
       if: failure()
       run: slack-message "Failed to make npm release for ${pkg:-} / ${npm_name:-}"
+
+    - name: Comment about failure
+      if: ${{ env.PR_RELEASE == '1' && failure() }}
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const workflow_url = `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
+          await github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `Hey @${{ github.actor }}! I failed to make a release. See ${workflow_url}`
+          });
