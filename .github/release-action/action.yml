@@ -297,6 +297,24 @@ runs:
         git push origin HEAD:${{ github.event.repository.default_branch }}
         git push origin --tags
 
+    - name: Create Github Release entry for STABLE release
+      if: ${{ env.release_mode == 'stable' }}
+      with:
+        script: |
+          let body = `Changelog ${process.env.changelog_link}`;
+          body += '\n\n by @${{ github.actor }}n';
+
+          await github.rest.repos.createRelease({
+            draft: false,
+            body,
+            generate_release_notes: false,
+            name: process.env.next_tag,
+            owner: context.repo.owner,
+            prerelease: false,
+            repo: context.repo.repo,
+            tag_name: process.env.next_tag,
+          });
+
     - name: Notify about STABLE release
       shell: bash
       if: ${{ env.release_mode == 'stable' && env.HAS_SLACK == '1' }}
