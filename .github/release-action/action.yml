@@ -387,7 +387,7 @@ runs:
       uses: actions/github-script@v6
       with:
         script: |
-          let body = 'This commit is packaged to npm.';
+          let body = 'This commit is packaged to npm. ';
           body += 'Install with\n';
           body += '```\n';
           body += 'npm install --save-exact ${{ env.npm_name }}@${{ env.next_version }}';
