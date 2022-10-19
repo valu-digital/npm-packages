@@ -383,12 +383,12 @@ runs:
             body
           });
 
-    - name: Restore to original branch
+    - name: Restore to original branch to avoid post task failure
       if: ${{ always() }}
       shell: bash
       run: |
         if [ "${PR_SHA:-}" != "" ]; then
-          git diff
+          git restore .
           git switch -
         fi
 
