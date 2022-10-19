@@ -383,6 +383,23 @@ runs:
             body
           });
 
+    - name: Add commit comment
+      uses: actions/github-script@v6
+      with:
+        script: |
+          let body = 'This commit is packaged to npm.';
+          body += 'Install with\n';
+          body += '```\n';
+          body += 'npm install --save-exact ${{ env.npm_name }}@${{ env.next_version }}';
+          body += '\n```';
+
+          await github.rest.repos.createCommitComment({
+            commit_sha: context.sha,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body,
+          });
+
     - name: Restore to original branch to avoid post task failure
       if: ${{ always() }}
       shell: bash
