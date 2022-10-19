@@ -388,6 +388,7 @@ runs:
       shell: bash
       run: |
         if [ "${PR_SHA:-}" != "" ]; then
+          git diff
           git switch -
         fi
 
