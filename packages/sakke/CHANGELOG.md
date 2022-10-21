@@ -2,6 +2,12 @@
 
 2022-10-21
 
+-   Always install postcss-prefixwrap version 1.33.0 (#21) [8a7eb63](https://github.com/valu-digital/npm-packages/commit/8a7eb63) - mikkovalu
+
+## v3.0.2
+
+2022-10-21
+
 -   Always install postcss-prefixwrap version 1.33.0 (#21) [8a7eb63](https://github.com/valu-digital/npm-packages/commit/8a7eb63) - Mikko Paappanen
 
 ## v3.0.1
