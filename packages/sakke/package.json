@@ -43,7 +43,7 @@
     "gulp-sass": "^5.0.0",
     "gulp-sourcemaps": "^3.0.0",
     "imagemin-pngcrush": "^6.0.0",
-    "postcss-prefixwrap": "^1.25.0",
+    "postcss-prefixwrap": "1.33.0",
     "sass": "^1.43.4",
     "sh-thunk": "^0.3.2",
     "style-loader": "^3.3.1",
