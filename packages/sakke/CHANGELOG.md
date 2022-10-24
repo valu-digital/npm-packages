@@ -1,3 +1,9 @@
+## v3.1.0
+
+2022-10-24
+
+-   Allow developer to bypass gutenberg style wrapping with body tag [5783c56](https://github.com/valu-digital/npm-packages/commit/5783c56) - Sauli Rajala
+
 ## v3.0.2
 
 2022-10-21
