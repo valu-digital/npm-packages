@@ -1,6 +1,4 @@
 import AxeBuilder from "@axe-core/playwright";
-import axe from "axe-core";
-import Page from "@playwright/test";
 import { webkit } from "playwright";
 
 export async function analyze(url: string) {
