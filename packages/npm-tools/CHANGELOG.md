@@ -1,3 +1,11 @@
+## v1.3.0
+
+2022-11-02
+
+-   Add public and main branch support valu-npm-release [b8d3a84](https://github.com/valu-digital/npm-packages/commit/b8d3a84) - Esa-Matti Suuronen
+
+All changes https://github.com/valu-digital/npm-packages/compare/npm-tools/v1.2.0...npm-tools/v1.3.0
+
 ## v1.2.0
 
 2022-08-16
