@@ -8,8 +8,19 @@ if [ "${1:-}" != "" ]; then
     cd "packages/$1"
 fi
 
+
+remote=origin
+upstream_branch="$(git rev-parse --abbrev-ref --symbolic-full-name @{u} | cut -d / -f 2)"
+
+if git config --get remote.public.url &>/dev/null; then
+    remote=public
+    >&2 echo "Using \"public\" remote 🚨 ($(git config --get remote.public.url))"
+    sleep 1
+fi
+
+
 pkg="$(basename $(pwd))"
-repo="$(git remote get-url origin | sed -nre 's/git@github\.com:(.+)\.git/\1/p')"
+repo="$(git remote get-url $remote | sed -nre 's/git@github\.com:(.+)\.git/\1/p')"
 
 if [ "$(git rev-parse --show-toplevel)" = "$(pwd)" ]; then
     echo "valu-npm-release must be run from the packge dir"
@@ -30,9 +41,9 @@ if [ "$(jq -r .private package.json)" = "true" ]; then
 fi
 
 
-if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ]; then
+if [ "$(git rev-parse --abbrev-ref HEAD)" != "$upstream_branch" ]; then
     echo
-    echo "Not on the master branch"
+    echo "Not on the $upstream_branch branch"
     echo
     exit 2
 fi
@@ -45,9 +56,9 @@ if [ "$(git status . --porcelain)" != "" ]; then
 fi
 
 
-git fetch origin
+git fetch $remote
 
-if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/master)" ]; then
+if [ "$(git rev-parse HEAD)" != "$(git rev-parse $remote/$upstream_branch)" ]; then
     echo
     echo "Repository not up to date. Do your git push/pull/rebase dance"
     echo
@@ -113,10 +124,10 @@ if $changelog; then
     if [ "$(git status . --porcelain)" != "" ]; then
         git add CHANGELOG.md
         git commit -m "Update changelog for $pkg v$new_version"
-        git push origin master:master
+        git push $remote $upstream_branch:$upstream_branch
     fi
 fi
 
 
-git push origin master:master
-git push -f origin master:release/$pkg/$new_version
+git push $remote $upstream_branch:$upstream_branch
+git push -f $remote $upstream_branch:release/$pkg/$new_version
