@@ -1,10 +1,10 @@
-## v1.3.0
+## v1.4.0
 
 2022-11-03
 
 -   Add public remote support to valu-npm-prerelease [c706617](https://github.com/valu-digital/npm-packages/commit/c706617) - Esa-Matti Suuronen
 
-All changes https://github.com/valu-digital/npm-packages/compare/npm-tools/v1.3.0...npm-tools/v1.3.0
+All changes https://github.com/valu-digital/npm-packages/compare/npm-tools/v1.3.0...npm-tools/v1.4.0
 
 ## v1.3.0
 
