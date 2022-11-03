@@ -7,6 +7,14 @@ if [ "${1:-}" != "" ]; then
     cd "packages/$1"
 fi
 
+remote=origin
+
+if git config --get remote.public.url &>/dev/null; then
+    remote=public
+    >&2 echo "Using \"public\" remote 🚨 ($(git config --get remote.public.url))"
+    sleep 1
+fi
+
 pkg="$(basename $(pwd))"
 
 if [ "$(git rev-parse --show-toplevel)" = "$(pwd)" ]; then
@@ -35,4 +43,4 @@ if [ "$(git status . --porcelain)" != "" ]; then
     exit 1
 fi
 
-git push -f origin HEAD:release/$pkg/prerelease
+git push -f ${remote} HEAD:release/$pkg/prerelease
