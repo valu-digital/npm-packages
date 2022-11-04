@@ -244,7 +244,7 @@ gulp.task(
 
 gulp.task("images", () =>
     gulp
-        .src(ROOT + "/assets/images/**/*.{jpg,png,svg,gif}")
+        .src(ROOT + "/assets/images/**/*.{jpg,png,svg,gif,webp}")
         .pipe(
             imagemin([
                 imagemin.jpegtran({ progressive: true }),
