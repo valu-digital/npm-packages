@@ -1,3 +1,11 @@
+## v1.5.0
+
+2022-11-04
+
+-   Prompt for git remote [8dd6777](https://github.com/valu-digital/npm-packages/commit/8dd6777) - Esa-Matti Suuronen
+
+All changes https://github.com/valu-digital/npm-packages/compare/npm-tools/v1.4.0...npm-tools/v1.5.0
+
 ## v1.4.0
 
 2022-11-03
