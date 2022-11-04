@@ -7,13 +7,13 @@ if [ "${1:-}" != "" ]; then
     cd "packages/$1"
 fi
 
-remote=origin
 
-if git config --get remote.public.url &>/dev/null; then
-    remote=public
-    >&2 echo "Using \"public\" remote 🚨 ($(git config --get remote.public.url))"
-    sleep 1
+remote="$(git remote)"
+
+if [ "$(git remote | wc -l)" -gt "1" ]; then
+    remote="$(git remote | fzf --header 'Select remote')"
 fi
+
 
 pkg="$(basename $(pwd))"
 

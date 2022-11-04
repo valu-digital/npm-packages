@@ -9,14 +9,14 @@ if [ "${1:-}" != "" ]; then
 fi
 
 
-remote=origin
+remote="$(git remote)"
+
+if [ "$(git remote | wc -l)" -gt "1" ]; then
+    remote="$(git remote | fzf --header 'Select remote')"
+fi
+
 upstream_branch="$(git rev-parse --abbrev-ref --symbolic-full-name @{u} | cut -d / -f 2)"
 
-if git config --get remote.public.url &>/dev/null; then
-    remote=public
-    >&2 echo "Using \"public\" remote 🚨 ($(git config --get remote.public.url))"
-    sleep 1
-fi
 
 
 pkg="$(basename $(pwd))"
