@@ -1,3 +1,11 @@
+## v3.2.0
+
+2022-11-04
+
+-   Add webp support and pin node 16 at volta [63b31be](https://github.com/valu-digital/npm-packages/commit/63b31be) - Jussi Makinen
+
+All changes https://github.com/valu-digital/npm-packages/compare/sakke/v3.1.0...sakke/v3.2.0
+
 ## v3.1.0
 
 2022-10-24
