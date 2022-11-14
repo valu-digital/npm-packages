@@ -1,3 +1,9 @@
+## v1.3.0
+
+2022-11-14
+
+-   Fix tracking consent falsely consented status [7c55297](https://github.com/valu-digital/npm-packages/commit/7c55297) - Timo Paananen
+
 ## v1.2.9
 
 2022-06-28
