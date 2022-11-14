@@ -59,3 +59,5 @@ cd my-fork
 git filter-repo --subdirectory-filter packages/example
 git commit --allow-empty -m "Fork from https://github.com/valu-digital/npm-packages"
 ```
+
+<!-- test -->
