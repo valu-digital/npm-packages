@@ -205,6 +205,11 @@ export class TrackingConsent {
             return;
         }
 
+        if (this.response.status === "not-given") {
+            window.localStorage.removeItem(this.storeKey);
+            return;
+        }
+
         window.localStorage.setItem(
             this.storeKey,
             JSON.stringify(this.response),
