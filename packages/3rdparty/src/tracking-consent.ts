@@ -120,6 +120,10 @@ export class TrackingConsent {
             return;
         }
 
+        if (this.response.status === "not-given") {
+            return;
+        }
+
         debug("Got tracking consent");
         this.setStatus("consented");
         this.emit("consented");
