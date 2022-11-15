@@ -119,6 +119,7 @@ export function connectCookieBot(
                 CookiebotScript.now();
 
                 return CookiebotScript.promise().then((cb) => {
+                    cb.withdraw();
                     cb.renew();
                 });
             }
