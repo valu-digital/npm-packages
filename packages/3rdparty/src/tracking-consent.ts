@@ -147,6 +147,7 @@ export class TrackingConsent {
             status: "not-given",
             date: undefined,
         };
+        console.log('forget: this.response', this.response );
         this.save();
         return this.emitPromise("forget").then(() => {
             this.showPrompt();
@@ -204,6 +205,8 @@ export class TrackingConsent {
         if (typeof window === "undefined") {
             return;
         }
+
+        console.log('save: this.response', this.response );
 
         window.localStorage.setItem(
             this.storeKey,
