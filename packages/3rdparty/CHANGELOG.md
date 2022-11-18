@@ -1,3 +1,14 @@
+## v1.3.1
+
+2022-11-18
+
+Fixes CookieBot not forgetting its own cookies
+
+-   Just clear the cookiebot cookie on forget [88653c9](https://github.com/valu-digital/npm-packages/commit/88653c9) - Esa-Matti Suuronen
+-   Revert "Fix tracking consent falsely consented status" [cb7384b](https://github.com/valu-digital/npm-packages/commit/cb7384b) - Esa-Matti Suuronen
+
+All changes https://github.com/valu-digital/npm-packages/compare/3rdparty/v1.3.0...3rdparty/v1.3.1
+
 ## v1.3.0
 
 2022-11-14
