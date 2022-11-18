@@ -122,6 +122,7 @@ export function connectCookieBot(
 
             case "forget": {
                 document.cookie = "CookieConsent=; Max-Age=-99999999;";
+                return;
             }
 
             case "request-prompt": {
