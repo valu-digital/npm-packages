@@ -121,17 +121,7 @@ export function connectCookieBot(
             }
 
             case "forget": {
-                CookiebotScript.now();
-
-                return CookiebotScript.promise().then((cb) => {
-                    debug("Calling CookieBot .renew() to forget consent");
-
-                    // .renew() does not seem to delete the cookie in
-                    // production. So lets do it manually
-                    document.cookie = "CookieConsent=; Max-Age=-99999999;";
-
-                    cb.renew();
-                });
+                document.cookie = "CookieConsent=; Max-Age=-99999999;";
             }
 
             case "request-prompt": {
