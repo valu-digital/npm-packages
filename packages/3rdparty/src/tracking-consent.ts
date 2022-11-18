@@ -1,3 +1,5 @@
+import { debug } from "./debug";
+
 const STATUSES = ["not-given", "declined", "consented"] as const;
 
 interface ConsentResponse {
@@ -18,17 +20,6 @@ type TrackingConsentEvent =
 
 export interface TrackingConsentEventHandler {
     (event: TrackingConsentEvent): undefined | void | Promise<any>;
-}
-
-let debug = (..._args: any[]) => {};
-
-if (
-    typeof window !== "undefined" &&
-    window.localStorage.valuTrackingConsentDebug
-) {
-    debug = (...args: any[]) => {
-        console.log("[ValuTrackingConsent]", ...args);
-    };
 }
 
 export class TrackingConsent {

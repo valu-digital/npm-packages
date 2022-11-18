@@ -1,3 +1,4 @@
+import { debug } from "./debug";
 import { LazyScript } from "./lazy-script";
 import type { TrackingConsent } from "./tracking-consent";
 
@@ -57,7 +58,7 @@ export function connectCookieBot(
     /**
      * Language
      */
-    lang?: string
+    lang?: string,
 ) {
     if (typeof window === "undefined") {
         return;
@@ -81,6 +82,8 @@ export function connectCookieBot(
                     "@valu/3rdparty: Cookiebot did not load properly",
                 );
             }
+
+            debug("Cookiebot loaded");
             return window.Cookiebot;
         },
         mutate: (el) => {
@@ -96,6 +99,7 @@ export function connectCookieBot(
     window.addEventListener(
         "CookiebotOnAccept",
         () => {
+            debug("Cookiebot sent CookiebotOnAccept. Consenting...");
             trackingConsent.consent();
         },
         false,
@@ -104,6 +108,7 @@ export function connectCookieBot(
     window.addEventListener(
         "CookiebotOnDecline",
         () => {
+            debug("Cookiebot sent CookiebotOnDecline. Declining...");
             trackingConsent.decline();
         },
         false,
@@ -119,6 +124,7 @@ export function connectCookieBot(
                 CookiebotScript.now();
 
                 return CookiebotScript.promise().then((cb) => {
+                    debug("Calling CookieBot .renew() to forget consent");
                     cb.renew();
                 });
             }
