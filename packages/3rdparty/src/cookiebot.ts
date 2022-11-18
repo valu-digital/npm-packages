@@ -121,12 +121,8 @@ export function connectCookieBot(
             }
 
             case "forget": {
-                CookiebotScript.now();
-
-                return CookiebotScript.promise().then((cb) => {
-                    debug("Calling CookieBot .renew() to forget consent");
-                    cb.renew();
-                });
+                document.cookie = "CookieConsent=; Max-Age=-99999999;";
+                return;
             }
 
             case "request-prompt": {
