@@ -1,3 +1,9 @@
+## v4.0.0
+
+2022-11-22
+
+-   Sakke: Change PrefixWrap ignoredSelector to :root [9549422](https://github.com/valu-digital/npm-packages/commit/9549422) - Sauli Rajala
+
 ## v3.2.0
 
 2022-11-04
