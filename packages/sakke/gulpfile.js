@@ -215,7 +215,7 @@ function configuredPostcss() {
     plugins.push(
         PrefixWrap(".editor-styles-wrapper", {
             whitelist: ["main-gutenberg.css"],
-            ignoredSelectors: ["body"],
+            ignoredSelectors: [":root"],
         }),
     );
 
