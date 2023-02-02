@@ -5,7 +5,45 @@ import {
     is,
     assertNotAny,
     assertType,
+    assert,
 } from "../src";
+
+test("assert() can offset stack trace", () => {
+    function ding() {
+        dong();
+    }
+    function dong() {
+        assert(false, "test message", 2);
+    }
+
+    let error;
+    try {
+        ding();
+    } catch (e) {
+        error = e;
+    }
+
+    expect(error.stack).not.toContain("at dong");
+});
+
+test("assert() handles multiline error messages", () => {
+    function ding() {
+        dong();
+    }
+    function dong() {
+        assert(false, "first line\nsecond line", 2);
+    }
+
+    let error;
+    try {
+        ding();
+    } catch (e) {
+        error = e;
+    }
+
+    expect(error.stack).toContain("first line");
+    expect(error.stack).toContain("second line");
+});
 
 describe("assertNotNil()", () => {
     test("asserts null", () => {

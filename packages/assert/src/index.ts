@@ -4,12 +4,26 @@
 export function assert(cond: boolean, message: string, offsetStack?: number) {
     if (!cond) {
         const error = new Error(message);
-        const stack = error.stack?.split("\n");
+        const stack = error.stack;
 
-        if (stack) {
+        if (stack && offsetStack) {
             // https://kentcdodds.com/blog/improve-test-error-messages-of-your-abstractions
-            error.stack = [stack[0]]
-                .concat(stack.slice(1 + (offsetStack ?? 1)))
+
+            const lines = stack.split("\n");
+            let errorMessage = "";
+
+            const stackLines: string[] = [];
+            for (const line of lines) {
+                // starts with " at "
+                if (/^\s*at /.test(line)) {
+                    stackLines.push(line);
+                } else {
+                    errorMessage += line + "\n";
+                }
+            }
+
+            error.stack = [errorMessage]
+                .concat(stackLines.slice(1 + (offsetStack ?? 1)))
                 .join("\n");
         }
 
