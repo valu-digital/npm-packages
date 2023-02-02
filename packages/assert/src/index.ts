@@ -23,7 +23,7 @@ export function assert(cond: boolean, message: string, offsetStack?: number) {
             }
 
             error.stack = [errorMessage]
-                .concat(stackLines.slice(1 + (offsetStack ?? 1)))
+                .concat(stackLines.slice(offsetStack ?? 1))
                 .join("\n");
         }
 
