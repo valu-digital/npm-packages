@@ -1,3 +1,11 @@
+## v1.3.3
+
+2023-02-02
+
+-   assert: fix offset [eab0cb1](https://github.com/valu-digital/npm-packages/commit/eab0cb1) - Esa-Matti Suuronen
+
+All changes https://github.com/valu-digital/npm-packages/compare/assert/v1.3.2...assert/v1.3.3
+
 ## v1.3.2
 
 2023-02-02
