@@ -6,24 +6,24 @@ export function assert(cond: boolean, message: string, offsetStack?: number) {
         const error = new Error(message);
         const stack = error.stack;
 
-        if (stack && offsetStack) {
+        if (stack) {
             // https://kentcdodds.com/blog/improve-test-error-messages-of-your-abstractions
 
-            const lines = stack.split("\n");
-            let errorMessage = "";
+            const lines = stack.trim().split("\n");
 
+            const errorMessage: string[] = [];
             const stackLines: string[] = [];
             for (const line of lines) {
-                // starts with " at "
+                // Strack trace lines starts with " at "
                 if (/^\s*at /.test(line)) {
                     stackLines.push(line);
                 } else {
-                    errorMessage += line + "\n";
+                    errorMessage.push(line);
                 }
             }
 
-            error.stack = [errorMessage]
-                .concat(stackLines.slice(1 + (offsetStack ?? 1)))
+            error.stack = errorMessage
+                .concat(stackLines.slice(offsetStack ?? 1))
                 .join("\n");
         }
 
