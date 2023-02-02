@@ -1,3 +1,12 @@
+## v1.3.2
+
+2023-02-02
+
+-   Enable decralartion map [99dc986](https://github.com/valu-digital/npm-packages/commit/99dc986) - Esa-Matti Suuronen
+-   Fix multiline error messages in assert() [9f6f531](https://github.com/valu-digital/npm-packages/commit/9f6f531) - Esa-Matti Suuronen
+
+All changes https://github.com/valu-digital/npm-packages/compare/assert/v1.3.1...assert/v1.3.2
+
 ## v1.3.1
 
 2022-07-25
