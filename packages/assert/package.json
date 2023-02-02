@@ -1,6 +1,6 @@
 {
   "name": "@valu/assert",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "author": "Esa-Matti Suuronen",
   "license": "MIT",
   "main": "dist/index.js",
