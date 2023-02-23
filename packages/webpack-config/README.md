@@ -1,3 +1,7 @@
+DEPRECRATED
+
+Use the sakke package https://github.com/valu-digital/npm-packages/tree/master/packages/sakke
+
 # Valu Webpack Config Generator
 
 Webpack config generation with build-in Babel, CSS and template support.
