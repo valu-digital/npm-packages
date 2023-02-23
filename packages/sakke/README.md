@@ -191,4 +191,4 @@ Remove `webpack.config.js`
 rm webpack.config.js
 ```
 
-Fix scripts in package.json. Mostly just replace `gulp` with `sakke`.
+Fix scripts in package.json. Mostly just replace `gulp` with `sakke` since there is no gulp directly in the project anymore.
