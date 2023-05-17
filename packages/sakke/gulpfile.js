@@ -234,12 +234,10 @@ gulp.task("styles", () => {
         .pipe(livereload());
 });
 
-gulp.task(
-    "fonts",
-    sh`
-	    mkdir -p dist/fonts
-	    find -E assets/fonts  -iregex '.*\\.(woff|woff2|ttf|otf)' -exec cp {} dist/fonts \\;
-	`,
+gulp.task("fonts", () =>
+    gulp
+        .src(ROOT + "/assets/fonts/*.{woff,woff2,ttf,otf}")
+        .pipe(gulp.dest(ROOT + "/dist/fonts")),
 );
 
 gulp.task("images", () =>
