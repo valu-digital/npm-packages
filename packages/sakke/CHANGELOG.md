@@ -1,3 +1,12 @@
+## v4.1.0
+
+2023-05-17
+
+-   Update fonts task [5fb3a19](https://github.com/valu-digital/npm-packages/commit/5fb3a19) - Mikko Virenius
+-   Update README.md [673d240](https://github.com/valu-digital/npm-packages/commit/673d240) - Esa-Matti Suuronen
+
+All changes https://github.com/valu-digital/npm-packages/compare/sakke/v4.0.0...sakke/v4.1.0
+
 ## v4.0.0
 
 2022-11-22
