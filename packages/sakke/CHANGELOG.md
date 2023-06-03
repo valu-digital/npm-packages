@@ -1,3 +1,14 @@
+## v5.0.0
+
+2023-06-03
+
+-   New major version. Requires updates in asset loading
+-   Merge pull request #27 from valu-digital/update-admin-externals [dc8427b](https://github.com/valu-digital/npm-packages/commit/dc8427b) - Mikko Virenius
+-   Use dependency extraction webpack plugin [02c76e2](https://github.com/valu-digital/npm-packages/commit/02c76e2) - Mikko Virenius
+-   Sakke: update list of admin externals [d1cba08](https://github.com/valu-digital/npm-packages/commit/d1cba08) - Mikko Virenius
+
+All changes https://github.com/valu-digital/npm-packages/compare/sakke/v4.1.0...sakke/v5.0.0
+
 ## v4.1.0
 
 2023-05-17
@@ -82,8 +93,6 @@ All changes https://github.com/valu-digital/npm-packages/compare/sakke/v3.1.0...
 2021-11-29
 
 -   Fix gulp task awaiting [41ba0fb](https://github.com/valu-digital/npm-packages/commit/41ba0fb) - Esa-Matti Suuronen
-
-
 
 ## v1.5.0
 
