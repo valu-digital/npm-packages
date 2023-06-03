@@ -8,6 +8,7 @@ import { promises as fs } from "fs";
 import { SakkeConfig } from "./types";
 import { loadSakkeJSON, logger } from "./utils";
 import { sakkeLoaderRule } from "./sakke-webpack-loader";
+import DependencyExtractionWebpackPlugin from "@wordpress/dependency-extraction-webpack-plugin";
 
 export const EXTENSIONS = [".tsx", ".ts", ".mjs", ".jsx", ".js"];
 
@@ -250,27 +251,6 @@ async function autoloadEntries(
     }, {} as Record<string, string>);
 }
 
-/**
- * These imports are available as global in WordPress admin so we don't need to
- * bundle them when creating admin bundles
- */
-const WordPressAdminExternals = {
-    "@wordpress/components": "wp.components",
-    "@wordpress/api-fetch": "wp.apiFetch",
-    "@wordpress/edit-post": "wp.editPost",
-    "@wordpress/element": "wp.element",
-    "@wordpress/plugins": "wp.plugins",
-    "@wordpress/editor": "wp.editor",
-    "@wordpress/block-editor": "wp.blockEditor",
-    "@wordpress/blocks": "wp.blocks",
-    "@wordpress/hooks": "wp.hooks",
-    "@wordpress/utils": "wp.utils",
-    "@wordpress/date": "wp.date",
-    "@wordpress/data": "wp.data",
-    react: "React",
-    "react-dom": "ReactDOM",
-};
-
 export async function createWebpackConfig(
     options: SakkeConfig,
     args: WebpackOptions,
@@ -460,7 +440,7 @@ export async function createWebpackConfig(
             }),
         );
 
-        Object.assign(config.externals, WordPressAdminExternals);
+        config.plugins.push(new DependencyExtractionWebpackPlugin({}));
     } else {
         config.plugins.push(
             new WebpackAssetsManifest({
