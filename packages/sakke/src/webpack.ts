@@ -8,6 +8,7 @@ import { promises as fs } from "fs";
 import { SakkeConfig } from "./types";
 import { loadSakkeJSON, logger } from "./utils";
 import { sakkeLoaderRule } from "./sakke-webpack-loader";
+import DependencyExtractionWebpackPlugin from "@wordpress/dependency-extraction-webpack-plugin";
 
 export const EXTENSIONS = [".tsx", ".ts", ".mjs", ".jsx", ".js"];
 
@@ -250,54 +251,6 @@ async function autoloadEntries(
     }, {} as Record<string, string>);
 }
 
-/**
- * These imports are available as global in WordPress admin so we don't need to
- * bundle them when creating admin bundles
- */
-const WordPressAdminExternals = {
-    "@wordpress/a11y": "wp.a11y",
-    "@wordpress/autop": "wp.autop",
-    "@wordpress/blob": "wp.blob",
-    "@wordpress/blockDirectory": "wp.blockDirectory",
-    "@wordpress/blockEditor": "wp.blockEditor",
-    "@wordpress/blockLibrary": "wp.blockLibrary",
-    "@wordpress/blockSerializationDefaultParser":
-        "wp.blockSerializationDefaultParser",
-    "@wordpress/blocks": "wp.blocks",
-    "@wordpress/components": "wp.components",
-    "@wordpress/compose": "wp.compose",
-    "@wordpress/coreData": "wp.coreData",
-    "@wordpress/data": "wp.data",
-    "@wordpress/date": "wp.date",
-    "@wordpress/dom": "wp.dom",
-    "@wordpress/editPost": "wp.editPost",
-    "@wordpress/editor": "wp.editor",
-    "@wordpress/element": "wp.element",
-    "@wordpress/escapeHtml": "wp.escapeHtml",
-    "@wordpress/formatLibrary": "wp.formatLibrary",
-    "@wordpress/hooks": "wp.hooks",
-    "@wordpress/htmlEntities": "wp.htmlEntities",
-    "@wordpress/i18n": "wp.i18n",
-    "@wordpress/isShallowEqual": "wp.isShallowEqual",
-    "@wordpress/keyboardShortcuts": "wp.keyboardShortcuts",
-    "@wordpress/keycodes": "wp.keycodes",
-    "@wordpress/mediaUtils": "wp.mediaUtils",
-    "@wordpress/notices": "wp.notices",
-    "@wordpress/plugins": "wp.plugins",
-    "@wordpress/preferences": "wp.preferences",
-    "@wordpress/preferencesPersistence": "wp.preferencesPersistence",
-    "@wordpress/primitives": "wp.primitives",
-    "@wordpress/priorityQueue": "wp.priorityQueue",
-    "@wordpress/reusableBlocks": "wp.reusableBlocks",
-    "@wordpress/richText": "wp.richText",
-    "@wordpress/styleEngine": "wp.styleEngine",
-    "@wordpress/url": "wp.url",
-    "@wordpress/viewport": "wp.viewport",
-    "@wordpress/wordcount": "wp.wordcount",
-    react: "React",
-    "react-dom": "ReactDOM",
-};
-
 export async function createWebpackConfig(
     options: SakkeConfig,
     args: WebpackOptions,
@@ -487,7 +440,7 @@ export async function createWebpackConfig(
             }),
         );
 
-        Object.assign(config.externals, WordPressAdminExternals);
+        config.plugins.push(new DependencyExtractionWebpackPlugin({}));
     } else {
         config.plugins.push(
             new WebpackAssetsManifest({

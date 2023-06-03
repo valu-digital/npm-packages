@@ -29,6 +29,7 @@
     "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "@valu/assert": "^1.1.0",
+    "@wordpress/dependency-extraction-webpack-plugin": "^4.17.0",
     "arg": "^5.0.1",
     "autoprefixer": "^10.4.0",
     "babel-loader": "^8.2.3",
