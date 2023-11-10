@@ -20,8 +20,6 @@ npm install -g @valu/git-tools
 
 Hide changes from git in a given directory even if they are tracked
 
-Usage
-
 ```
 git valu-hide-changes build
 ```
@@ -47,5 +45,5 @@ git valu-commit-changes build
 Add following package.json script
 
 ```
-"build-commit": "npm run build && git valu-commit-changes"
+"build-commit": "npm run build && git valu-commit-changes build"
 ```
