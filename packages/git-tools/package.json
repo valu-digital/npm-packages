@@ -1,16 +1,16 @@
 {
-    "name": "@valu/git-tools",
-    "version": "0.0.0",
-    "description": "Some git tools",
-    "author": "Esa-Matti Suuronen, Valu Digital Oy",
-    "homepage": "https://github.com/valu-digital/npm-packages/tree/master/packages/git-tools",
-    "bin": {
-        "git-valu-hide-changes": "scripts/git-valu-hide-changes",
-        "git-valu-show-changes": "scripts/git-valu-show-changes"
-    },
-    "license": "ISC",
-    "scripts": {
-        "build": "echo no-op",
-        "test": "echo noop"
-    }
+  "name": "@valu/git-tools",
+  "version": "1.0.0",
+  "description": "Some git tools",
+  "author": "Esa-Matti Suuronen, Valu Digital Oy",
+  "homepage": "https://github.com/valu-digital/npm-packages/tree/master/packages/git-tools",
+  "bin": {
+    "git-valu-hide-changes": "scripts/git-valu-hide-changes",
+    "git-valu-show-changes": "scripts/git-valu-show-changes"
+  },
+  "license": "ISC",
+  "scripts": {
+    "build": "echo no-op",
+    "test": "echo noop"
+  }
 }
