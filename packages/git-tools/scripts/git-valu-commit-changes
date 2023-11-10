@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+
+if  [ "${1:-}" = "" ] || [ "${1:-}" = "-h" ] || [  "${1:-}" = "--help" ]; then
+    echo "Commit changes in a directory hidden by git-valu-hide-changes"
+    echo
+    echo "Usage: $0 <dir>"
+    exit 0
+fi
+
+
+dir="${1}"
+
+if [ ! -d "${dir}" ]; then
+    echo "Error: ${dir} is not a directory."
+    exit 1
+fi
+
+
+git-valu-show-changes "$dir"
+
+# Ensure not other files are added
+git reset HEAD
+
+git add "$dir"
+
+git commit -m "Commit changes in $dir"
+
+git-valu-hide-changes "$dir"
