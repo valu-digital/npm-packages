@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+
+if  [ "${1:-}" = "" ] || [ "${1:-}" = "-h" ] || [  "${1:-}" = "--help" ]; then
+    echo "Hide changes from git in a given directory even if they are tracked"
+    echo
+    echo "Usage: $0 <dir>"
+    exit 0
+fi
+
+
+dir="${1}"
+
+if [ ! -d "${dir}" ]; then
+    echo "Error: ${dir} is not a directory."
+    exit 1
+fi
+
+# Is git directory?
+if [ "$(git rev-parse --is-inside-work-tree)" != "true" ]; then
+    >&2 echo "Error: ${dir} is not a git directory."
+    exit 1
+fi
+
+
+# Hide untracked files
+echo '*' > "$dir/.gitignore"
+
+# Hide tracked files
+git update-index --assume-unchanged $(git ls-files "$dir")
