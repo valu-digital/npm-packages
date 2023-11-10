@@ -1,6 +1,6 @@
 {
     "name": "@valu/git-tools",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "description": "Some git tools",
     "author": "Esa-Matti Suuronen, Valu Digital Oy",
     "homepage": "https://github.com/valu-digital/npm-packages/tree/master/packages/git-tools",
