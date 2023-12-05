@@ -25,7 +25,7 @@ git-valu-show-changes "$dir"
 # Ensure not other files are added
 git reset HEAD
 
-git add "$dir"
+git add -f "$dir"
 
 git commit -m "Commit changes in $dir"
 
