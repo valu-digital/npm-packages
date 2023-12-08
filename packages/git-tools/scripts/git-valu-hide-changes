@@ -15,8 +15,7 @@ fi
 dir="${1}"
 
 if [ ! -d "${dir}" ]; then
-    echo "Error: ${dir} is not a directory."
-    exit 1
+    mkdir -p "${dir}"
 fi
 
 # Is git directory?
