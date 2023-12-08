@@ -1,3 +1,11 @@
+## v1.1.2
+
+2023-12-08
+
+-   git-tools: better missing directory handling [401595f](https://github.com/valu-digital/npm-packages/commit/401595f) - Esa-Matti Suuronen
+
+All changes https://github.com/valu-digital/npm-packages/compare/git-tools/v1.1.1...git-tools/v1.1.2
+
 ## v1.1.1
 
 2023-12-05
