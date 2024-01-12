@@ -1,3 +1,11 @@
+## v1.1.3
+
+2024-01-12
+
+-   git-tools: handle no changes [6406334](https://github.com/valu-digital/npm-packages/commit/6406334) - Esa-Matti Suuronen
+
+All changes https://github.com/valu-digital/npm-packages/compare/git-tools/v1.1.2...git-tools/v1.1.3
+
 ## v1.1.2
 
 2023-12-08
