@@ -22,7 +22,7 @@ fi
 
 git-valu-show-changes "$dir"
 
-if [ "$(git status --porcelain "$dir"")" = "" ]; then
+if [ "$(git status --porcelain "$dir")" = "" ]; then
     >&2 echo "No changes build change. Skipping commit."
     exit 0
 fi
