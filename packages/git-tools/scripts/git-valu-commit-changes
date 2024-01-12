@@ -15,12 +15,17 @@ fi
 dir="${1}"
 
 if [ ! -d "${dir}" ]; then
-    echo "Error: ${dir} is not a directory."
+    >&2 echo "Error: ${dir} is not a directory."
     exit 1
 fi
 
 
 git-valu-show-changes "$dir"
+
+if [ "$(git status --porcelain "$dir"")" = "" ]; then
+    >&2 echo "No changes build change. Skipping commit."
+    exit 0
+fi
 
 # Ensure not other files are added
 git reset HEAD
