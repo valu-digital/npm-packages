@@ -1,3 +1,11 @@
+## v1.1.4
+
+2024-01-12
+
+-   Fix broken release [857152a](https://github.com/valu-digital/npm-packages/commit/857152a) - Esa-Matti Suuronen
+
+All changes https://github.com/valu-digital/npm-packages/compare/git-tools/v1.1.3...git-tools/v1.1.4
+
 ## v1.1.3
 
 2024-01-12
