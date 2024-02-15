@@ -16,7 +16,7 @@ inputs:
   pnpm_version:
     description: "pnpm version"
     required: false
-    default: "7.9.0"
+    default: "8.14.1"
   package:
     description: "package to release"
     required: false
