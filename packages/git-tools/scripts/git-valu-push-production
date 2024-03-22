@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ]; then
+  echo "You can deploy to production only from the local master branch"
+  exit 1
+fi
+
+git push origin master:master
+git push production master:master

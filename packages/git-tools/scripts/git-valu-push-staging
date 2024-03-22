@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+# find out on which branch were are on
+branch="$(git rev-parse --abbrev-ref HEAD)"
+
+# push to local branch to matching remote branch
+git push origin $branch:$branch
+git push staging $branch:master --force

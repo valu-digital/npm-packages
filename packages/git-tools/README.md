@@ -40,6 +40,30 @@ Commit hidden changes
 git valu-commit-changes build
 ```
 
+### `git valu-assert-sync`
+
+Check that git status is up to date
+
+```
+git valu-assert-sync
+```
+
+### `git valu-push-production`
+
+Push to origin & production
+
+```
+git valu-push-production
+```
+
+### `git valu-push-staging`
+
+Push to origin & staging
+
+```
+git valu-push-staging
+```
+
 ## Use to commit build changes
 
 Add following package.json script
