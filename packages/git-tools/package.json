@@ -7,7 +7,12 @@
   "bin": {
     "git-valu-hide-changes": "scripts/git-valu-hide-changes",
     "git-valu-show-changes": "scripts/git-valu-show-changes",
-    "git-valu-commit-changes": "scripts/git-valu-commit-changes"
+    "git-valu-commit-changes": "scripts/git-valu-commit-changes",
+    "git-valu-assert-clean": "scripts/git-assert-clean",
+    "git-valu-assert-master": "scripts/git-assert-master",
+    "git-valu-assert-sync": "scripts/git-assert-sync",
+    "git-valu-push-production": "scripts/git-push-production",
+    "git-valu-push-staging": "scripts/git-push-staging"
   },
   "license": "ISC",
   "scripts": {

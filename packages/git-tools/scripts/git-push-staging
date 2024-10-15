@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+# find out on which branch were are on
+branch="$(git rev-parse --abbrev-ref HEAD)"
+
+# push to local branch to matching remote branch
+git push origin $branch:$branch
+
+default_branch=$(git remote show staging | grep 'HEAD branch' | awk '{print $NF}')
+git push staging $branch:$default_branch

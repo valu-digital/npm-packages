@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -eu
+
+if [ "$(git status . --porcelain)" != "" ]; then
+  echo "Dirty git. Commit changes before continuing."
+  exit 1
+fi
