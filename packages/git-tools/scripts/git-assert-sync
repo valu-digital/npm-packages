@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+git fetch origin --quiet
+branch="$(git rev-parse --abbrev-ref HEAD)"
+git push origin $branch:$branch
+if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/$branch)" ]; then
+  echo "You local git is not sync with the remote origin/$branch"
+  echo "Ensure it is synced with: git pull origin && git push origin"
+  exit 1
+fi

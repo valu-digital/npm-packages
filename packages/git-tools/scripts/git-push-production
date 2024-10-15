@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -eu
+
+default_branch=$(git remote show origin | grep 'HEAD branch' | awk '{print $NF}')
+git push origin $default_branch:$default_branch
+git push production $default_branch:$default_branch
