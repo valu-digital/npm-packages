@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+git valu-assert-clean
+git valu-assert-sync

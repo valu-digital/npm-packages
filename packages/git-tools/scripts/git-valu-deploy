@@ -1,0 +1,21 @@
+#!/bin/sh
+set -eu
+
+target="$1"
+
+if [ -z "$target" ]; then
+  echo "Usage: git valu-deploy <production|staging>"
+  exit 1
+fi
+
+git valu-commit-changes build
+
+if [ "$target" = "production" ]; then
+  git valu-assert-master
+  git valu-push-production
+elif [ "$target" = "staging" ]; then
+  git valu-push-staging
+else
+  echo "Unknown target: $target (expected production or staging)"
+  exit 1
+fi
