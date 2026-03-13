@@ -12,7 +12,9 @@
     "git-valu-assert-master": "scripts/git-assert-master",
     "git-valu-assert-sync": "scripts/git-assert-sync",
     "git-valu-push-production": "scripts/git-push-production",
-    "git-valu-push-staging": "scripts/git-push-staging"
+    "git-valu-push-staging": "scripts/git-push-staging",
+    "git-valu-pre-build": "scripts/git-valu-pre-build",
+    "git-valu-deploy": "scripts/git-valu-deploy"
   },
   "license": "ISC",
   "scripts": {
