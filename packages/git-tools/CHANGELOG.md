@@ -1,3 +1,11 @@
+## v1.4.0
+
+2026-03-13
+
+-   git-tools: Add deploy and pre-build scripts, document all scripts [ed783ba](https://github.com/valu-digital/npm-packages/commit/ed783ba) - Sauli Rajala
+
+All changes https://github.com/valu-digital/npm-packages/compare/git-tools/v1.2.0...git-tools/v1.4.0
+
 ## v1.3.0
 
 2026-03-13
