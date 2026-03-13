@@ -1,7 +1,7 @@
 {
   "name": "@valu/git-tools",
   "version": "1.2.0",
-  "description": "Some git tools",
+  "description": "Some git tools for helping with the development and deployment process",
   "author": "Valu Digital Oy",
   "homepage": "https://github.com/valu-digital/npm-packages/tree/master/packages/git-tools",
   "bin": {
