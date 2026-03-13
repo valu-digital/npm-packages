@@ -2,7 +2,7 @@
 
 2026-03-13
 
--   git-tools: Add deploy and pre-build scripts, document all scripts - Sauli Rajala
+-   empty release: nothing really changed due to problems with the release process
 
 All changes https://github.com/valu-digital/npm-packages/compare/git-tools/v1.2.0...git-tools/v1.3.0
 
