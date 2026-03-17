@@ -1,4 +1,4 @@
-import tabbable, { isTabbable } from "tabbable";
+import { tabbable, isTabbable, FocusableElement } from "tabbable";
 
 function getTabbables(el: HTMLElement) {
     const tabbables = tabbable(el);
@@ -14,6 +14,11 @@ function getTabbables(el: HTMLElement) {
 
 interface FocusTrapOptions {
     containers: HTMLElement | HTMLElement[] | NodeList | null | undefined;
+
+    /**
+     * Shadow DOM shadow root element. Used to find the currently active element.
+     */
+    shadowRoot?: ShadowRoot;
 
     /**
      * Disable the trap when user click an element outside of the selected
@@ -57,8 +62,8 @@ interface FocusTrapOptions {
      * Skip focusing given tabbable when returning false
      */
     validateTabbable?(
-        tabbable: HTMLElement,
-        container: HTMLElement,
+        tabbable: Element,
+        container: Element,
         trap: FocusTrap,
     ): boolean;
 }
@@ -120,6 +125,10 @@ export class FocusTrap {
         return this.state.active;
     }
 
+    getActiveElement() {
+        return this.options.shadowRoot?.activeElement ?? document.activeElement;
+    }
+
     /**
      * Enable trap
      */
@@ -128,8 +137,10 @@ export class FocusTrap {
             this.options.onBeforeEnable(this);
         }
 
-        if (document.activeElement instanceof HTMLElement) {
-            this.elementBeforeTrap = document.activeElement || undefined;
+        const activeElement = this.getActiveElement();
+
+        if (activeElement instanceof HTMLElement) {
+            this.elementBeforeTrap = activeElement || undefined;
         }
 
         if (FocusTrap.current) {
@@ -152,13 +163,14 @@ export class FocusTrap {
         if (this.lastFocusedElement) {
             this.setElementFocus(this.lastFocusedElement);
         } else {
+            const activeElement = this.getActiveElement();
             if (
-                document.activeElement instanceof HTMLElement &&
-                this.isValidFocus(document.activeElement)
+                activeElement instanceof HTMLElement &&
+                this.isValidFocus(activeElement)
             ) {
                 // If we have a valid focus update container index so tabbing
                 // can work correctly
-                this.updateContainerIndex(document.activeElement);
+                this.updateContainerIndex(activeElement);
             } else {
                 // Move focus to the first tabbable element of the first container
                 // if we don't already have a valid focus
@@ -211,7 +223,7 @@ export class FocusTrap {
         }
     }
 
-    setElementFocus(element: HTMLElement) {
+    setElementFocus(element: FocusableElement) {
         element.focus(this.options.focusOptions);
     }
 
@@ -321,7 +333,7 @@ export class FocusTrap {
         });
     }
 
-    isValidTabbable(tabbable: HTMLElement, container: HTMLElement) {
+    isValidTabbable(tabbable: Element, container: HTMLElement) {
         if (!this.options.validateTabbable) {
             return true;
         }
