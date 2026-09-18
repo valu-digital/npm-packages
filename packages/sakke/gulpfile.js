@@ -15,6 +15,7 @@ const stream = require("stream");
 
 const pkg = require(process.cwd() + "/package.json");
 const sakke = require(process.cwd() + "/sakke.json");
+const sakkeConfig = require(process.cwd() + "/sakke.config.js");
 const { isFile } = require("./dist/utils");
 
 const getImportBuffer = async (plugin, entry) => {
@@ -262,7 +263,7 @@ gulp.task("images", () =>
                         },
                         { removeTitle: true },
                         { removeViewBox: false },
-                        { removeDimensions: true },
+                        { removeDimensions: sakkeConfig.svgo?.removeDimensions ?? true },
                     ],
                 }),
             ]),
