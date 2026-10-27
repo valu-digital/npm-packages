@@ -234,9 +234,22 @@ gulp.task("styles", () => {
         .pipe(livereload());
 });
 
+/**
+ * Copy fonts to dist/fonts. Fonts in subfolders of assets/fonts are copied
+ * too, flattened into dist/fonts like before 4.1.0.
+ */
 gulp.task("fonts", () =>
     gulp
-        .src(ROOT + "/assets/fonts/*.{woff,woff2,ttf,otf}")
+        .src(ROOT + "/assets/fonts/**/*.{woff,woff2,ttf,otf}", { nocase: true })
+        .pipe(
+            new stream.Transform({
+                objectMode: true,
+                transform(file, encoding, cb) {
+                    file.base = file.dirname;
+                    cb(null, file);
+                },
+            }),
+        )
         .pipe(gulp.dest(ROOT + "/dist/fonts")),
 );
 
