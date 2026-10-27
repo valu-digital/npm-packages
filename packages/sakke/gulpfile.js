@@ -253,6 +253,17 @@ gulp.task("fonts", () =>
         .pipe(gulp.dest(ROOT + "/dist/fonts")),
 );
 
+/**
+ * The optional svgo field of sakke.config.js
+ */
+function getSvgoOptions() {
+    const configPath = ROOT + "/sakke.config.js";
+    if (!fs.existsSync(configPath)) {
+        return {};
+    }
+    return require(configPath).svgo || {};
+}
+
 gulp.task("images", () =>
     gulp
         .src(ROOT + "/assets/images/**/*.{jpg,png,svg,gif,webp}")
@@ -275,7 +286,10 @@ gulp.task("images", () =>
                         },
                         { removeTitle: true },
                         { removeViewBox: false },
-                        { removeDimensions: true },
+                        {
+                            removeDimensions:
+                                getSvgoOptions().removeDimensions !== false,
+                        },
                     ],
                 }),
             ]),

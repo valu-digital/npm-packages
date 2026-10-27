@@ -37,12 +37,17 @@ const config = {
     // webpackPlugins: [],
     // webpackRules: [],
     // compileNodeModules: [],
+    // svgo: { removeDimensions: true },
 };
 
 module.exports = config;
 ```
 
 The type comment is just to help the editor autocomplete.
+
+`svgo.removeDimensions` controls whether the `width` and `height` attributes
+are removed from the SVG files in `assets/images`. It defaults to `true`; set
+it to `false` to keep them.
 
 ## CLI Usage
 
