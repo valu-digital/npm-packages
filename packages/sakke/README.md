@@ -74,6 +74,10 @@ Staging
 sakke deploy-staging
 ```
 
+Pushes the current branch to origin and to the branch that is checked out on
+the staging server. The push is not forced: if the staging server has commits
+your branch does not have, merge them first.
+
 ### JS
 
 JS specific tasks

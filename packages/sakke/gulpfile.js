@@ -477,7 +477,14 @@ gulp.task(
 
 		# push to local branch to matching remote branch
 		git push origin $branch:$branch
-		git push ${sakke.git.staging} $branch:master --force
+
+		# push to the branch the staging server has checked out
+		staging_branch="$(git ls-remote --symref ${sakke.git.staging} HEAD | awk '$1 == "ref:" { sub("^refs/heads/", "", $2); print $2 }')"
+		if [ -z "$staging_branch" ]; then
+			echo "Could not resolve the branch checked out on the staging server" >&2
+			exit 1
+		fi
+		git push ${sakke.git.staging} $branch:$staging_branch
 	    `,
     ),
 );
