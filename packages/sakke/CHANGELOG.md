@@ -1,3 +1,12 @@
+## v5.1.0
+
+2026-10-28
+
+-   sakke: Push staging deploys to the checked-out branch, copy fonts from subfolders, add svgo.removeDimensions (#33) [801ddbf](https://github.com/valu-digital/npm-packages/commit/801ddbf) - Sauli Rajala
+-   Add homepage url to sakke pkg [0f20ddc](https://github.com/valu-digital/npm-packages/commit/0f20ddc) - Esa-Matti Suuronen
+
+All changes https://github.com/valu-digital/npm-packages/compare/sakke/v5.0.0...sakke/v5.1.0
+
 ## v5.0.0
 
 2023-06-03
