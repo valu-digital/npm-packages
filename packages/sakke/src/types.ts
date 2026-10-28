@@ -17,6 +17,13 @@ export const SakkeConfigParser = z
         env: z.record(z.string()).optional(),
 
         productionSourceMaps: z.boolean().optional(),
+
+        svgo: z
+            .object({
+                removeDimensions: z.boolean().optional(),
+            })
+            .strict()
+            .optional(),
     })
     .strict();
 
