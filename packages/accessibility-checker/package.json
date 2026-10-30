@@ -1,0 +1,22 @@
+{
+    "name": "accessibility-checker",
+    "version": "0.0.1",
+    "description": "analyze accessibility of the given url with axe core",
+    "main": "index.ts",
+    "scripts": {
+        "dev": "python3 -m http.server 8000",
+        "test": "playwright test"
+    },
+    "keywords": [
+        "accessibility"
+    ],
+    "author": "Valu Digital",
+    "license": "ISC",
+    "dependencies": {
+        "@axe-core/playwright": "^4.4.5",
+        "playwright": "^1.27.1"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.27.1"
+    }
+}
